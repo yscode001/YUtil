@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="01_Log\" />
+    <None Remove="02_Timer\" />
+    <None Remove="00_Singleton\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="01_Log\" />
+    <Folder Include="02_Timer\" />
+    <Folder Include="00_Singleton\" />
+  </ItemGroup>
+</Project>
