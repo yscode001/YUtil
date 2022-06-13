@@ -4,7 +4,7 @@ using UnityEngine;
 namespace YUnity
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public partial class UIStackBaseWnd : BaseMonoBehaviour
+    public partial class UIStackBaseWnd : MonoBehaviourBaseY
     {
         private CanvasGroup cvsGroup;
         public CanvasGroup CvsGroup

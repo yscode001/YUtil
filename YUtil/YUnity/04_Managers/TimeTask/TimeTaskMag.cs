@@ -6,7 +6,7 @@ namespace YUnity
     /// <summary>
     /// 定时任务管理器
     /// </summary>
-    public partial class TimeTaskMag : BaseMonoBehaviour
+    public partial class TimeTaskMag : MonoBehaviourBaseY
     {
         private TimeTaskMag() { }
         public static TimeTaskMag Instance { get; private set; } = null;

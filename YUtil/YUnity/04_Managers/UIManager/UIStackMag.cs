@@ -7,7 +7,7 @@ namespace YUnity
     /// <summary>
     /// UI栈结构管理器，挂在Scene的某个GO上
     /// </summary>
-    public partial class UIStackMag : BaseMonoBehaviour
+    public partial class UIStackMag : MonoBehaviourBaseY
     {
         private UIStackMag() { }
         public static UIStackMag Instance { get; private set; } = null;

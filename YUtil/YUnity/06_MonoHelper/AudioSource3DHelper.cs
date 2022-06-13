@@ -4,7 +4,7 @@ using UnityEngine;
 namespace YUnity
 {
     [RequireComponent(typeof(AudioSource))]
-    public partial class AudioSource3DHelper : BaseMonoBehaviour
+    public partial class AudioSource3DHelper : MonoBehaviourBaseY
     {
         private AudioSource audioSource;
         private float minDistance = 0;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace YUnity
 {
-    public partial class BaseMonoBehaviour : MonoBehaviour
+    public partial class MonoBehaviourBaseY : MonoBehaviour
     {
         private Transform _transform;
         private RectTransform _rectTransform;
@@ -12,8 +12,9 @@ namespace YUnity
         private AudioListener _audioListener;
         private CharacterController _characterController;
         private Rigidbody _rigidbody;
+        private CanvasGroup _canvasGroup;
     }
-    public partial class BaseMonoBehaviour
+    public partial class MonoBehaviourBaseY
     {
         public Transform TransformY
         {
@@ -120,6 +121,21 @@ namespace YUnity
                 if (_rigidbody != null) { return _rigidbody; }
                 _rigidbody = gameObject.AddComponent<Rigidbody>();
                 return _rigidbody;
+            }
+        }
+
+        /// <summary>
+        /// 获取CanvasGroup(UI专用)，如果没有则添加
+        /// </summary>
+        public CanvasGroup CanvasGroupY
+        {
+            get
+            {
+                if (_canvasGroup != null) { return _canvasGroup; }
+                _canvasGroup = gameObject.GetComponent<CanvasGroup>();
+                if (_canvasGroup != null) { return _canvasGroup; }
+                _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                return _canvasGroup;
             }
         }
     }

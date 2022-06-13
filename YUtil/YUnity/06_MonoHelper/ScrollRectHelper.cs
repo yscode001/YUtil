@@ -12,7 +12,7 @@ namespace YUnity
     /// ScrollRect帮助类
     /// </summary>
     [RequireComponent(typeof(ScrollRect))]
-    public partial class ScrollRectHelper : BaseMonoBehaviour
+    public partial class ScrollRectHelper : MonoBehaviourBaseY
     {
         public ScrollRect SR { get; private set; } = null;
         private readonly float smoothing = 4f;

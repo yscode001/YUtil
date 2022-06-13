@@ -6,7 +6,7 @@ namespace YUnity
     /// <summary>
     /// 资源管理器
     /// </summary>
-    public partial class ResourceMag : BaseMonoBehaviour
+    public partial class ResourceMag : MonoBehaviourBaseY
     {
         private ResourceMag() { }
         public static ResourceMag Instance { get; private set; } = null;

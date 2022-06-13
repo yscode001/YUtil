@@ -7,7 +7,7 @@ namespace YUnity
     /// <summary>
     /// 场景管理器
     /// </summary>
-    public partial class SceneMag : BaseMonoBehaviour
+    public partial class SceneMag : MonoBehaviourBaseY
     {
         private SceneMag() { }
         public static SceneMag Instance { get; private set; } = null;

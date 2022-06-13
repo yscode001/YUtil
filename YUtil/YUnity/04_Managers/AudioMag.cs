@@ -7,7 +7,7 @@ namespace YUnity
     /// <summary>
     /// 音频管理器
     /// </summary>
-    public partial class AudioMag : BaseMonoBehaviour
+    public partial class AudioMag : MonoBehaviourBaseY
     {
         private AudioMag() { }
         public static AudioMag Instance { get; private set; } = null;

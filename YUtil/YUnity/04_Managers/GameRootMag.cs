@@ -7,7 +7,7 @@ namespace YUnity
     /// <summary>
     /// 游戏入口管理器
     /// </summary>
-    public partial class GameRootMag : BaseMonoBehaviour
+    public partial class GameRootMag : MonoBehaviourBaseY
     {
         private GameRootMag() { }
         public static GameRootMag Instance { get; private set; } = null;

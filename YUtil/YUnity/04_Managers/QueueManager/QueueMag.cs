@@ -6,7 +6,7 @@ namespace YUnity
     /// <summary>
     /// 队列任务管理器
     /// </summary>
-    public partial class QueueMag : BaseMonoBehaviour
+    public partial class QueueMag : MonoBehaviourBaseY
     {
         private QueueMag() { }
         public static QueueMag Instance { get; private set; } = null;

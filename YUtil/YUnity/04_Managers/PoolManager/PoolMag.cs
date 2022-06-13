@@ -6,7 +6,7 @@ namespace YUnity
     /// <summary>
     /// 对象池
     /// </summary>
-    public class PoolMag : BaseMonoBehaviour
+    public class PoolMag : MonoBehaviourBaseY
     {
         private PoolMag() { }
         public static PoolMag Instance { get; private set; } = null;

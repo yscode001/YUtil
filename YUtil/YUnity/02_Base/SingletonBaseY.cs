@@ -4,10 +4,12 @@ using System.Reflection;
 namespace YUnity
 {
     /// <summary>
-    /// 单例基本(不继承MonoBehaviour)
+    /// 单例基类(不继承MonoBehaviour)
     /// </summary>
-    public abstract class BaseSingleton<T> where T : BaseSingleton<T>
+    public abstract class SingletonBaseY<T> where T : SingletonBaseY<T>
     {
+        protected SingletonBaseY() { }
+
         private static T _instance;
 
         public static T Instance
@@ -25,7 +27,5 @@ namespace YUnity
                 return _instance;
             }
         }
-
-        protected BaseSingleton() { }
     }
 }
