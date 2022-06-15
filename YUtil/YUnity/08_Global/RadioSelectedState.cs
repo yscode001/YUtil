@@ -30,7 +30,17 @@ namespace YUnity
             {
                 if (_currentIntValue == value) { return; }
                 _currentIntValue = value;
-                Event_CurrentIntValueChanged?.Invoke(_currentIntValue);
+                try
+                {
+                    Event_CurrentIntValueChanged?.Invoke(_currentIntValue);
+                }
+                catch (Exception ex)
+                {
+                    if (GameRootMag.Instance != null) // 说明初始化过了
+                    {
+                        this.Error($"RadioSelectedState Event_CurrentIntValueChanged Error：{ex}");
+                    }
+                }
             }
         }
 
@@ -42,7 +52,17 @@ namespace YUnity
             {
                 if (string.IsNullOrWhiteSpace(value) || _currentStringValue == value) { return; }
                 _currentStringValue = value;
-                Event_CurrentStringValueChanged?.Invoke(_currentStringValue);
+                try
+                {
+                    Event_CurrentStringValueChanged?.Invoke(_currentStringValue);
+                }
+                catch (Exception ex)
+                {
+                    if (GameRootMag.Instance != null) // 说明初始化过了
+                    {
+                        this.Error($"RadioSelectedState Event_CurrentStringValueChanged Error：{ex}");
+                    }
+                }
             }
         }
 
@@ -54,7 +74,17 @@ namespace YUnity
             {
                 if (_currentBoolValue == value) { return; }
                 _currentBoolValue = value;
-                Event_CurrentBoolValueChanged?.Invoke(_currentBoolValue);
+                try
+                {
+                    Event_CurrentBoolValueChanged?.Invoke(_currentBoolValue);
+                }
+                catch (Exception ex)
+                {
+                    if (GameRootMag.Instance != null) // 说明初始化过了
+                    {
+                        this.Error($"RadioSelectedState Event_CurrentBoolValueChanged Error：{ex}");
+                    }
+                }
             }
         }
         #endregion
