@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace YUnity
 {
+    #region 常用属性
     public partial class MonoBehaviourBaseY : MonoBehaviour
     {
         private Transform _transform;
@@ -139,4 +140,43 @@ namespace YUnity
             }
         }
     }
+    #endregion
+
+    /*
+    #region 生命周期相关
+    public partial class MonoBehaviourBaseY
+    {
+        public event Action Event_Awake;
+        public event Action Event_Start;
+        public event Action Event_OnEnable;
+        public event Action Event_OnDisable;
+        public event Action Event_OnDestroy;
+
+        public virtual void Awake()
+        {
+            Event_Awake?.Invoke();
+        }
+
+        public virtual void Start()
+        {
+            Event_Start?.Invoke();
+        }
+
+        public virtual void OnEnable()
+        {
+            Event_OnEnable?.Invoke();
+        }
+
+        public virtual void OnDisable()
+        {
+            Event_OnDisable?.Invoke();
+        }
+
+        public virtual void OnDestroy()
+        {
+            Event_OnDestroy?.Invoke();
+        }
+    }
+    #endregion
+    */
 }

@@ -11,7 +11,35 @@ namespace YUnity
     /// </summary>
     public class RadioSelectedState
     {
+        #region 构造函数
         public RadioSelectedState() { }
+        public RadioSelectedState(int initValue)
+        {
+            _currentIntValue = initValue;
+            InitIntValue = initValue;
+        }
+        public RadioSelectedState(string initValue)
+        {
+            if (!string.IsNullOrWhiteSpace(initValue))
+            {
+                _currentStringValue = initValue;
+                InitStringValue = initValue;
+            }
+        }
+        public RadioSelectedState(bool initValue)
+        {
+            _currentBoolValue = initValue;
+            InitBoolValue = initValue;
+        }
+        public RadioSelectedState(object initValue)
+        {
+            if (initValue != null)
+            {
+                _currentObjectValue = initValue;
+                InitObjectValue = initValue;
+            }
+        }
+        #endregion
 
         #region 事件
         public event Action<int> Event_CurrentIntValueChanged;
@@ -19,6 +47,18 @@ namespace YUnity
         public event Action<string> Event_CurrentStringValueChanged;
 
         public event Action<bool> Event_CurrentBoolValueChanged;
+
+        public event Action<object> Event_CurrentObjectValueChanged;
+        #endregion
+
+        #region 初始值
+        public int InitIntValue { get; private set; } = 0;
+
+        public string InitStringValue { get; private set; } = "";
+
+        public bool InitBoolValue { get; private set; } = false;
+
+        public object InitObjectValue { get; private set; } = null;
         #endregion
 
         #region 当前值
@@ -83,6 +123,28 @@ namespace YUnity
                     if (GameRootMag.Instance != null) // 说明初始化过了
                     {
                         this.Error($"RadioSelectedState Event_CurrentBoolValueChanged Error：{ex}");
+                    }
+                }
+            }
+        }
+
+        private object _currentObjectValue = null;
+        public object CurrentObjectValue
+        {
+            get => _currentObjectValue;
+            set
+            {
+                if (value == null || _currentObjectValue == value) { return; }
+                _currentObjectValue = value;
+                try
+                {
+                    Event_CurrentObjectValueChanged?.Invoke(_currentObjectValue);
+                }
+                catch (Exception ex)
+                {
+                    if (GameRootMag.Instance != null) // 说明初始化过了
+                    {
+                        this.Error($"RadioSelectedState Event_CurrentObjectValueChanged Error：{ex}");
                     }
                 }
             }
