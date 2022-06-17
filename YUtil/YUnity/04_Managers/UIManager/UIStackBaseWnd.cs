@@ -214,4 +214,18 @@ namespace YUnity
         public void PopStackAllElements_confirm() { PopStackAllElements(UIStackPopType.Confirm); }
     }
     #endregion
+    #region 其他
+    public partial class UIStackBaseWnd
+    {
+        /// <summary>
+        /// 获取栈顶元素
+        /// </summary>
+        public RectTransform StackTopElement => UIStackMag.Instance.TopElement;
+
+        /// <summary>
+        /// 自己是否是栈顶元素
+        /// </summary>
+        public bool IsStackTopElement => this == StackTopElement;
+    }
+    #endregion
 }

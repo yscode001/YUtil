@@ -265,6 +265,11 @@ namespace YUnity
         /// 栈里面元素的个数
         /// </summary>
         public int StackElementsCount => RTStack.Count;
+
+        /// <summary>
+        /// 获取栈顶元素
+        /// </summary>
+        public RectTransform TopElement => RTStack.Peek();
     }
     #endregion
 }
