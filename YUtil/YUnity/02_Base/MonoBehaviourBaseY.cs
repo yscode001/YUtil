@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace YUnity
 {
-    #region 常用属性
+    #region 常用缓存属性
     public partial class MonoBehaviourBaseY : MonoBehaviour
     {
         private Transform _transform;
@@ -17,6 +18,9 @@ namespace YUnity
     }
     public partial class MonoBehaviourBaseY
     {
+        /// <summary>
+        /// 缓存属性
+        /// </summary>
         public Transform TransformY
         {
             get
@@ -28,7 +32,7 @@ namespace YUnity
         }
 
         /// <summary>
-        /// UI专用
+        /// 缓存属性，UI专用
         /// </summary>
         public RectTransform RectTransformY
         {
@@ -40,6 +44,9 @@ namespace YUnity
             }
         }
 
+        /// <summary>
+        /// 缓存属性
+        /// </summary>
         public GameObject GameObjectY
         {
             get
@@ -142,41 +149,37 @@ namespace YUnity
     }
     #endregion
 
-    /*
-    #region 生命周期相关
+    #region 其他缓存属性
     public partial class MonoBehaviourBaseY
     {
-        public event Action Event_Awake;
-        public event Action Event_Start;
-        public event Action Event_OnEnable;
-        public event Action Event_OnDisable;
-        public event Action Event_OnDestroy;
-
-        public virtual void Awake()
+        private Dictionary<string, Component> _comDict;
+        private Dictionary<string, Component> comDict
         {
-            Event_Awake?.Invoke();
+            get
+            {
+                if (_comDict == null) { _comDict = new Dictionary<string, Component>(); }
+                return _comDict;
+            }
         }
 
-        public virtual void Start()
+        /// <summary>
+        /// 获取缓存的组件，如果没有此组件将添加该组件并缓存起来
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T ComponentOfCache<T>() where T : Component
         {
-            Event_Start?.Invoke();
-        }
-
-        public virtual void OnEnable()
-        {
-            Event_OnEnable?.Invoke();
-        }
-
-        public virtual void OnDisable()
-        {
-            Event_OnDisable?.Invoke();
-        }
-
-        public virtual void OnDestroy()
-        {
-            Event_OnDestroy?.Invoke();
+            if (comDict.TryGetValue(typeof(T).Name, out Component com))
+            {
+                return (T)com;
+            }
+            else
+            {
+                com = gameObject.AddComponent<T>();
+                comDict.Add(typeof(T).Name, com);
+                return (T)com;
+            }
         }
     }
     #endregion
-    */
 }
