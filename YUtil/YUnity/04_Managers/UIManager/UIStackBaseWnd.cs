@@ -41,7 +41,8 @@ namespace YUnity
         /// <summary>
         /// 自己上面的元素被pop掉，此界面恢复，可以交互
         /// </summary>
-        public virtual void OnResume()
+        /// <param name="popedRT">自己上面被pop掉的元素</param>
+        public virtual void OnResume(string popedRT)
         {
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;

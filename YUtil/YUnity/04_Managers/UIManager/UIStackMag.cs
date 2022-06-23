@@ -100,6 +100,7 @@ namespace YUnity
             if (pc <= 0) { return; }
             before?.Invoke();
             UIStackPopMode model = pc == 1 ? UIStackPopMode.Pop : popMode;
+            string popedRT = RTStack.Peek().gameObject.name;
             for (int times = 1; times <= pc && RTStack.Count > 0; times++)
             {
                 RectTransform willPopRT = RTStack.Pop();
@@ -113,7 +114,7 @@ namespace YUnity
                 RectTransform topRT = RTStack.Peek();
                 if (topRT != null)
                 {
-                    topRT.GetOrAddComponent<UIStackBaseWnd>()?.OnResume();
+                    topRT.GetOrAddComponent<UIStackBaseWnd>()?.OnResume(popedRT);
                 }
             }
             complete?.Invoke();
