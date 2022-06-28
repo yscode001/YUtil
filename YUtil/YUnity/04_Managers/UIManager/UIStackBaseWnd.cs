@@ -23,7 +23,8 @@ namespace YUnity
         /// 元素被放入栈中，可以交互
         /// </summary>
         /// <param name="pushType"></param>
-        public virtual void OnPush(UIStackPushType pushType)
+        /// <param name="bottomRT">自己底下的元素，及自己从哪个页面进来的</param>
+        public virtual void OnPush(UIStackPushType pushType, RectTransform bottomRT)
         {
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;
@@ -41,8 +42,8 @@ namespace YUnity
         /// <summary>
         /// 自己上面的元素被pop掉，此界面恢复，可以交互
         /// </summary>
-        /// <param name="popedRT">自己上面被pop掉的元素</param>
-        public virtual void OnResume(string popedRT)
+        /// <param name="popedRT">从哪个页面发起的pop</param>
+        public virtual void OnResume(RectTransform popedRT)
         {
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;

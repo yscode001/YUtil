@@ -54,12 +54,13 @@ namespace YUnity
             }
             rt.SetParent(parent, false);
             rt.SetAct(true);
+            RectTransform bottomRT = null;
             if (RTStack.Count > 0)
             {
-                RectTransform topRT = RTStack.Peek();
-                topRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt);
+                bottomRT = RTStack.Peek();
+                bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt);
             }
-            rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pushType);
+            rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pushType, bottomRT);
             RTStack.Push(rt);
         }
         /// <summary>
@@ -100,13 +101,14 @@ namespace YUnity
             if (pc <= 0) { return; }
             before?.Invoke();
             UIStackPopMode model = pc == 1 ? UIStackPopMode.Pop : popMode;
-            string popedRT = RTStack.Peek().gameObject.name;
+
+            List<RectTransform> willPopRTList = new List<RectTransform>();
             for (int times = 1; times <= pc && RTStack.Count > 0; times++)
             {
                 RectTransform willPopRT = RTStack.Pop();
                 if (willPopRT != null)
                 {
-                    willPopRT.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(model, popType);
+                    willPopRTList.Add(willPopRT);
                 }
             }
             if (RTStack.Count > 0)
@@ -114,8 +116,14 @@ namespace YUnity
                 RectTransform topRT = RTStack.Peek();
                 if (topRT != null)
                 {
-                    topRT.GetOrAddComponent<UIStackBaseWnd>()?.OnResume(popedRT);
+                    RectTransform popFirstRT = null;
+                    if (willPopRTList.Count > 0) { popFirstRT = willPopRTList[0]; }
+                    topRT.GetOrAddComponent<UIStackBaseWnd>()?.OnResume(popFirstRT);
                 }
+            }
+            foreach (RectTransform rt in willPopRTList)
+            {
+                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(popMode, popType);
             }
             complete?.Invoke();
         }

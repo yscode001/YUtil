@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -179,6 +181,47 @@ namespace YUnity
                 comDict.Add(typeof(T).Name, com);
                 return (T)com;
             }
+        }
+    }
+    #endregion
+
+    #region 播放动画
+    public partial class MonoBehaviourBaseY
+    {
+        public int AniStateError => -9999;
+        public string AniStateName { get; private set; } = "";
+        public int AniStateValue { get; private set; } = -9999;
+
+        private Coroutine aniC;
+        public void PlayAni(string stateName, int stateValue, Action complete)
+        {
+            if (string.IsNullOrWhiteSpace(stateName)) { return; }
+            AnimatorY.Update(0);
+            AnimatorY.SetInteger(stateName, stateValue);
+            AniStateName = stateName;
+            AniStateValue = stateValue;
+            if (aniC != null)
+            {
+                StopCoroutine(aniC);
+                aniC = null;
+            }
+            if (complete == null)
+            {
+                return;
+            }
+            aniC = StartCoroutine(DelayPlayAni(AnimatorY, stateName, complete));
+        }
+        private IEnumerator DelayPlayAni(Animator animator, string stateName, Action complete)
+        {
+            // 状态机的切换发生在帧的结尾
+            yield return new WaitForEndOfFrame();
+            var info = animator.GetCurrentAnimatorStateInfo(0);
+            if (!info.IsName(stateName))
+            {
+                yield return null;
+            }
+            yield return new WaitForSeconds(info.length);
+            complete?.Invoke();
         }
     }
     #endregion
