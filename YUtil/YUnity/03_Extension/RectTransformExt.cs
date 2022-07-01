@@ -4,6 +4,57 @@ namespace YUnity
 {
     public static class RectTransformExt
     {
+        /// <summary>
+        /// 获取在Canvas上的中心点
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="cam"></param>
+        /// <param name="canvasRT"></param>
+        /// <returns></returns>
+        public static Vector2 GetCenterPosInCanvas(this RectTransform rect, Camera cam, RectTransform canvasRT)
+        {
+            if (rect == null || cam == null || canvasRT == null) { return Vector2.zero; }
+            Vector3[] _corners = new Vector3[4];
+            rect.GetWorldCorners(_corners); //获得对象的四个角坐标
+            float x = _corners[0].x + ((_corners[3].x - _corners[0].x) / 2f);
+            float y = _corners[0].y + ((_corners[1].y - _corners[0].y) / 2f);
+            Vector3 centerWorld = new Vector3(x, y, 0);
+            return centerWorld.WorldToCanvasPos(cam, canvasRT);
+        }
+
+        /// <summary>
+        /// 获取尺寸
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        public static Vector2 GetSize(this RectTransform rect)
+        {
+            if (rect == null) { return Vector2.zero; }
+            return rect.rect.size;
+        }
+
+        /// <summary>
+        /// 获取宽度
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        public static float GetWidth(this RectTransform rect)
+        {
+            if (rect == null) { return 0; }
+            return rect.rect.width;
+        }
+
+        /// <summary>
+        /// 获取高度
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        public static float GetHeight(this RectTransform rect)
+        {
+            if (rect == null) { return 0; }
+            return rect.rect.height;
+        }
+
         // 直接修改
         public static void ChangeRectTransformSizeDeltaX(this RectTransform rt, float x)
         {

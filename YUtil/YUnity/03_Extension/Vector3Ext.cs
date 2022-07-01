@@ -41,5 +41,20 @@ namespace YUnity
             if (camera == null) { return false; }
             return v3.x >= 0 && v3.x <= 1 && v3.y >= 0 && v3.y <= 1 && v3.z >= camera.nearClipPlane && v3.z <= camera.farClipPlane;
         }
+
+        /// <summary>
+        /// 世界坐标向画布坐标转换
+        /// </summary>
+        /// <param name="worldPos"></param>
+        /// <param name="cam"></param>
+        /// <param name="canvasRT"></param>
+        /// <returns></returns>
+        public static Vector2 WorldToCanvasPos(this Vector3 worldPos, Camera cam, RectTransform canvasRT)
+        {
+            if (cam == null || canvasRT == null) { return Vector2.zero; }
+            Vector2 pos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRT, worldPos, cam, out pos);
+            return pos;
+        }
     }
 }

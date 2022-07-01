@@ -2,7 +2,6 @@
 // Email：yscode@126.com
 // Date：2022-2-2
 // ------------------------------
-using System;
 using System.IO;
 
 namespace YCSharp
