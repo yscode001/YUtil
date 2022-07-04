@@ -2,24 +2,115 @@ using UnityEngine;
 
 namespace YUnity
 {
+    /// <summary>
+    /// UI位置枚举
+    /// </summary>
+    public enum RectTransformPosEnum
+    {
+        /// <summary>
+        /// 左下角
+        /// </summary>
+        LeftBottom,
+
+        /// <summary>
+        /// 左中角
+        /// </summary>
+        LeftCenter,
+
+        /// <summary>
+        /// 左上角
+        /// </summary>
+        LeftTop,
+
+        /// <summary>
+        /// 上中角
+        /// </summary>
+        TopCenter,
+
+        /// <summary>
+        /// 右上角
+        /// </summary>
+        RightTop,
+
+        /// <summary>
+        /// 右中角
+        /// </summary>
+        RightCenter,
+
+        /// <summary>
+        /// 右下角
+        /// </summary>
+        RightBottom,
+
+        /// <summary>
+        /// 下中角
+        /// </summary>
+        BottomCenter,
+
+        /// <summary>
+        /// 中心点
+        /// </summary>
+        Center,
+    }
+
     public static class RectTransformExt
     {
         /// <summary>
-        /// 获取在Canvas上的中心点
+        /// 获取在Canvas上的中心点，以Canvas左下角原点为参考点
         /// </summary>
         /// <param name="rect"></param>
+        /// <param name="rectPosEnum">rect的那个点</param>
         /// <param name="cam"></param>
-        /// <param name="canvasRT"></param>
+        /// <param name="canvasRT">以Canvas左下角原点为参考点</param>
         /// <returns></returns>
-        public static Vector2 GetCenterPosInCanvas(this RectTransform rect, Camera cam, RectTransform canvasRT)
+        public static Vector2 GetCenterPosInCanvas(this RectTransform rect, RectTransformPosEnum rectPosEnum, Camera cam, RectTransform canvasRT)
         {
-            if (rect == null || cam == null || canvasRT == null) { return Vector2.zero; }
+            if (rect == null || canvasRT == null) { return Vector2.zero; }
             Vector3[] _corners = new Vector3[4];
             rect.GetWorldCorners(_corners); //获得对象的四个角坐标
-            float x = _corners[0].x + ((_corners[3].x - _corners[0].x) / 2f);
-            float y = _corners[0].y + ((_corners[1].y - _corners[0].y) / 2f);
-            Vector3 centerWorld = new Vector3(x, y, 0);
-            return centerWorld.WorldToCanvasPos(cam, canvasRT);
+
+            Vector3 worldPos = Vector3.zero;
+            switch (rectPosEnum)
+            {
+                case RectTransformPosEnum.LeftBottom:
+                    worldPos = _corners[0];
+                    break;
+                case RectTransformPosEnum.LeftCenter:
+                    float x1 = _corners[0].x;
+                    float y1 = _corners[0].y + ((_corners[1].y - _corners[0].y) / 2f);
+                    worldPos = new Vector3(x1, y1, 0);
+                    break;
+                case RectTransformPosEnum.LeftTop:
+                    worldPos = _corners[1];
+                    break;
+                case RectTransformPosEnum.TopCenter:
+                    float x2 = _corners[0].x + ((_corners[3].x - _corners[0].x) / 2f);
+                    float y2 = _corners[1].y;
+                    worldPos = new Vector3(x2, y2, 0);
+                    break;
+                case RectTransformPosEnum.RightTop:
+                    worldPos = _corners[2];
+                    break;
+                case RectTransformPosEnum.RightCenter:
+                    float x3 = _corners[3].x;
+                    float y3 = _corners[0].y + ((_corners[1].y - _corners[0].y) / 2f);
+                    worldPos = new Vector3(x3, y3, 0);
+                    break;
+                case RectTransformPosEnum.RightBottom:
+                    worldPos = _corners[3];
+                    break;
+                case RectTransformPosEnum.BottomCenter:
+                    float x4 = _corners[0].x + ((_corners[3].x - _corners[0].x) / 2f);
+                    float y4 = _corners[0].y;
+                    worldPos = new Vector3(x4, y4, 0);
+                    break;
+                case RectTransformPosEnum.Center:
+                    float x = _corners[0].x + ((_corners[3].x - _corners[0].x) / 2f);
+                    float y = _corners[0].y + ((_corners[1].y - _corners[0].y) / 2f);
+                    worldPos = new Vector3(x, y, 0);
+                    break;
+            }
+            return worldPos.WorldToCanvasPos(cam, canvasRT);
         }
 
         /// <summary>
