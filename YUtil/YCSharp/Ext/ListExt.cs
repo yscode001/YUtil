@@ -30,5 +30,27 @@ namespace YCSharp
             list.RemoveAt(index);
             return t;
         }
+
+        /// <summary>
+        /// 不为空并且有数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static bool HasData<T>(this List<T> list)
+        {
+            return list != null && list.Count > 0;
+        }
+
+        /// <summary>
+        /// 为空或者没有数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static bool HasNoData<T>(this List<T> list)
+        {
+            return list == null || list.Count <= 0;
+        }
     }
 }
