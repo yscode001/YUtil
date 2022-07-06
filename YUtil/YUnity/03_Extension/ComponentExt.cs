@@ -273,5 +273,27 @@ namespace YUnity
             if (childT != null) { return childT.GetComponent<T>(); }
             return null;
         }
+
+        /// <summary>
+        /// 是否激活
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
+        public static bool ActiveInHierarchy(this Component component)
+        {
+            if (component == null || component.gameObject == null) { return false; }
+            return component.gameObject.activeInHierarchy;
+        }
+
+        /// <summary>
+        /// 是否激活
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
+        public static bool ActiveSelf(this Component component)
+        {
+            if (component == null || component.gameObject == null) { return false; }
+            return component.gameObject.activeSelf;
+        }
     }
 }

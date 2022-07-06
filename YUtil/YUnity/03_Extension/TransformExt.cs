@@ -229,5 +229,27 @@ namespace YUnity
                 tf.rotation = Quaternion.identity;
             }
         }
+
+        /// <summary>
+        /// Copy基础属性至另一个(位置、角度、旋转)
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="isLocal"></param>
+        public static void CopyBasicPropertyToAnthor(this Transform from, Transform to, bool isLocal)
+        {
+            if (from == null || to == null) { return; }
+            if (isLocal)
+            {
+                to.localPosition = from.localPosition;
+                to.localRotation = from.localRotation;
+            }
+            else
+            {
+                to.position = from.position;
+                to.rotation = from.rotation;
+            }
+            to.localScale = from.localScale;
+        }
     }
 }
