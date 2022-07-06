@@ -60,6 +60,15 @@ namespace YUnity
         }
 
         /// <summary>
+        /// 在OnPush或OnResume之后执行
+        /// </summary>
+        /// <param name="isAfterOnPush">true为onPush之后执行，false为OnResume之后执行</param>
+        public virtual void ExecuteAfterOnPushOrOnResume(bool isAfterOnPush)
+        {
+
+        }
+
+        /// <summary>
         /// 自己当前的alpha
         /// </summary>
         public virtual float AlphaValue

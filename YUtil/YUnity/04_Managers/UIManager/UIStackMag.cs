@@ -61,6 +61,7 @@ namespace YUnity
                 bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt);
             }
             rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pushType, bottomRT);
+            rt.GetOrAddComponent<UIStackBaseWnd>().ExecuteAfterOnPushOrOnResume(true);
             RTStack.Push(rt);
         }
         /// <summary>
@@ -119,6 +120,7 @@ namespace YUnity
                     RectTransform popFirstRT = null;
                     if (willPopRTList.Count > 0) { popFirstRT = willPopRTList[0]; }
                     topRT.GetOrAddComponent<UIStackBaseWnd>()?.OnResume(popFirstRT);
+                    topRT.GetOrAddComponent<UIStackBaseWnd>()?.ExecuteAfterOnPushOrOnResume(false);
                 }
             }
             foreach (RectTransform rt in willPopRTList)
