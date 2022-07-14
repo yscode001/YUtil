@@ -281,5 +281,47 @@ namespace YUnity
             go.transform.localEulerAngles = self.localEulerAngles;
             go.transform.MoveSelfGOToAnotherParent(parent, worldPositionStays);
         }
+
+        /// <summary>
+        /// 把自己移动至Array中的某一个具有相同ParentName的下面
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="array"></param>
+        /// <param name="worldPositionStays"></param>
+        public static void MoveSelfGOToInArrayWithSameParentName(this Transform self, Transform[] array, bool worldPositionStays)
+        {
+            if (self == null || self.parent == null || array == null || array.Length <= 0) { return; }
+            string selfParentName = self.transform.parent.gameObject.name;
+            for (int i = 0; i < array.Length; i++)
+            {
+                Transform p = array[i];
+                if (p.gameObject.name == selfParentName)
+                {
+                    self.MoveSelfGOToAnotherParent(p, worldPositionStays);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 创建一个和自己Transform一样的空Go，然后放到Array中的某一个具有相同ParentName的下面
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="array"></param>
+        /// <param name="worldPositionStays"></param>
+        public static void CopySelfEmptyGoToInArrayWithSameParentName(this Transform self, Transform[] array, bool worldPositionStays)
+        {
+            if (self == null || self.parent == null || array == null || array.Length <= 0) { return; }
+            string selfParentName = self.transform.parent.gameObject.name;
+            for (int i = 0; i < array.Length; i++)
+            {
+                Transform p = array[i];
+                if (p.gameObject.name == selfParentName)
+                {
+                    self.CopySelfEmptyGoToAnotherParent(p, worldPositionStays);
+                    break;
+                }
+            }
+        }
     }
 }
