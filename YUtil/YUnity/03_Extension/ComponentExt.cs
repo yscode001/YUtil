@@ -83,11 +83,12 @@ namespace YUnity
         /// </summary>
         /// <param name="component"></param>
         /// <param name="parentCont"></param>
+        /// <param name="worldPositionStays"></param>
         /// <returns>返回自己</returns>
-        public static Component SetToParent(this Component component, Component parentCont)
+        public static Component SetToParent(this Component component, Component parentCont, bool worldPositionStays = false)
         {
-            if (component == null || component.transform == null || parentCont == null || parentCont.transform == null) { return component; }
-            component.transform.SetParent(parentCont.transform, false);
+            if (component == null || parentCont == null) { return component; }
+            component.transform.SetParent(parentCont.transform, worldPositionStays);
             return component;
         }
 
@@ -96,13 +97,14 @@ namespace YUnity
         /// </summary>
         /// <param name="component"></param>
         /// <param name="children"></param>
-        public static void AddChildren(this Component component, List<Component> children)
+        /// <param name="worldPositionStays"></param>
+        public static void AddChildren(this Component component, List<Component> children, bool worldPositionStays = false)
         {
-            if (component == null || component.transform == null) { return; }
+            if (component == null) { return; }
             foreach (Component child in children)
             {
-                if (child == null || child.transform == null) { continue; }
-                child.transform.SetParent(component.transform, false);
+                if (child == null) { continue; }
+                child.transform.SetParent(component.transform, worldPositionStays);
             }
         }
 

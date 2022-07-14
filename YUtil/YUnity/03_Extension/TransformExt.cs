@@ -251,5 +251,35 @@ namespace YUnity
             }
             to.localScale = from.localScale;
         }
+
+        /// <summary>
+        /// 把自己移动至另一个Parent下面
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="parent"></param>
+        /// <param name="worldPositionStays"></param>
+        public static void MoveSelfGOToAnotherParent(this Transform self, Transform parent, bool worldPositionStays)
+        {
+            if (self == null || parent == null || self.parent == parent) { return; }
+            self.SetParent(parent, worldPositionStays);
+        }
+
+        /// <summary>
+        /// 创建一个和自己Transform一样的空Go，然后放到Parent下面
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="parent"></param>
+        /// <param name="worldPositionStays"></param>
+        public static void CopySelfEmptyGoToAnotherParent(this Transform self, Transform parent, bool worldPositionStays)
+        {
+            if (self == null || parent == null || self.parent == parent) { return; }
+            GameObject go = new GameObject();
+            go.name = self.gameObject.name;
+            go.transform.SetParent(self.parent);
+            go.transform.localScale = self.localScale;
+            go.transform.localPosition = self.localPosition;
+            go.transform.localEulerAngles = self.localEulerAngles;
+            go.transform.MoveSelfGOToAnotherParent(parent, worldPositionStays);
+        }
     }
 }
