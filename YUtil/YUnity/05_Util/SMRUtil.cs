@@ -46,5 +46,16 @@ namespace YUnity
             smr.rootBone = null;
             smr.bones = null;
         }
+
+        public static void DestroyAllBones(SkinnedMeshRenderer smr)
+        {
+            if (smr == null) { return; }
+            Transform[] array = smr.bones;
+            if (array == null || array.Length <= 0) { return; }
+            for (int i = array.Length - 1; i >= 0; i--)
+            {
+                GameObject.Destroy(array[i].gameObject);
+            }
+        }
     }
 }
