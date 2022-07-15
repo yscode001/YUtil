@@ -185,21 +185,20 @@ namespace YUnity
     }
     #endregion
 
+    /*
     #region 播放动画
     public partial class MonoBehaviourBaseY
     {
         public int AniStateError => -9999;
         public string AniStateName { get; private set; } = "";
-        public int AniStateValue { get; private set; } = -9999;
 
         private Coroutine aniC;
-        public void PlayAni(string stateName, int stateValue, Action complete)
+        public void PlayAni(string stateName, Action complete)
         {
             if (string.IsNullOrWhiteSpace(stateName)) { return; }
             AnimatorY.Update(0);
-            AnimatorY.SetInteger(stateName, stateValue);
+            AnimatorY.Play(stateName);
             AniStateName = stateName;
-            AniStateValue = stateValue;
             if (aniC != null)
             {
                 StopCoroutine(aniC);
@@ -218,11 +217,15 @@ namespace YUnity
             var info = animator.GetCurrentAnimatorStateInfo(0);
             if (!info.IsName(stateName))
             {
-                yield return null;
+                complete?.Invoke();
             }
-            yield return new WaitForSeconds(info.length);
-            complete?.Invoke();
+            else
+            {
+                yield return new WaitForSeconds(info.length);
+                complete?.Invoke();
+            }
         }
     }
     #endregion
+    */
 }
