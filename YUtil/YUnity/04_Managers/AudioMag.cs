@@ -37,7 +37,7 @@ namespace YUnity
                 name = "BGAudioGO"
             };
             bg.transform.parent = transform;
-            bgAudio = bg.GetOrAddComponent<AudioSource>();
+            bgAudio = bg.AddComponent<AudioSource>();
             bgAudio.volume = 0.1f;
 
             GameObject normal = new GameObject
@@ -45,7 +45,7 @@ namespace YUnity
                 name = "NormalAudioGO"
             };
             normal.transform.parent = transform;
-            normalAudio = normal.GetOrAddComponent<AudioSource>();
+            normalAudio = normal.AddComponent<AudioSource>();
             normalAudio.volume = 0.2f;
         }
 

@@ -20,10 +20,10 @@ namespace YCSharp
             return string.IsNullOrWhiteSpace(str);
         }
 
-        public static byte[] ToByteArray(this string str)
+        public static byte[] ToByteArray(this string str, Encoding encoding)
         {
             if (string.IsNullOrEmpty(str)) { return null; }
-            return System.Text.Encoding.UTF8.GetBytes(str);
+            return encoding.GetBytes(str);
         }
 
         public static string MD5(this string str)

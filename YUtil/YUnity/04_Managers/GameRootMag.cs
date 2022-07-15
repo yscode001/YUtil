@@ -64,7 +64,7 @@ namespace YUnity
                     name = "YFrameworkGameRoot"
                 };
             }
-            Instance = grGO.GetOrAddComponent<GameRootMag>();
+            Instance = grGO.AddComponent<GameRootMag>();
             DontDestroyOnLoad(grGO);
             DontDestroyOnLoad(Instance);
             Instance.InitOthersAfterInit(logConfig);
