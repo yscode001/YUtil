@@ -6,10 +6,8 @@ namespace YUnity
     {
         public static GameObject CreateEmptyGO(Transform parentT, string name)
         {
-            GameObject go = new GameObject
-            {
-                name = name
-            };
+            GameObject go = new GameObject();
+            go.name = name;
             go.transform.parent = parentT;
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
