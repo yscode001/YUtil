@@ -182,48 +182,4 @@ namespace YUnity
         }
     }
     #endregion
-
-    /*
-    #region 播放动画
-    public partial class MonoBehaviourBaseY
-    {
-        public int AniStateError => -9999;
-        public string AniStateName { get; private set; } = "";
-
-        private Coroutine aniC;
-        public void PlayAni(string stateName, Action complete)
-        {
-            if (string.IsNullOrWhiteSpace(stateName)) { return; }
-            AnimatorY.Update(0);
-            AnimatorY.Play(stateName);
-            AniStateName = stateName;
-            if (aniC != null)
-            {
-                StopCoroutine(aniC);
-                aniC = null;
-            }
-            if (complete == null)
-            {
-                return;
-            }
-            aniC = StartCoroutine(DelayPlayAni(AnimatorY, stateName, complete));
-        }
-        private IEnumerator DelayPlayAni(Animator animator, string stateName, Action complete)
-        {
-            // 状态机的切换发生在帧的结尾
-            yield return new WaitForEndOfFrame();
-            var info = animator.GetCurrentAnimatorStateInfo(0);
-            if (!info.IsName(stateName))
-            {
-                complete?.Invoke();
-            }
-            else
-            {
-                yield return new WaitForSeconds(info.length);
-                complete?.Invoke();
-            }
-        }
-    }
-    #endregion
-    */
 }

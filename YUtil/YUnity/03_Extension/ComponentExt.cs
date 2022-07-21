@@ -21,30 +21,6 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 获取此脚本对应的GameObject的组件，如果没有此组件，返回null
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="component"></param>
-        /// <returns></returns>
-        public static T GetComponent<T>(this Component component) where T : Component
-        {
-            if (component == null) { return null; }
-            return component.GetComponent<T>();
-        }
-
-        /// <summary>
-        /// 此脚本对应的GameObject身上如果没有组件，则添加，否则直接返回
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="component"></param>
-        public static void AddComponentIfHasNot<T>(this Component component) where T : Component
-        {
-            if (component == null) { return; }
-            if (component.GetComponent<T>() != null) { return; }
-            component.gameObject.AddComponent<T>();
-        }
-
-        /// <summary>
         /// 此脚本对应的GameObject身上是否有某类型的组件
         /// </summary>
         /// <typeparam name="T"></typeparam>
