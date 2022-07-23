@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace YUnity
@@ -270,16 +271,19 @@ namespace YUnity
         /// <param name="self"></param>
         /// <param name="parent"></param>
         /// <param name="worldPositionStays"></param>
-        public static void CopySelfEmptyGoToAnotherParent(this Transform self, Transform parent, bool worldPositionStays)
+        /// <returns></returns>
+        public static Transform CopySelfEmptyGoToAnotherParent(this Transform self, Transform parent, bool worldPositionStays)
         {
-            if (self == null || parent == null || self.parent == parent) { return; }
+            if (self == null || parent == null || self.parent == parent) { return null; }
             GameObject go = new GameObject();
             go.name = self.gameObject.name;
-            go.transform.SetParent(self.parent);
-            go.transform.localScale = self.localScale;
-            go.transform.localPosition = self.localPosition;
-            go.transform.localEulerAngles = self.localEulerAngles;
-            go.transform.MoveSelfGOToAnotherParent(parent, worldPositionStays);
+            Transform goT = go.transform;
+            goT.SetParent(self.parent);
+            goT.localScale = self.localScale;
+            goT.localPosition = self.localPosition;
+            goT.localEulerAngles = self.localEulerAngles;
+            goT.MoveSelfGOToAnotherParent(parent, worldPositionStays);
+            return goT;
         }
 
         /// <summary>
@@ -304,24 +308,68 @@ namespace YUnity
         }
 
         /// <summary>
+        /// 把自己移动至Array中的某一个具有相同ParentName的下面
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="array"></param>
+        /// <param name="worldPositionStays"></param>
+        public static void MoveSelfGOToInArrayWithSameParentName(this Transform self, List<Transform> array, bool worldPositionStays)
+        {
+            if (self == null || self.parent == null || array == null || array.Count <= 0) { return; }
+            string selfParentName = self.transform.parent.gameObject.name;
+            for (int i = 0; i < array.Count; i++)
+            {
+                Transform p = array[i];
+                if (p.gameObject.name == selfParentName)
+                {
+                    self.MoveSelfGOToAnotherParent(p, worldPositionStays);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
         /// 创建一个和自己Transform一样的空Go，然后放到Array中的某一个具有相同ParentName的下面
         /// </summary>
         /// <param name="self"></param>
         /// <param name="array"></param>
         /// <param name="worldPositionStays"></param>
-        public static void CopySelfEmptyGoToInArrayWithSameParentName(this Transform self, Transform[] array, bool worldPositionStays)
+        /// <returns></returns>
+        public static Transform CopySelfEmptyGoToInArrayWithSameParentName(this Transform self, Transform[] array, bool worldPositionStays)
         {
-            if (self == null || self.parent == null || array == null || array.Length <= 0) { return; }
+            if (self == null || self.parent == null || array == null || array.Length <= 0) { return null; }
             string selfParentName = self.transform.parent.gameObject.name;
             for (int i = 0; i < array.Length; i++)
             {
                 Transform p = array[i];
                 if (p.gameObject.name == selfParentName)
                 {
-                    self.CopySelfEmptyGoToAnotherParent(p, worldPositionStays);
-                    break;
+                    return self.CopySelfEmptyGoToAnotherParent(p, worldPositionStays);
                 }
             }
+            return null;
+        }
+
+        /// <summary>
+        /// 创建一个和自己Transform一样的空Go，然后放到Array中的某一个具有相同ParentName的下面
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="array"></param>
+        /// <param name="worldPositionStays"></param>
+        /// <returns></returns>
+        public static Transform CopySelfEmptyGoToInArrayWithSameParentName(this Transform self, List<Transform> array, bool worldPositionStays)
+        {
+            if (self == null || self.parent == null || array == null || array.Count <= 0) { return null; }
+            string selfParentName = self.transform.parent.gameObject.name;
+            for (int i = 0; i < array.Count; i++)
+            {
+                Transform p = array[i];
+                if (p.gameObject.name == selfParentName)
+                {
+                    return self.CopySelfEmptyGoToAnotherParent(p, worldPositionStays);
+                }
+            }
+            return null;
         }
     }
 }
