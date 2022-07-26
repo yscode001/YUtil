@@ -13,13 +13,11 @@ namespace YUnity
 
         internal void Init()
         {
-            this.Log("初始化(YFramework)：对象池(PoolMag)");
             Instance = this;
         }
 
         private void OnDestroy()
         {
-            this.Log("销毁(YFramework)：对象池(PoolMag)");
             Instance = null;
         }
 

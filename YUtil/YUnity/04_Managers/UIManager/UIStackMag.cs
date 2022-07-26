@@ -27,13 +27,11 @@ namespace YUnity
 
         internal void Init()
         {
-            this.Log("初始化(YFramework)：UI栈结构管理器(UIStackMag)");
             Instance = this;
         }
 
         private void OnDestroy()
         {
-            this.Log("释放(YFramework)：UI栈结构管理器(UIStackMag)");
             Instance = null;
         }
     }

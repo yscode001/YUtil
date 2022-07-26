@@ -22,12 +22,10 @@ namespace YUnity
         internal void Init()
         {
             Instance = this;
-            this.Log("初始化(YFramework)：定时任务管理器(TimeTaskMag)");
         }
 
         private void OnDestroy()
         {
-            this.Log("销毁(YFramework)：定时任务管理器(TimeTaskMag)");
             Instance = null;
         }
 

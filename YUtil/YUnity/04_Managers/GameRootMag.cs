@@ -50,7 +50,6 @@ namespace YUnity
                 };
             }
             LogTool.InitSettings(logConfig);
-            LogTool.Log("初始化(YFramework)：游戏入口管理器(GameRootMag)");
             ScreenCfg.SetupData(standardScreenWidth, standardScreenHeight);
             GameObject grGO;
             if (scene != null && scene.GetRootGameObjects().Length > 0 && scene.GetRootGameObjects().FirstOrDefault(obj => obj.name == "YFrameworkGameRoot") != null)
@@ -96,7 +95,6 @@ namespace YUnity
 
         private void OnDestroy()
         {
-            this.Log("销毁(YFramework)：游戏入口管理器(GameRootMag)");
             Instance = null;
         }
     }

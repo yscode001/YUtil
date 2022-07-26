@@ -24,7 +24,6 @@ namespace YUnity
 
         internal void Init()
         {
-            this.Log("初始化(YFramework)：音频管理器(AudioMag)");
             Instance = this;
             EnableNormalAudioClip = true;
             CreateObjectAfterInit();
@@ -51,7 +50,6 @@ namespace YUnity
 
         private void OnDestroy()
         {
-            this.Log("销毁(YFramework)：音频管理器(AudioMag)");
             Instance = null;
         }
     }

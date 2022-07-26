@@ -22,12 +22,10 @@ namespace YUnity
         public void Init()
         {
             Instance = this;
-            this.Log("初始化(YFramework)：队列任务管理器(QueueMag)");
         }
 
         private void OnDestroy()
         {
-            this.Log("释放(YFramework)：队列任务管理器(QueueMag)");
             Instance = null;
         }
 
