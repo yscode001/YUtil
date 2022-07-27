@@ -93,7 +93,7 @@ namespace YUnity
         public static void SetupNameAndTag(this Component component, string name, string tag)
         {
             if (component == null) { return; }
-            if (!string.IsNullOrWhiteSpace(name)) { component.gameObject.name = name; }
+            if (!string.IsNullOrWhiteSpace(name)) { component.name = name; }
             if (!string.IsNullOrWhiteSpace(tag)) { component.tag = tag; }
         }
 
@@ -219,7 +219,7 @@ namespace YUnity
         public static void SetupItAndChildrenTag(this Component component, string tag, bool onlyFirstLevelChildren, List<GameObject> except)
         {
             if (component == null || string.IsNullOrWhiteSpace(tag)) { return; }
-            component.gameObject.tag = tag;
+            component.tag = tag;
             for (int i = component.transform.childCount - 1; i >= 0; i--)
             {
                 Transform childT = component.transform.GetChild(i);
@@ -227,7 +227,7 @@ namespace YUnity
                 {
                     continue;
                 }
-                childT.gameObject.tag = tag;
+                childT.tag = tag;
                 if (onlyFirstLevelChildren)
                 {
                     continue;

@@ -95,9 +95,9 @@ namespace YUnity
             List<string> deleteNameList = new List<string>();
             for (int i = willDeleteArray.Length - 1; i >= 0; i--)
             {
-                if (!constraint || !nameNotIn.Contains(willDeleteArray[i].gameObject.name))
+                if (!constraint || !nameNotIn.Contains(willDeleteArray[i].name))
                 {
-                    deleteNameList.Add(willDeleteArray[i].gameObject.name);
+                    deleteNameList.Add(willDeleteArray[i].name);
                     GameObject.Destroy(willDeleteArray[i].gameObject);
                 }
             }

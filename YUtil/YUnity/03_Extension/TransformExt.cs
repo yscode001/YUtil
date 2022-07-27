@@ -276,8 +276,8 @@ namespace YUnity
         {
             if (self == null || parent == null || self.parent == parent) { return null; }
             GameObject go = new GameObject();
-            go.name = self.gameObject.name;
             Transform goT = go.transform;
+            goT.name = self.name;
             goT.SetParent(self.parent);
             goT.localScale = self.localScale;
             goT.localPosition = self.localPosition;
@@ -295,11 +295,11 @@ namespace YUnity
         public static void MoveSelfGOToInArrayWithSameParentName(this Transform self, Transform[] array, bool worldPositionStays)
         {
             if (self == null || self.parent == null || array == null || array.Length <= 0) { return; }
-            string selfParentName = self.transform.parent.gameObject.name;
+            string selfParentName = self.transform.parent.name;
             for (int i = 0; i < array.Length; i++)
             {
                 Transform p = array[i];
-                if (p.gameObject.name == selfParentName)
+                if (p.name == selfParentName)
                 {
                     self.MoveSelfGOToAnotherParent(p, worldPositionStays);
                     break;
@@ -316,11 +316,11 @@ namespace YUnity
         public static void MoveSelfGOToInArrayWithSameParentName(this Transform self, List<Transform> array, bool worldPositionStays)
         {
             if (self == null || self.parent == null || array == null || array.Count <= 0) { return; }
-            string selfParentName = self.transform.parent.gameObject.name;
+            string selfParentName = self.transform.parent.name;
             for (int i = 0; i < array.Count; i++)
             {
                 Transform p = array[i];
-                if (p.gameObject.name == selfParentName)
+                if (p.name == selfParentName)
                 {
                     self.MoveSelfGOToAnotherParent(p, worldPositionStays);
                     break;
@@ -338,11 +338,11 @@ namespace YUnity
         public static Transform CopySelfEmptyGoToInArrayWithSameParentName(this Transform self, Transform[] array, bool worldPositionStays)
         {
             if (self == null || self.parent == null || array == null || array.Length <= 0) { return null; }
-            string selfParentName = self.transform.parent.gameObject.name;
+            string selfParentName = self.transform.parent.name;
             for (int i = 0; i < array.Length; i++)
             {
                 Transform p = array[i];
-                if (p.gameObject.name == selfParentName)
+                if (p.name == selfParentName)
                 {
                     return self.CopySelfEmptyGoToAnotherParent(p, worldPositionStays);
                 }
@@ -360,11 +360,11 @@ namespace YUnity
         public static Transform CopySelfEmptyGoToInArrayWithSameParentName(this Transform self, List<Transform> array, bool worldPositionStays)
         {
             if (self == null || self.parent == null || array == null || array.Count <= 0) { return null; }
-            string selfParentName = self.transform.parent.gameObject.name;
+            string selfParentName = self.transform.parent.name;
             for (int i = 0; i < array.Count; i++)
             {
                 Transform p = array[i];
-                if (p.gameObject.name == selfParentName)
+                if (p.name == selfParentName)
                 {
                     return self.CopySelfEmptyGoToAnotherParent(p, worldPositionStays);
                 }
