@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace YUnity
 {
+    #region 常用属性
     [RequireComponent(typeof(CanvasGroup))]
     public partial class UIStackBaseWnd : MonoBehaviourBaseY
     {
@@ -19,6 +20,44 @@ namespace YUnity
             }
         }
 
+        /// <summary>
+        /// 自己当前的alpha
+        /// </summary>
+        public virtual float AlphaValue
+        {
+            get => CvsGroup.alpha;
+            set
+            {
+                CvsGroup.alpha = Mathf.Clamp(value, 0, 1);
+            }
+        }
+
+        /// <summary>
+        /// 是否可以交互
+        /// </summary>
+        public bool IsInteractive
+        {
+            get => CvsGroup.blocksRaycasts;
+            set
+            {
+                CvsGroup.blocksRaycasts = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取栈顶元素
+        /// </summary>
+        public RectTransform StackTopElement => UIStackMag.Instance.TopElement;
+
+        /// <summary>
+        /// 自己是否是栈顶元素
+        /// </summary>
+        public bool IsStackTopElement => this == StackTopElement;
+    }
+    #endregion
+    #region 自定义生命周期函数
+    public partial class UIStackBaseWnd
+    {
         /// <summary>
         /// 元素被放入栈中，可以交互
         /// </summary>
@@ -67,31 +106,8 @@ namespace YUnity
         {
 
         }
-
-        /// <summary>
-        /// 自己当前的alpha
-        /// </summary>
-        public virtual float AlphaValue
-        {
-            get => CvsGroup.alpha;
-            set
-            {
-                CvsGroup.alpha = Mathf.Clamp(value, 0, 1);
-            }
-        }
-
-        /// <summary>
-        /// 是否可以交互
-        /// </summary>
-        public bool IsInteractive
-        {
-            get => CvsGroup.blocksRaycasts;
-            set
-            {
-                CvsGroup.blocksRaycasts = value;
-            }
-        }
     }
+    #endregion
     #region pop
     public partial class UIStackBaseWnd
     {
@@ -223,20 +239,6 @@ namespace YUnity
         public void PopStackAllElements_done() { PopStackAllElements(UIStackPopType.Done); }
         public void PopStackAllElements_send() { PopStackAllElements(UIStackPopType.Send); }
         public void PopStackAllElements_confirm() { PopStackAllElements(UIStackPopType.Confirm); }
-    }
-    #endregion
-    #region 其他
-    public partial class UIStackBaseWnd
-    {
-        /// <summary>
-        /// 获取栈顶元素
-        /// </summary>
-        public RectTransform StackTopElement => UIStackMag.Instance.TopElement;
-
-        /// <summary>
-        /// 自己是否是栈顶元素
-        /// </summary>
-        public bool IsStackTopElement => this == StackTopElement;
     }
     #endregion
 }
