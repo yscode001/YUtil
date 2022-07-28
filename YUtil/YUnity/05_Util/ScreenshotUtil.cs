@@ -18,7 +18,7 @@ namespace YUnity
         /// <param name="camera"></param>
         /// <param name="rect"></param>
         /// <returns></returns>
-        public static Texture2D CaptureScreen(Camera camera, Rect rect)
+        public static Texture2D CaptureCameraScreen(Camera camera, Rect rect)
         {
             if (camera == null || rect.width <= 0 || rect.height <= 0) { return null; }
             RenderTexture rt = new RenderTexture((int)rect.width, (int)rect.height, 0);
@@ -56,7 +56,7 @@ namespace YUnity
         /// </summary>
         /// <param name="fullFilePath">图片保存的完整路径(包括后缀名)</param>
         /// <returns></returns>
-        public static bool CapruerScreen(string fullFilePath)
+        public static bool CapruerFullScreen(string fullFilePath)
         {
             if (string.IsNullOrWhiteSpace(fullFilePath)) { return false; }
             ScreenCapture.CaptureScreenshot(fullFilePath);
