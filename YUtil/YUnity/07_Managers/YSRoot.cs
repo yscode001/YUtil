@@ -1,16 +1,15 @@
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace YUnity
 {
     /// <summary>
-    /// 游戏入口管理器
+    /// YS框架入口管理
     /// </summary>
-    public partial class GameRootMag : MonoBehaviourBaseY
+    public partial class YSRoot : MonoBehaviourBaseY
     {
-        private GameRootMag() { }
-        public static GameRootMag Instance { get; private set; } = null;
+        private YSRoot() { }
+        public static YSRoot Instance { get; private set; } = null;
 
         [HideInInspector]
         public ResourceMag ResourceMag { get; private set; } = null;
@@ -33,13 +32,12 @@ namespace YUnity
         [HideInInspector]
         public TimeTaskMag TimeTaskMag { get; private set; } = null;
     }
-
-    public partial class GameRootMag
+    public partial class YSRoot
     {
         /// <summary>
         /// 初始化
         /// </summary>
-        public static void Init(Scene scene, LogConfig logConfig = null, uint standardScreenWidth = 2160, uint standardScreenHeight = 1080)
+        public static void Init(Scene scene, LogConfig logConfig = null)
         {
             if (Instance != null) { return; }
             if (logConfig == null)
@@ -50,26 +48,13 @@ namespace YUnity
                 };
             }
             LogTool.InitSettings(logConfig);
-            ScreenCfg.SetupData(standardScreenWidth, standardScreenHeight);
-            GameObject grGO;
-            if (scene != null && scene.GetRootGameObjects().Length > 0 && scene.GetRootGameObjects().FirstOrDefault(obj => obj.name == "YFrameworkGameRoot") != null)
-            {
-                grGO = scene.GetRootGameObjects().First(obj => obj.name == "YFrameworkGameRoot");
-            }
-            else
-            {
-                grGO = new GameObject
-                {
-                    name = "YFrameworkGameRoot"
-                };
-            }
-            Instance = grGO.AddComponent<GameRootMag>();
-            DontDestroyOnLoad(grGO);
-            DontDestroyOnLoad(Instance);
-            Instance.InitOthersAfterInit(logConfig);
+            GameObject rootGO = GOUtil.CreateEmptyGO(null, "YSRoot");
+            Instance = rootGO.AddComponent<YSRoot>();
+            DontDestroyOnLoad(rootGO);
+            Instance.InitOthersAfterInit();
         }
 
-        private void InitOthersAfterInit(LogConfig logConfig = null)
+        private void InitOthersAfterInit()
         {
             ResourceMag = this.GetOrAddComponent<ResourceMag>();
             ResourceMag.Init();

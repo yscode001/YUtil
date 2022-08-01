@@ -8,7 +8,10 @@ namespace YUnity
         {
             GameObject go = new GameObject();
             go.name = name;
-            go.transform.parent = parentT;
+            if (parentT != null)
+            {
+                go.transform.parent = parentT;
+            }
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
             go.transform.localScale = Vector3.one;

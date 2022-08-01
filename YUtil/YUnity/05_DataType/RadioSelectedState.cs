@@ -76,7 +76,7 @@ namespace YUnity
                 }
                 catch (Exception ex)
                 {
-                    if (GameRootMag.Instance != null) // 说明初始化过了
+                    if (YSRoot.Instance != null) // 说明初始化过了
                     {
                         this.Error($"RadioSelectedState Event_CurrentIntValueChanged Error：{ex}");
                     }
@@ -98,7 +98,7 @@ namespace YUnity
                 }
                 catch (Exception ex)
                 {
-                    if (GameRootMag.Instance != null) // 说明初始化过了
+                    if (YSRoot.Instance != null) // 说明初始化过了
                     {
                         this.Error($"RadioSelectedState Event_CurrentStringValueChanged Error：{ex}");
                     }
@@ -120,7 +120,7 @@ namespace YUnity
                 }
                 catch (Exception ex)
                 {
-                    if (GameRootMag.Instance != null) // 说明初始化过了
+                    if (YSRoot.Instance != null) // 说明初始化过了
                     {
                         this.Error($"RadioSelectedState Event_CurrentBoolValueChanged Error：{ex}");
                     }
@@ -142,7 +142,7 @@ namespace YUnity
                 }
                 catch (Exception ex)
                 {
-                    if (GameRootMag.Instance != null) // 说明初始化过了
+                    if (YSRoot.Instance != null) // 说明初始化过了
                     {
                         this.Error($"RadioSelectedState Event_CurrentObjectValueChanged Error：{ex}");
                     }
