@@ -68,16 +68,13 @@ namespace YConsole
                 };
                 serverTimer.Elapsed += (object sender, ElapsedEventArgs args) =>
                 {
-                    Update();
+                    LoginTick();
                 };
                 serverTimer.Start();
             }
         }
 
-        /// <summary>
-        /// 轮询检测函数，供客户端外部调用检测
-        /// </summary>
-        private void Update()
+        private void LoginTick()
         {
             CheckTimeTask(); // 检测定时任务
             CheckFrameTask(); // 检测定时帧任务
