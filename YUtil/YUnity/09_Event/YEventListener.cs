@@ -12,19 +12,16 @@ namespace YUnity
 
     public partial class YEventListener : MonoBehaviour
     {
-        private Action<PointerEventData, object[]> onPointerDown;
-        private Action<PointerEventData, object[]> onPointerUp;
-        private Action<PointerEventData, object[]> onPointerClick;
+        private Action<PointerEventData> onPointerDown;
+        private Action<PointerEventData> onPointerUp;
+        private Action<PointerEventData> onPointerClick;
 
-        private Action<PointerEventData, object[]> onBeginDrag;
-        private Action<PointerEventData, object[]> onDrag;
-        private Action<PointerEventData, object[]> onEndDrag;
+        private Action<PointerEventData> onBeginDrag;
+        private Action<PointerEventData> onDrag;
+        private Action<PointerEventData> onEndDrag;
 
-        private object[] args = null;
-
-        public void SetupAction(YEventType eventType, Action<PointerEventData, object[]> action, object[] args)
+        public void SetupAction(YEventType eventType, Action<PointerEventData> action)
         {
-            this.args = args;
             switch (eventType)
             {
                 case YEventType.PointerDown:
@@ -47,30 +44,30 @@ namespace YUnity
     {
         public void OnPointerDown(PointerEventData eventData)
         {
-            onPointerDown?.Invoke(eventData, args);
+            onPointerDown?.Invoke(eventData);
         }
         public void OnPointerUp(PointerEventData eventData)
         {
-            onPointerUp?.Invoke(eventData, args);
+            onPointerUp?.Invoke(eventData);
         }
         public void OnPointerClick(PointerEventData eventData)
         {
-            onPointerClick?.Invoke(eventData, args);
+            onPointerClick?.Invoke(eventData);
         }
     }
     public partial class YEventListener : IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public void OnBeginDrag(PointerEventData eventData)
         {
-            onBeginDrag?.Invoke(eventData, args);
+            onBeginDrag?.Invoke(eventData);
         }
         public void OnDrag(PointerEventData eventData)
         {
-            onDrag?.Invoke(eventData, args);
+            onDrag?.Invoke(eventData);
         }
         public void OnEndDrag(PointerEventData eventData)
         {
-            onEndDrag?.Invoke(eventData, args);
+            onEndDrag?.Invoke(eventData);
         }
     }
 }

@@ -37,6 +37,6 @@ namespace YConsole
         /// <summary>
         /// 驱动
         /// </summary>
-        public virtual void Update() { }
+        public virtual void Tick() { }
     }
 }

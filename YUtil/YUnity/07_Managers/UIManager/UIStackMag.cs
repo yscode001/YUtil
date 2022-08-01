@@ -12,16 +12,23 @@ namespace YUnity
         private UIStackMag() { }
         public static UIStackMag Instance { get; private set; } = null;
 
-        private Stack<RectTransform> rtStack;
+        private Stack<RectTransform> _rtStack;
         private Stack<RectTransform> RTStack
         {
             get
             {
-                if (rtStack == null)
-                {
-                    rtStack = new Stack<RectTransform>();
-                }
-                return rtStack;
+                if (_rtStack == null) { _rtStack = new Stack<RectTransform>(); }
+                return _rtStack;
+            }
+        }
+
+        private List<string> _pushedNames;
+        private List<string> PushedNames
+        {
+            get
+            {
+                if (_pushedNames == null) { _pushedNames = new List<string>(); }
+                return _pushedNames;
             }
         }
 
@@ -61,6 +68,10 @@ namespace YUnity
             rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pushType, bottomRT);
             rt.GetOrAddComponent<UIStackBaseWnd>().ExecuteAfterOnPushOrOnResume(true);
             RTStack.Push(rt);
+            if (!string.IsNullOrWhiteSpace(rt.name) && !PushedNames.Contains(rt.name))
+            {
+                PushedNames.Add(rt.name);
+            }
         }
         /// <summary>
         /// 压栈，把RT放入栈中
@@ -280,6 +291,17 @@ namespace YUnity
         /// 获取栈顶元素
         /// </summary>
         public RectTransform TopElement => RTStack.Peek();
+
+        /// <summary>
+        /// push过的RectTransform中是否包含名字rectTransformName(哪怕销毁过也算)
+        /// </summary>
+        /// <param name="rectTransformName">RectTransform的名字</param>
+        /// <returns></returns>
+        public bool IsPushed(string rectTransformName)
+        {
+            if (string.IsNullOrWhiteSpace(rectTransformName)) { return false; }
+            return PushedNames.Contains(rectTransformName);
+        }
     }
     #endregion
 }

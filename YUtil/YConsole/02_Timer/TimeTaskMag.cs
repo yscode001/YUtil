@@ -56,9 +56,9 @@ namespace YConsole
             });
         }
 
-        public override void Update()
+        public override void Tick()
         {
-            base.Update();
+            base.Tick();
             while (taskQueue.Count > 0)
             {
                 lock (tasklock)

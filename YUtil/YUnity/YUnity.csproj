@@ -31,7 +31,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="11_Effect\" />
+    <Folder Include="10_Effect\" />
     <Folder Include="07_UI\" />
   </ItemGroup>
 </Project>
