@@ -52,10 +52,7 @@ namespace YUnity
             this.taskLog = taskLog;
         }
 
-        /// <summary>
-        /// 轮询检测函数，供客户端外部调用检测
-        /// </summary>
-        public void Update()
+        public void LogicTick()
         {
             CheckTimeTask(); // 检测定时任务
             CheckFrameTask(); // 检测定时帧任务

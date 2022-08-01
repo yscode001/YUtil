@@ -3,43 +3,17 @@ using UnityEngine.SceneManagement;
 
 namespace YUnity
 {
-    /// <summary>
-    /// YS框架入口管理
-    /// </summary>
     public partial class YSRoot : MonoBehaviourBaseY
     {
         private YSRoot() { }
         public static YSRoot Instance { get; private set; } = null;
-
-        [HideInInspector]
-        public ResourceMag ResourceMag { get; private set; } = null;
-
-        [HideInInspector]
-        public QueueMag QueueMag { get; private set; } = null;
-
-        [HideInInspector]
-        public SceneMag SceneMag { get; private set; } = null;
-
-        [HideInInspector]
-        public PoolMag PoolMag { get; private set; } = null;
-
-        [HideInInspector]
-        public UIStackMag UIStackMag { get; private set; } = null;
-
-        [HideInInspector]
-        public AudioMag AudioMag { get; private set; } = null;
-
-        [HideInInspector]
-        public TimeTaskMag TimeTaskMag { get; private set; } = null;
     }
     public partial class YSRoot
     {
-        /// <summary>
-        /// 初始化
-        /// </summary>
         public static void Init(Scene scene, LogConfig logConfig = null)
         {
             if (Instance != null) { return; }
+            // 日志必须最先初始化
             if (logConfig == null)
             {
                 logConfig = new LogConfig()
@@ -48,39 +22,33 @@ namespace YUnity
                 };
             }
             LogTool.InitSettings(logConfig);
+            // 初始化YSRoot
             GameObject rootGO = GOUtil.CreateEmptyGO(null, "YSRoot");
-            Instance = rootGO.AddComponent<YSRoot>();
             DontDestroyOnLoad(rootGO);
-            Instance.InitOthersAfterInit();
+            Instance = rootGO.AddComponent<YSRoot>();
+            // 初始化其他管理者
+            rootGO.AddComponent<ResourceMag>().Init();
+            rootGO.AddComponent<PoolMag>().Init();
+            rootGO.AddComponent<UIStackMag>().Init();
+            rootGO.AddComponent<SceneMag>().Init();
+            rootGO.AddComponent<AudioMag>().Init();
+            rootGO.AddComponent<QueueMag>().Init();
+            rootGO.AddComponent<TimeTaskMag>().Init();
         }
-
-        private void InitOthersAfterInit()
-        {
-            ResourceMag = this.GetOrAddComponent<ResourceMag>();
-            ResourceMag.Init();
-
-            QueueMag = this.GetOrAddComponent<QueueMag>();
-            QueueMag.Init();
-
-            SceneMag = this.GetOrAddComponent<SceneMag>();
-            SceneMag.Init();
-
-            PoolMag = this.GetOrAddComponent<PoolMag>();
-            PoolMag.Init();
-
-            UIStackMag = this.GetOrAddComponent<UIStackMag>();
-            UIStackMag.Init();
-
-            AudioMag = this.GetOrAddComponent<AudioMag>();
-            AudioMag.Init();
-
-            TimeTaskMag = this.GetOrAddComponent<TimeTaskMag>();
-            TimeTaskMag.Init();
-        }
-
         private void OnDestroy()
         {
             Instance = null;
+        }
+    }
+    public partial class YSRoot
+    {
+        /// <summary>
+        /// 逻辑驱动(队列任务和定时任务)
+        /// </summary>
+        public void LogicTick()
+        {
+            QueueMag.Instance?.LogicTick();
+            TimeTaskMag.Instance?.LogicTick();
         }
     }
 }

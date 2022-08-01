@@ -27,11 +27,9 @@ namespace YUnity
         {
             Instance = null;
         }
-
-        private void Update()
+        internal void LogicTick()
         {
-            // 定时轮询检测与处理由MonoBehaviour中的Update()函数来驱动
-            timeTask.Update();
+            timeTask.LogicTick();
         }
     }
 
