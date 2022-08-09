@@ -6,8 +6,10 @@
 
   <ItemGroup>
     <None Remove="Ext\" />
+    <None Remove="DataType\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ext\" />
+    <Folder Include="DataType\" />
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@
     <None Remove="07_UI\" />
     <None Remove="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <None Remove="Mono.Data.Sqlite" />
+    <None Remove="05_DataType\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -32,5 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="09_Effect\" />
+    <Folder Include="05_DataType\" />
   </ItemGroup>
 </Project>
