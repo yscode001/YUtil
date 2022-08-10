@@ -18,7 +18,7 @@ namespace YUnity
         [Header("目标和点位之间的最小间距(太近了点位无效)")]
         public float MinDistance = 0.5f;
         [Header("相机视野曲线(x-点位与目标的距离，y-fieldOfView)")]
-        public AnimationCurve fovCurve = AnimationCurve.Linear(1, 30, 10, 30);
+        public AnimationCurve CameraFieldOfView = AnimationCurve.Linear(1, 30, 10, 30);
         [Header("是否很精确的望向目标")]
         public bool ForceStable = false;
         [Header("切换镜头时看向目标的旋转速度")]
@@ -124,7 +124,7 @@ namespace YUnity
                 followPoint = Target.position + Random.insideUnitSphere;
             }
             var dist = Vector3.Distance(Target.position, transform.position);
-            ChildCamera.fieldOfView = fovCurve.Evaluate(dist);
+            ChildCamera.fieldOfView = CameraFieldOfView.Evaluate(dist);
         }
     }
 
