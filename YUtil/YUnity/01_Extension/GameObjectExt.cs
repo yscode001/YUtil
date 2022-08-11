@@ -20,15 +20,45 @@ namespace YUnity
         }
 
         /// <summary>
-        /// GameObject身上是否有某类型的组件
+        /// 移除游戏物体的某个组件(如果存在)
+        /// </summary>
+        /// <typeparam name="T">即将移除的组件类型</typeparam>
+        /// <param name="go"></param>
+        public static void RemoveComponent<T>(this GameObject go) where T : Component
+        {
+            if (go == null) { return; }
+            T com = go.GetComponent<T>();
+            if (com != null)
+            {
+                UnityEngine.MonoBehaviour.Destroy(com);
+            }
+        }
+
+        /// <summary>
+        /// 启用或禁用某个Behaviour组件
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="go"></param>
-        /// <returns></returns>
-        public static bool HasComponent<T>(this GameObject go) where T : Component
+        /// <param name="enable"></param>
+        public static void EnableOrDisableComponent<T>(this GameObject go, bool enable) where T : Behaviour
         {
-            if (go == null) { return false; }
-            return go.GetComponent<T>() != null;
+            if (go == null) { return; }
+            T com = go.GetComponent<T>();
+            if (enable)
+            {
+                if (com == null)
+                {
+                    com = go.AddComponent<T>();
+                }
+                com.enabled = true;
+            }
+            else
+            {
+                if (com != null)
+                {
+                    com.enabled = false;
+                }
+            }
         }
 
         /// <summary>
@@ -81,48 +111,6 @@ namespace YUnity
             if (go == null) { return; }
             if (!string.IsNullOrWhiteSpace(name)) { go.name = name; }
             if (!string.IsNullOrWhiteSpace(tag)) { go.tag = tag; }
-        }
-
-        /// <summary>
-        /// 移除游戏物体的某个组件(如果存在)
-        /// </summary>
-        /// <typeparam name="T">即将移除的组件类型</typeparam>
-        /// <param name="go"></param>
-        public static void RemoveComponent<T>(this GameObject go) where T : Component
-        {
-            if (go == null) { return; }
-            T com = go.GetComponent<T>();
-            if (com != null)
-            {
-                UnityEngine.MonoBehaviour.Destroy(com);
-            }
-        }
-
-        /// <summary>
-        /// 启用或禁用某个Behaviour组件
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="go"></param>
-        /// <param name="enable"></param>
-        public static void EnableOrDisableComponent<T>(this GameObject go, bool enable) where T : Behaviour
-        {
-            if (go == null) { return; }
-            T com = go.GetComponent<T>();
-            if (enable)
-            {
-                if (com == null)
-                {
-                    com = go.AddComponent<T>();
-                }
-                com.enabled = true;
-            }
-            else
-            {
-                if (com != null)
-                {
-                    com.enabled = false;
-                }
-            }
         }
 
         /// <summary>

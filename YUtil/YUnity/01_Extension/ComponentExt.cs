@@ -21,15 +21,45 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 此脚本对应的GameObject身上是否有某类型的组件
+        /// 移除此组件所在游戏物体上的某个组件(如果存在)
+        /// </summary>
+        /// <typeparam name="T">即将移除的组件类型</typeparam>
+        /// <param name="component"></param>
+        public static void RemoveComponent<T>(this Component component) where T : Component
+        {
+            if (component == null) { return; }
+            T com = component.GetComponent<T>();
+            if (com != null)
+            {
+                UnityEngine.MonoBehaviour.Destroy(com);
+            }
+        }
+
+        /// <summary>
+        /// 启用或禁用此组件所在游戏物体上的某个组件
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="component"></param>
-        /// <returns></returns>
-        public static bool HasComponent<T>(this Component component) where T : Component
+        /// <param name="go"></param>
+        /// <param name="enable"></param>
+        public static void EnableOrDisableComponent<T>(this Component component, bool enable) where T : Behaviour
         {
-            if (component == null) { return false; }
-            return component.GetComponent<T>() != null;
+            if (component == null) { return; }
+            T com = component.GetComponent<T>();
+            if (enable)
+            {
+                if (com == null)
+                {
+                    com = component.gameObject.AddComponent<T>();
+                }
+                com.enabled = true;
+            }
+            else
+            {
+                if (com != null)
+                {
+                    com.enabled = false;
+                }
+            }
         }
 
         /// <summary>
@@ -137,48 +167,6 @@ namespace YUnity
                     continue;
                 }
                 GameObject.Destroy(childGO);
-            }
-        }
-
-        /// <summary>
-        /// 移除此组件所在游戏物体上的某个组件(如果存在)
-        /// </summary>
-        /// <typeparam name="T">即将移除的组件类型</typeparam>
-        /// <param name="component"></param>
-        public static void RemoveComponent<T>(this Component component) where T : Component
-        {
-            if (component == null) { return; }
-            T com = component.GetComponent<T>();
-            if (com != null)
-            {
-                UnityEngine.MonoBehaviour.Destroy(com);
-            }
-        }
-
-        /// <summary>
-        /// 启用或禁用此组件所在游戏物体上的某个组件
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="go"></param>
-        /// <param name="enable"></param>
-        public static void EnableOrDisableComponent<T>(this Component component, bool enable) where T : Behaviour
-        {
-            if (component == null) { return; }
-            T com = component.GetComponent<T>();
-            if (enable)
-            {
-                if (com == null)
-                {
-                    com = component.gameObject.AddComponent<T>();
-                }
-                com.enabled = true;
-            }
-            else
-            {
-                if (com != null)
-                {
-                    com.enabled = false;
-                }
             }
         }
 
