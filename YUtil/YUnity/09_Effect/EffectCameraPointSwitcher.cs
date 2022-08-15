@@ -85,7 +85,7 @@ namespace YUnity
                 }
                 else
                 {
-                    ChangePosition(current);
+                    ChangePosition(current, ForceStable);
                     yield return new WaitForSeconds(TimeInterval);
                 }
             }
@@ -110,9 +110,10 @@ namespace YUnity
         /// 切换点位
         /// </summary>
         /// <param name="destination">目标点位</param>
-        private void ChangePosition(Transform destination)
+        /// <param name="forceStable">是否很精确的望向目标</param>
+        public void ChangePosition(Transform destination, bool forceStable)
         {
-            if (!enabled) { return; }
+            if (destination == null || !enabled) { return; }
             transform.position = destination.position;
 
             if (ForceStable || Random.value < stability)
