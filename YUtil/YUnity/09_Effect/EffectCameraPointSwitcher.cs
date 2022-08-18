@@ -9,6 +9,8 @@ namespace YUnity
     /// </summary>
     public partial class EffectCameraPointSwitcher : MonoBehaviour
     {
+        [Header("是否自动切换点位")]
+        [SerializeField] private bool AutoSwitch = false;
         [Header("看向的目标")]
         public Transform Target;
         [Header("需切换的点位集合")]
@@ -38,12 +40,20 @@ namespace YUnity
             RotationSpeed = rotationSpeed;
             StartAutoChange();
         }
+        public void SetupTargetAndThenStartAutoChange(Transform target)
+        {
+            Target = target;
+            StartAutoChange();
+        }
     }
     public partial class EffectCameraPointSwitcher
     {
         private void Start()
         {
-            StartAutoChange();
+            if (AutoSwitch)
+            {
+                StartAutoChange();
+            }
         }
         private void Update()
         {
