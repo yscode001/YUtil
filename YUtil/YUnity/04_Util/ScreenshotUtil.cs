@@ -75,7 +75,6 @@ namespace YUnity
                 RenderTexture originCameraRT = camera.targetTexture;
                 RenderTexture originRTActive = RenderTexture.active;
 
-                // RenderTexture rt = new RenderTexture(xPixel, yPixel, 0);
                 RenderTexture rt = RenderTexture.GetTemporary(xPixel, yPixel, 32);
                 camera.targetTexture = rt;
                 camera.Render();
@@ -90,7 +89,7 @@ namespace YUnity
                 RenderTexture.active = originRTActive;
 
                 // 销毁临时物体
-                // GameObject.Destroy(rt);
+                RenderTexture.ReleaseTemporary(rt);
 
                 complete?.Invoke(t2d);
             }
