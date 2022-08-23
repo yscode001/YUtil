@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace YUnity
 {
@@ -10,11 +11,15 @@ namespace YUnity
         private RectTransform _rectTransform;
         private GameObject _gameObject;
         private Animator _animator;
+        private VideoPlayer _videoPlayer;
         private AudioSource _audioSource;
         private AudioListener _audioListener;
         private CharacterController _characterController;
         private Rigidbody _rigidbody;
         private CanvasGroup _canvasGroup;
+        private MeshFilter _meshFilter;
+        private MeshRenderer _meshRenderer;
+        private SkinnedMeshRenderer _skinnedMeshRenderer;
     }
     public partial class MonoBehaviourBaseY
     {
@@ -69,6 +74,21 @@ namespace YUnity
                 if (_animator != null) { return _animator; }
                 _animator = gameObject.AddComponent<Animator>();
                 return _animator;
+            }
+        }
+
+        /// <summary>
+        /// 获取VideoPlayer，如果没有则添加
+        /// </summary>
+        public VideoPlayer VideoPlayerY
+        {
+            get
+            {
+                if (_videoPlayer != null) { return _videoPlayer; }
+                _videoPlayer = gameObject.GetComponent<VideoPlayer>();
+                if (_videoPlayer != null) { return _videoPlayer; }
+                _videoPlayer = gameObject.AddComponent<VideoPlayer>();
+                return _videoPlayer;
             }
         }
 
@@ -144,6 +164,51 @@ namespace YUnity
                 if (_canvasGroup != null) { return _canvasGroup; }
                 _canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 return _canvasGroup;
+            }
+        }
+
+        /// <summary>
+        /// 获取MeshFilter，如果没有则添加
+        /// </summary>
+        public MeshFilter MeshFilterY
+        {
+            get
+            {
+                if (_meshFilter != null) { return _meshFilter; }
+                _meshFilter = gameObject.GetComponent<MeshFilter>();
+                if (_meshFilter != null) { return _meshFilter; }
+                _meshFilter = gameObject.AddComponent<MeshFilter>();
+                return _meshFilter;
+            }
+        }
+
+        /// <summary>
+        /// 获取MeshRenderer，如果没有则添加
+        /// </summary>
+        public MeshRenderer MeshRendererY
+        {
+            get
+            {
+                if (_meshRenderer != null) { return _meshRenderer; }
+                _meshRenderer = gameObject.GetComponent<MeshRenderer>();
+                if (_meshRenderer != null) { return _meshRenderer; }
+                _meshRenderer = gameObject.AddComponent<MeshRenderer>();
+                return _meshRenderer;
+            }
+        }
+
+        /// <summary>
+        /// 获取SkinnedMeshRenderer，如果没有则添加
+        /// </summary>
+        public SkinnedMeshRenderer SkinnedMeshRendererY
+        {
+            get
+            {
+                if (_skinnedMeshRenderer != null) { return _skinnedMeshRenderer; }
+                _skinnedMeshRenderer = gameObject.GetComponent<SkinnedMeshRenderer>();
+                if (_skinnedMeshRenderer != null) { return _skinnedMeshRenderer; }
+                _skinnedMeshRenderer = gameObject.AddComponent<SkinnedMeshRenderer>();
+                return _skinnedMeshRenderer;
             }
         }
     }
