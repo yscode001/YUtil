@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.Video;
 
 namespace YUnity
@@ -10,6 +11,7 @@ namespace YUnity
         private Transform _transform;
         private RectTransform _rectTransform;
         private GameObject _gameObject;
+        private PlayableDirector _playableDirector;
         private Animator _animator;
         private VideoPlayer _videoPlayer;
         private AudioSource _audioSource;
@@ -59,6 +61,21 @@ namespace YUnity
                 if (_gameObject != null) { return _gameObject; }
                 _gameObject = gameObject;
                 return _gameObject;
+            }
+        }
+
+        /// <summary>
+        /// 获取PlayableDirector，如果没有则添加
+        /// </summary>
+        public PlayableDirector PlayableDirectorY
+        {
+            get
+            {
+                if (_playableDirector != null) { return _playableDirector; }
+                _playableDirector = gameObject.GetComponent<PlayableDirector>();
+                if (_playableDirector != null) { return _playableDirector; }
+                _playableDirector = gameObject.AddComponent<PlayableDirector>();
+                return _playableDirector;
             }
         }
 
