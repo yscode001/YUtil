@@ -75,6 +75,27 @@ namespace YCSharp
         }
 
         /// <summary>
+        /// 创建文件夹
+        /// </summary>
+        /// <param name="directoryFullPath"></param>
+        /// <returns></returns>
+        public static bool CreateDirectory(string directoryFullPath)
+        {
+            try
+            {
+                if (!Directory.Exists(directoryFullPath))
+                {
+                    Directory.CreateDirectory(directoryFullPath);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// 删除文件
         /// </summary>
         /// <param name="fileFullPath">文件完整路径</param>
