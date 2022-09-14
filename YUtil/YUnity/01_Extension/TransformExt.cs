@@ -5,6 +5,26 @@ namespace YUnity
 {
     public static class TransformExt
     {
+        #region 递归查找子物体
+        public static Transform FindChildRecursively(this Transform parent, string name)
+        {
+            if (parent == null || string.IsNullOrWhiteSpace(name)) { return null; }
+            Transform child = parent.Find(name);
+            if (child == null)
+            {
+                foreach (Transform tran in parent)
+                {
+                    child = FindChildRecursively(tran, name);
+                    if (child != null)
+                    {
+                        return child;
+                    }
+                }
+            }
+            return child;
+        }
+        #endregion
+
         #region SetPosition
 
         public static void SetPositionX(this Transform tf, float x, bool isLocal)
