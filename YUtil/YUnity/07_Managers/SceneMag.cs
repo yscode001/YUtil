@@ -32,9 +32,9 @@ namespace YUnity
         private Action complete = null;
 
         /// <summary>
-        /// 上一个场景的名字
+        /// 最后一次使用LoadSceneAsync切换的场景的名称
         /// </summary>
-        public string PreviousScene = null;
+        public string LastSwitchedSceneName { get; private set; } = null;
 
         /// <summary>
         /// 异步加载场景
@@ -50,10 +50,6 @@ namespace YUnity
             begin?.Invoke();
             progressCallback = progress;
             this.complete = complete;
-
-            Scene curScene = SceneManager.GetActiveScene();
-            if (curScene == null) { PreviousScene = null; }
-            else { PreviousScene = curScene.name; }
 
             AsyncOperation sceneAsync = SceneManager.LoadSceneAsync(sceneName);
             progressCB = () =>
@@ -71,6 +67,7 @@ namespace YUnity
                     this.complete = null;
                     sceneAsync = null;
                     progressCB = null;
+                    LastSwitchedSceneName = sceneName;
                 }
             };
         }
