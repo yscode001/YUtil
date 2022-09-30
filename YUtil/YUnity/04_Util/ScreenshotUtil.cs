@@ -76,8 +76,10 @@ namespace YUnity
                 RenderTexture originRTActive = RenderTexture.active;
 
                 RenderTexture rt = RenderTexture.GetTemporary(xPixel, yPixel, 32);
+                rt.antiAliasing = 8;
+
                 camera.targetTexture = rt;
-                camera.Render();
+                camera.RenderDontRestore();
 
                 RenderTexture.active = rt;
                 Texture2D t2d = new Texture2D(xPixel, yPixel, format, false);
