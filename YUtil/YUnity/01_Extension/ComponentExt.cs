@@ -14,7 +14,6 @@ namespace YUnity
         /// <returns></returns>
         public static T GetOrAddComponent<T>(this Component component) where T : Component
         {
-            if (component == null) { return null; }
             T com = component.GetComponent<T>();
             if (com != null) { return com; }
             return component.gameObject.AddComponent<T>();
@@ -27,7 +26,6 @@ namespace YUnity
         /// <param name="component"></param>
         public static void RemoveComponent<T>(this Component component) where T : Component
         {
-            if (component == null) { return; }
             T com = component.GetComponent<T>();
             if (com != null)
             {
@@ -43,7 +41,6 @@ namespace YUnity
         /// <param name="enable"></param>
         public static void EnableOrDisableComponent<T>(this Component component, bool enable) where T : Behaviour
         {
-            if (component == null) { return; }
             T com = component.GetComponent<T>();
             if (enable)
             {
@@ -69,7 +66,6 @@ namespace YUnity
         /// <param name="active"></param>
         public static void SetAct(this Component component, bool active)
         {
-            if (component == null) { return; }
             if (component.gameObject.activeSelf != active) { component.gameObject.SetActive(active); }
         }
 
@@ -80,7 +76,6 @@ namespace YUnity
         /// <returns></returns>
         public static Scene? CurrentScene(this Component component)
         {
-            if (component == null) { return null; }
             return component.gameObject.scene;
         }
 
@@ -93,7 +88,6 @@ namespace YUnity
         /// <returns>返回自己</returns>
         public static Component SetToParent(this Component component, Component parentCont, bool worldPositionStays = false)
         {
-            if (component == null || parentCont == null) { return component; }
             component.transform.SetParent(parentCont.transform, worldPositionStays);
             return component;
         }
@@ -106,10 +100,8 @@ namespace YUnity
         /// <param name="worldPositionStays"></param>
         public static void AddChildren(this Component component, List<Component> children, bool worldPositionStays = false)
         {
-            if (component == null) { return; }
             foreach (Component child in children)
             {
-                if (child == null) { continue; }
                 child.transform.SetParent(component.transform, worldPositionStays);
             }
         }
@@ -122,7 +114,6 @@ namespace YUnity
         /// <param name="tag"></param>
         public static void SetupNameAndTag(this Component component, string name, string tag)
         {
-            if (component == null) { return; }
             if (!string.IsNullOrWhiteSpace(name)) { component.name = name; }
             if (!string.IsNullOrWhiteSpace(tag)) { component.tag = tag; }
         }
@@ -133,7 +124,6 @@ namespace YUnity
         /// <param name="component"></param>
         public static void DestroyGO(this Component component)
         {
-            if (component == null) { return; }
             GameObject.Destroy(component.gameObject);
         }
 
@@ -144,7 +134,6 @@ namespace YUnity
         /// <param name="includeSelf">是否包含自己</param>
         public static void DestroyAllChild(this Component component)
         {
-            if (component == null) { return; }
             for (int i = component.transform.childCount - 1; i >= 0; i--)
             {
                 GameObject.Destroy(component.transform.GetChild(i).gameObject);
@@ -158,7 +147,6 @@ namespace YUnity
         /// <param name="expect"></param>
         public static void DestroyAllChild(this Component component, List<GameObject> except)
         {
-            if (component == null) { return; }
             for (int i = component.transform.childCount - 1; i >= 0; i--)
             {
                 GameObject childGO = component.transform.GetChild(i).gameObject;
@@ -179,7 +167,6 @@ namespace YUnity
         /// <param name="except"></param>
         public static void SetupItAndChildrenLayer(this Component component, int layer, bool onlyFirstLevelChildren, List<GameObject> except)
         {
-            if (component == null) { return; }
             component.gameObject.layer = layer;
             for (int i = component.transform.childCount - 1; i >= 0; i--)
             {
@@ -233,7 +220,6 @@ namespace YUnity
         /// <returns></returns>
         public static T GetChildOrSelfComponent<T>(this Component component, string childPath = null) where T : Component
         {
-            if (component == null) { return null; }
             if (string.IsNullOrWhiteSpace(childPath)) { return component.gameObject.GetComponent<T>(); }
             Transform childT = component.gameObject.transform.Find(childPath);
             if (childT != null) { return childT.GetComponent<T>(); }
@@ -247,7 +233,6 @@ namespace YUnity
         /// <returns></returns>
         public static bool ActiveInHierarchy(this Component component)
         {
-            if (component == null) { return false; }
             return component.gameObject.activeInHierarchy;
         }
 
@@ -258,7 +243,6 @@ namespace YUnity
         /// <returns></returns>
         public static bool ActiveSelf(this Component component)
         {
-            if (component == null) { return false; }
             return component.gameObject.activeSelf;
         }
     }

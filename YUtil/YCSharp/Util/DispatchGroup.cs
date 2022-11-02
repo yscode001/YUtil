@@ -10,7 +10,7 @@ namespace YCSharp
     {
         public DispatchGroup() { }
 
-        private string counterLock = "counterLock";
+        private readonly string counterLock = "counterLock";
         private int counter = 0;
         private Action notifyAction;
 

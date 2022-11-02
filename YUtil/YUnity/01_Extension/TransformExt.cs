@@ -8,7 +8,6 @@ namespace YUnity
         #region 递归查找子物体
         public static Transform FindChildRecursively(this Transform parent, string name)
         {
-            if (parent == null || string.IsNullOrWhiteSpace(name)) { return null; }
             Transform child = parent.Find(name);
             if (child == null)
             {
@@ -29,7 +28,6 @@ namespace YUnity
 
         public static void SetPositionX(this Transform tf, float x, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localPosition : tf.position;
             v3.x = x;
             if (isLocal) { tf.localPosition = v3; }
@@ -38,7 +36,6 @@ namespace YUnity
 
         public static void SetPositionY(this Transform tf, float y, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localPosition : tf.position;
             v3.y = y;
             if (isLocal) { tf.localPosition = v3; }
@@ -47,7 +44,6 @@ namespace YUnity
 
         public static void SetPositionZ(this Transform tf, float z, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localPosition : tf.position;
             v3.z = z;
             if (isLocal) { tf.localPosition = v3; }
@@ -56,7 +52,6 @@ namespace YUnity
 
         public static void SetPositionXY(this Transform tf, float x, float y, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localPosition : tf.position;
             v3.x = x;
             v3.y = y;
@@ -66,7 +61,6 @@ namespace YUnity
 
         public static void SetPositionXZ(this Transform tf, float x, float z, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localPosition : tf.position;
             v3.x = x;
             v3.z = z;
@@ -76,7 +70,6 @@ namespace YUnity
 
         public static void SetPositionYZ(this Transform tf, float y, float z, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localPosition : tf.position;
             v3.y = y;
             v3.z = z;
@@ -86,7 +79,6 @@ namespace YUnity
 
         public static void SetPositionXYZ(this Transform tf, float x, float y, float z, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localPosition : tf.position;
             v3.x = x;
             v3.y = y;
@@ -101,7 +93,6 @@ namespace YUnity
 
         public static void SetLocalScaleX(this Transform tf, float x)
         {
-            if (tf == null) { return; }
             Vector3 v3 = tf.localScale;
             v3.x = x;
             tf.localScale = v3;
@@ -109,7 +100,6 @@ namespace YUnity
 
         public static void SetLocalScaleY(this Transform tf, float y)
         {
-            if (tf == null) { return; }
             Vector3 v3 = tf.localScale;
             v3.y = y;
             tf.localScale = v3;
@@ -117,7 +107,6 @@ namespace YUnity
 
         public static void SetLocalScaleZ(this Transform tf, float z)
         {
-            if (tf == null) { return; }
             Vector3 v3 = tf.localScale;
             v3.z = z;
             tf.localScale = v3;
@@ -125,7 +114,6 @@ namespace YUnity
 
         public static void SetLocalScaleXY(this Transform tf, float x, float y)
         {
-            if (tf == null) { return; }
             Vector3 v3 = tf.localScale;
             v3.x = x;
             v3.y = y;
@@ -134,7 +122,6 @@ namespace YUnity
 
         public static void SetLocalScaleXZ(this Transform tf, float x, float z)
         {
-            if (tf == null) { return; }
             Vector3 v3 = tf.localScale;
             v3.x = x;
             v3.z = z;
@@ -143,7 +130,6 @@ namespace YUnity
 
         public static void SetLocalScaleYZ(this Transform tf, float y, float z)
         {
-            if (tf == null) { return; }
             Vector3 v3 = tf.localScale;
             v3.y = y;
             v3.z = z;
@@ -152,7 +138,6 @@ namespace YUnity
 
         public static void SetLocalScaleXYZ(this Transform tf, float x, float y, float z)
         {
-            if (tf == null) { return; }
             Vector3 v3 = tf.localScale;
             v3.x = x;
             v3.y = y;
@@ -166,7 +151,6 @@ namespace YUnity
 
         public static void SetEulerAnglesX(this Transform tf, float x, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
             v3.x = x;
             if (isLocal) { tf.localEulerAngles = v3; }
@@ -175,7 +159,6 @@ namespace YUnity
 
         public static void SetEulerAnglesY(this Transform tf, float y, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
             v3.y = y;
             if (isLocal) { tf.localEulerAngles = v3; }
@@ -184,7 +167,6 @@ namespace YUnity
 
         public static void SetEulerAnglesZ(this Transform tf, float z, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
             v3.z = z;
             if (isLocal) { tf.localEulerAngles = v3; }
@@ -193,7 +175,6 @@ namespace YUnity
 
         public static void SetEulerAnglesXY(this Transform tf, float x, float y, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
             v3.x = x;
             v3.y = y;
@@ -203,7 +184,6 @@ namespace YUnity
 
         public static void SetEulerAnglesXZ(this Transform tf, float x, float z, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
             v3.x = x;
             v3.z = z;
@@ -213,7 +193,6 @@ namespace YUnity
 
         public static void SetEulerAnglesYZ(this Transform tf, float y, float z, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
             v3.y = y;
             v3.z = z;
@@ -223,7 +202,6 @@ namespace YUnity
 
         public static void SetEulerAnglesXYZ(this Transform tf, float x, float y, float z, bool isLocal)
         {
-            if (tf == null) { return; }
             Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
             v3.x = x;
             v3.y = y;
@@ -236,7 +214,6 @@ namespace YUnity
 
         public static void SetToIdentity(this Transform tf, bool isLocal)
         {
-            if (tf == null) { return; }
             if (isLocal)
             {
                 tf.localPosition = Vector3.zero;
