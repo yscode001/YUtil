@@ -22,6 +22,7 @@ namespace YUnity
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
         private SkinnedMeshRenderer _skinnedMeshRenderer;
+        private HumanBodyBoneUtil _humanBodyBoneUtil;
     }
     public partial class MonoBehaviourBaseY
     {
@@ -261,6 +262,46 @@ namespace YUnity
                 comDict.Add(typeof(T).Name, com);
                 return (T)com;
             }
+        }
+    }
+    #endregion
+
+    #region 人体骨骼
+    public partial class MonoBehaviourBaseY
+    {
+        /// <summary>
+        /// 人体骨骼工具缓存
+        /// </summary>
+        public HumanBodyBoneUtil HumanBodyBoneUtil
+        {
+            get
+            {
+                if (_humanBodyBoneUtil != null) { return _humanBodyBoneUtil; }
+                if (AnimatorY != null)
+                {
+                    _humanBodyBoneUtil = new HumanBodyBoneUtil(AnimatorY);
+                }
+                else
+                {
+                    _humanBodyBoneUtil = new HumanBodyBoneUtil();
+                }
+                return _humanBodyBoneUtil;
+            }
+        }
+    }
+    #endregion
+
+    #region 监听动画事件
+    public partial class MonoBehaviourBaseY
+    {
+        /// <summary>
+        /// 监听动画事件
+        /// </summary>
+        /// <param name="args"></param>
+        public virtual void AniEvent(string args)
+        {
+            string arg = string.IsNullOrWhiteSpace(args) ? "" : args;
+            Debug.Log($"动画事件：{arg}");
         }
     }
     #endregion
