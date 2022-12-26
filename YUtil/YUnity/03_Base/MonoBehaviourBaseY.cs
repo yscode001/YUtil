@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Video;
@@ -297,11 +298,47 @@ namespace YUnity
         /// <summary>
         /// 监听动画事件
         /// </summary>
+        public virtual void AniEvent()
+        {
+            Debug.Log("动画事件：没有参数");
+        }
+
+        /// <summary>
+        /// 监听动画事件
+        /// </summary>
+        /// <param name="args"></param>
+        public virtual void AniEvent(float args)
+        {
+            Debug.Log($"动画事件：float：{args}");
+        }
+
+        /// <summary>
+        /// 监听动画事件
+        /// </summary>
+        /// <param name="args"></param>
+        public virtual void AniEvent(int args)
+        {
+            Debug.Log($"动画事件：int：{args}");
+        }
+
+        /// <summary>
+        /// 监听动画事件
+        /// </summary>
         /// <param name="args"></param>
         public virtual void AniEvent(string args)
         {
             string arg = string.IsNullOrWhiteSpace(args) ? "" : args;
-            Debug.Log($"动画事件：{arg}");
+            Debug.Log($"动画事件：string：{arg}");
+        }
+
+        /// <summary>
+        /// 监听动画事件
+        /// </summary>
+        /// <param name="args"></param>
+        public virtual void AniEvent(object args)
+        {
+            string arg = args == null ? "" : args.ToString();
+            Debug.Log($"动画事件：object：{arg}");
         }
     }
     #endregion
