@@ -21,6 +21,7 @@ namespace YUnity
         private CanvasGroup _canvasGroup;
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
+        private Renderer _renderer;
         private SkinnedMeshRenderer _skinnedMeshRenderer;
         private HumanBodyBoneUtil _humanBodyBoneUtil;
     }
@@ -212,6 +213,21 @@ namespace YUnity
                 if (_meshRenderer != null) { return _meshRenderer; }
                 _meshRenderer = gameObject.AddComponent<MeshRenderer>();
                 return _meshRenderer;
+            }
+        }
+
+        /// <summary>
+        /// 获取Renderer，如果没有则添加
+        /// </summary>
+        public Renderer RendererY
+        {
+            get
+            {
+                if (_renderer != null) { return _renderer; }
+                _renderer = gameObject.GetComponent<Renderer>();
+                if (_renderer != null) { return _renderer; }
+                _renderer = gameObject.AddComponent<Renderer>();
+                return _renderer;
             }
         }
 
