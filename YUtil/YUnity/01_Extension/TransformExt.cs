@@ -24,6 +24,37 @@ namespace YUnity
         }
         #endregion
 
+        #region 查找子物体索引
+        /// <summary>
+        /// 查找子物体索引，错误返回-1
+        /// </summary>
+        /// <param name="childTransform"></param>
+        public static int GetChildIndex(this Transform tf, Transform childTransform)
+        {
+            if (tf != null && childTransform != null)
+            {
+                for (int i = 0; i < tf.childCount; i++)
+                {
+                    if (tf.GetChild(i) == childTransform)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        }
+        /// <summary>
+        /// 查找自己在父物体中的索引，错误返回-1
+        /// </summary>
+        /// <param name="tf"></param>
+        /// <returns></returns>
+        public static int GetSelfIndexInParent(this Transform tf)
+        {
+            if (tf.parent == null) { return -1; }
+            return tf.parent.GetChildIndex(tf);
+        }
+        #endregion
+
         #region SetPosition
 
         public static void SetPositionX(this Transform tf, float x, bool isLocal)
