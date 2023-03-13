@@ -28,7 +28,6 @@ namespace YUnity
             Instance = rootGO.AddComponent<YSRoot>();
             // 初始化其他管理者
             rootGO.AddComponent<ResourceMag>().Init();
-            rootGO.AddComponent<PoolMag>().Init();
             rootGO.AddComponent<UIStackMag>().Init();
             rootGO.AddComponent<SceneMag>().Init();
             rootGO.AddComponent<AudioMag>().Init();
