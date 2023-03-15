@@ -21,11 +21,11 @@ namespace YUnity
 
     internal partial class ObjectSubPool
     {
-        internal GameObject Spawn(Transform parentTransform, GameObject prefabGO)
+        internal GameObject Spawn(GameObject prefab, Transform parent)
         {
-            if (parentTransform == null || prefabGO == null)
+            if (prefab == null)
             {
-                throw new System.Exception("ObjectPool：parentTransform和prefabGO不能为空");
+                throw new System.Exception("ObjectPool-Spawn：prefab不能为空");
             }
             GameObject go = null;
             foreach (var obj in objectList)
@@ -40,10 +40,13 @@ namespace YUnity
             if (go == null)
             {
                 // 无未激活的游戏物体，重新生成
-                go = GameObject.Instantiate<GameObject>(prefabGO, parentTransform, false);
+                go = GameObject.Instantiate<GameObject>(prefab, parent, false);
                 objectList.Add(go);
             }
-            go.SetActive(true);
+            if (go.activeSelf == false)
+            {
+                go.SetActive(true);
+            }
             go.SendMessage("OnSpawn", SendMessageOptions.DontRequireReceiver);
             return go;
         }
@@ -85,6 +88,8 @@ namespace YUnity
         {
             if (go != null && Contains(go))
             {
+                // 先回收，再释放
+                UnSpawn(go);
                 release?.Invoke(go);
                 objectList.Remove(go);
             }
@@ -95,6 +100,7 @@ namespace YUnity
             {
                 Release(release, obj);
             }
+            objectList.Clear();
         }
         internal void ReleaseAll(Action<GameObject> release, List<GameObject> except)
         {

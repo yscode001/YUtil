@@ -6,36 +6,36 @@ namespace YUnity
 {
     public partial class ObjectPool
     {
-        private static Dictionary<string, ObjectSubPoolItem> subpoolList = new Dictionary<string, ObjectSubPoolItem>();
+        private static readonly Dictionary<string, ObjectSubPoolItem> subpoolList = new Dictionary<string, ObjectSubPoolItem>();
 
         public static void OnlyClearCacheList()
         {
-            foreach (KeyValuePair<string, ObjectSubPoolItem> dict in subpoolList)
+            foreach (var item in subpoolList)
             {
-                dict.Value.OnlyClearCacheList();
+                item.Value.OnlyClearCacheList();
             }
             subpoolList.Clear();
         }
     }
     public partial class ObjectPool
     {
-        public static void Spawn(string address, Transform parentTransform, Func<GameObject> loadPrefabFunc, Action<GameObject> complete)
+        public static GameObject Spawn(string address, GameObject prefab, Transform parent)
         {
-            if (string.IsNullOrWhiteSpace(address) || parentTransform == null || loadPrefabFunc == null)
+            if (string.IsNullOrWhiteSpace(address) || prefab == null)
             {
-                throw new System.Exception("ObjectPool：address和parentTransform和loadPrefabFunc不能为空");
+                throw new System.Exception("ObjectPool-Spawn：address和prefab不能为空");
             }
             if (!subpoolList.ContainsKey(address.Trim()))
             {
-                subpoolList.Add(address.Trim(), new ObjectSubPoolItem(address, loadPrefabFunc));
+                subpoolList.Add(address.Trim(), new ObjectSubPoolItem(address.Trim(), prefab));
             }
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
-                subpoolItem.Spawn(parentTransform, complete);
+                return subpoolItem.Spawn(parent);
             }
             else
             {
-                throw new System.Exception("ObjectPool：从池中取出游戏物体出现错误");
+                throw new System.Exception("ObjectPool-Spawn：取subpool时出错");
             }
         }
     }
@@ -44,18 +44,13 @@ namespace YUnity
         public static void UnSpawn(GameObject go)
         {
             if (go == null) { return; }
-            ObjectSubPoolItem pool = null;
             foreach (var subpool in subpoolList.Values)
             {
                 if (subpool.Contains(go))
                 {
-                    pool = subpool;
-                    break;
+                    subpool.UnSpawn(go);
+                    return;
                 }
-            }
-            if (pool != null)
-            {
-                pool.UnSpawn(go);
             }
         }
 
@@ -77,8 +72,7 @@ namespace YUnity
 
         public static void UnSpawnAll(string address)
         {
-            if (string.IsNullOrWhiteSpace(address)) { return; }
-            if (!subpoolList.ContainsKey(address.Trim())) { return; }
+            if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
                 subpoolItem.UnSpawnAll();
@@ -87,8 +81,7 @@ namespace YUnity
 
         public static void UnSpawnAll(string address, List<GameObject> except)
         {
-            if (string.IsNullOrWhiteSpace(address)) { return; }
-            if (!subpoolList.ContainsKey(address.Trim())) { return; }
+            if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
                 subpoolItem.UnSpawnAll(except);
@@ -100,18 +93,13 @@ namespace YUnity
         public static void Release(Action<GameObject> release, GameObject go)
         {
             if (go == null) { return; }
-            ObjectSubPoolItem pool = null;
             foreach (var subpool in subpoolList.Values)
             {
                 if (subpool.Contains(go))
                 {
-                    pool = subpool;
-                    break;
+                    subpool.Release(release, go);
+                    return;
                 }
-            }
-            if (pool != null)
-            {
-                pool.Release(release, go);
             }
         }
 
@@ -133,8 +121,7 @@ namespace YUnity
 
         public static void ReleaseAll(Action<GameObject> release, string address)
         {
-            if (string.IsNullOrWhiteSpace(address)) { return; }
-            if (!subpoolList.ContainsKey(address.Trim())) { return; }
+            if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
                 subpoolItem.ReleaseAll(release);
@@ -143,8 +130,7 @@ namespace YUnity
 
         public static void ReleaseAll(Action<GameObject> release, string address, List<GameObject> except)
         {
-            if (string.IsNullOrWhiteSpace(address)) { return; }
-            if (!subpoolList.ContainsKey(address.Trim())) { return; }
+            if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
                 subpoolItem.ReleaseAll(release, except);

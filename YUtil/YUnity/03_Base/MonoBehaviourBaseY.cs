@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Playables;
 using UnityEngine.Video;
 
@@ -23,6 +24,8 @@ namespace YUnity
         private MeshRenderer _meshRenderer;
         private Renderer _renderer;
         private SkinnedMeshRenderer _skinnedMeshRenderer;
+        private NavMeshAgent _navMeshAgent;
+        private NavMeshObstacle _navMeshObstacle;
         private HumanBodyBoneUtil _humanBodyBoneUtil;
     }
     public partial class MonoBehaviourBaseY
@@ -243,6 +246,36 @@ namespace YUnity
                 if (_skinnedMeshRenderer != null) { return _skinnedMeshRenderer; }
                 _skinnedMeshRenderer = gameObject.AddComponent<SkinnedMeshRenderer>();
                 return _skinnedMeshRenderer;
+            }
+        }
+
+        /// <summary>
+        /// 获取NavMeshAgent，如果没有则添加
+        /// </summary>
+        public NavMeshAgent NavMeshAgentY
+        {
+            get
+            {
+                if (_navMeshAgent != null) { return _navMeshAgent; }
+                _navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
+                if (_navMeshAgent != null) { return _navMeshAgent; }
+                _navMeshAgent = gameObject.AddComponent<NavMeshAgent>();
+                return _navMeshAgent;
+            }
+        }
+
+        /// <summary>
+        /// 获取NavMeshObstacle，如果没有则添加
+        /// </summary>
+        public NavMeshObstacle NavMeshObstacleY
+        {
+            get
+            {
+                if (_navMeshObstacle != null) { return _navMeshObstacle; }
+                _navMeshObstacle = gameObject.GetComponent<NavMeshObstacle>();
+                if (_navMeshObstacle != null) { return _navMeshObstacle; }
+                _navMeshObstacle = gameObject.AddComponent<NavMeshObstacle>();
+                return _navMeshObstacle;
             }
         }
     }
