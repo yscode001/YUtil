@@ -133,4 +133,62 @@ namespace YUnity
         }
     }
     #endregion
+
+    #region Clear
+    public static partial class AssetBundleUtil
+    {
+        /// <summary>
+        /// 清理某一版本或所有版本的bundle资源
+        /// </summary>
+        /// <param name="version">相应的版本号(< 1表示清理所有版本的bundle资源)</param>
+        public static void ClearVersion(UInt32 version = 0)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
+            if (directoryInfo == null)
+            {
+                Debug.Log("AssetBundleUtil-ClearVersion：BundlePath对应的目录不存在");
+            }
+            if (version < 1)
+            {
+                // 清理所有版本的bundle资源(直接删除platformName对应的文件夹)
+                if (Directory.Exists(directoryInfo.Parent.FullName))
+                {
+                    Directory.Delete(directoryInfo.Parent.FullName, true);
+                }
+            }
+            else
+            {
+                // 清理指定版本的bundle资源(只删除Version对应的文件夹)
+                string path = directoryInfo.Parent.FullName + $"/Version{version}/";
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 清理指定版本指定名称的bundle资源
+        /// </summary>
+        /// <param name="abBundleName">指定的bundle的名称</param>
+        /// <param name="version">指定的版本号</param>
+        public static void ClearBundle(string abBundleName, UInt32 version)
+        {
+            if (string.IsNullOrWhiteSpace(abBundleName) || version < 1)
+            {
+                Debug.Log("AssetBundleUtil-ClearBundle：abBundleName不能为空，version必须大于0");
+            }
+            DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
+            if (directoryInfo == null)
+            {
+                Debug.Log("AssetBundleUtil-ClearBundle：BundlePath对应的目录不存在");
+            }
+            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + GetBundleName(abBundleName);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+    #endregion
 }

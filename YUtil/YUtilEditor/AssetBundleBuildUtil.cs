@@ -86,12 +86,6 @@ namespace YUtilEditor
             {
                 ResOutputDirectory += $"Version{Version}/";
             }
-            if (Directory.Exists(ResOutputDirectory))
-            {
-                Directory.Delete(ResOutputDirectory, true);
-            }
-            Directory.CreateDirectory(ResOutputDirectory);
-            AssetDatabase.Refresh();
         }
 
         private static void SetBundleExt(string bundleExt)
@@ -162,6 +156,12 @@ namespace YUtilEditor
             {
                 throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何文件，无法build");
             }
+            if (Directory.Exists(ResOutputDirectory))
+            {
+                Directory.Delete(ResOutputDirectory, true);
+            }
+            Directory.CreateDirectory(ResOutputDirectory);
+
             List<AssetBundleBuild> list = new List<AssetBundleBuild>();
 
             DirectoryInfo sourceDir = new DirectoryInfo(ResSourceDirectory);
@@ -449,16 +449,71 @@ namespace YUtilEditor
     public static partial class AssetBundleBuildUtil
     {
         /// <summary>
-        /// 清理(删除)打包的bundle资源
+        /// 清理某一版本或所有版本的bundle资源
         /// </summary>
-        public static void Clear()
+        /// <param name="version">相应的版本号(< 1表示清理所有版本的bundle资源)</param>
+        public static void ClearVersion(UInt32 version = 0)
         {
-            if (Directory.Exists(ResOutputDirectory))
+            DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
+            if (directoryInfo == null)
             {
-                Directory.Delete(ResOutputDirectory, true);
+                throw new Exception("AssetBundleBuildUtil-ClearVersion：ResOutputDirectory对应的目录不存在");
             }
-            Directory.CreateDirectory(ResOutputDirectory);
+            if (version < 1)
+            {
+                // 清理所有版本的bundle资源(直接删除platformName对应的文件夹)
+                if (Directory.Exists(directoryInfo.Parent.FullName))
+                {
+                    Directory.Delete(directoryInfo.Parent.FullName, true);
+                }
+            }
+            else
+            {
+                // 清理指定版本的bundle资源(只删除Version对应的文件夹)
+                string path = directoryInfo.Parent.FullName + $"/Version{version}/";
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+            }
             AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// 清理指定版本指定名称的bundle资源
+        /// </summary>
+        /// <param name="abBundleName">指定的bundle的名称</param>
+        /// <param name="version">指定的版本号</param>
+        public static void ClearBundle(string abBundleName, UInt32 version)
+        {
+            if (string.IsNullOrWhiteSpace(abBundleName) || version < 1)
+            {
+                throw new Exception("AssetBundleBuildUtil-ClearBundle：abBundleName不能为空，version必须大于0");
+            }
+            DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
+            if (directoryInfo == null)
+            {
+                throw new Exception("AssetBundleBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
+            }
+            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + GetBundleName(abBundleName);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            AssetDatabase.Refresh();
+        }
+
+        private static string GetBundleName(string abBundleName)
+        {
+            if (string.IsNullOrWhiteSpace(abBundleName))
+            {
+                throw new Exception("AssetBundleBuildUtil-GetBundleName：abBundleName不能为空");
+            }
+            if (abBundleName.EndsWith(BundleExt))
+            {
+                return abBundleName;
+            }
+            return abBundleName + BundleExt;
         }
     }
     #endregion
