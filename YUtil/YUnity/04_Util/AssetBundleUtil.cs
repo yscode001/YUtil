@@ -87,7 +87,11 @@ namespace YUnity
                 foreach (var dependencie in dependencies)
                 {
                     AssetBundle dependencieBundle = AssetBundle.LoadFromFile(BundlePath + GetBundleName(dependencie));
-                    if (dependencieBundle != null)
+                    if (dependencieBundle == null)
+                    {
+                        throw new Exception($"AssetBundleUtil-LoadAssetBundle：{abBundleName}的依赖包：{GetBundleName(dependencie)}不存在");
+                    }
+                    else
                     {
                         dependencieList.Add(dependencieBundle);
                     }
