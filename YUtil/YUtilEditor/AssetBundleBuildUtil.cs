@@ -20,7 +20,7 @@ using UnityEngine;
 namespace YUtilEditor
 {
     #region Init
-    public static partial class AssetBundleUtil
+    public static partial class AssetBundleBuildUtil
     {
         // 平台名称
         private static string PlatformName;
@@ -35,7 +35,7 @@ namespace YUtilEditor
         private static List<string> IgnoreExts;
 
         // ab包后缀
-        private const string BundleExt = ".unity3d";
+        private static string BundleExt = ".unity3d";
 
         // 根目录下如果有文件，打成一个root bundle
         private static string RootBundleName => "root" + BundleExt;
@@ -53,20 +53,22 @@ namespace YUtilEditor
         /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Res)</param>
         /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/PlatformName/)</param>
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
+        /// <param name="bundleExt">可选参数：bundle包的扩展名(默认：.unity3d)</param>
         /// <param name="bundleOptions">可选参数：打包选项(默认：None)</param>
-        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None)
+        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, string bundleExt = ".unity3d", BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None)
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(resSourceDirectory))
             {
-                throw new System.Exception("AssetBundleUtil-Init：platformName或resSourceDirectory不能为空");
+                throw new System.Exception("AssetBundleBuildUtil-Init：platformName或resSourceDirectory不能为空");
             }
             if (!Directory.Exists(resSourceDirectory))
             {
-                throw new System.Exception("AssetBundleUtil-Init：resSourceDirectory目录不存在");
+                throw new System.Exception("AssetBundleBuildUtil-Init：resSourceDirectory目录不存在");
             }
             PlatformName = platformName;
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
-            HandleExts(ignoreExts);
+            SetBundleExt(bundleExt);
+            SetIgnoreExts(ignoreExts);
             BundleOptions = bundleOptions;
 
             ResOutputDirectory = string.IsNullOrWhiteSpace(resOutputDirectory) ? $"./AssetBundleFiles/{PlatformName}/" : resOutputDirectory;
@@ -83,7 +85,12 @@ namespace YUtilEditor
             AssetDatabase.Refresh();
         }
 
-        private static void HandleExts(string[] ignoreExts)
+        private static void SetBundleExt(string bundleExt)
+        {
+            BundleExt = string.IsNullOrWhiteSpace(bundleExt) ? ".unity3d" : bundleExt;
+            BundleExt = BundleExt.StartsWith(".") ? BundleExt : "." + BundleExt;
+        }
+        private static void SetIgnoreExts(string[] ignoreExts)
         {
             if (ignoreExts == null || ignoreExts.Length <= 0)
             {
@@ -130,21 +137,21 @@ namespace YUtilEditor
     #endregion
 
     #region Build
-    public static partial class AssetBundleUtil
+    public static partial class AssetBundleBuildUtil
     {
         public static void BuildAssetBundles()
         {
             if (string.IsNullOrWhiteSpace(PlatformName) || string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
             {
-                throw new System.Exception("AssetBundleUtil-BuildAssetBundles：PlatformName或ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：PlatformName或ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
             }
             if (!Directory.Exists(ResSourceDirectory))
             {
-                throw new System.Exception("AssetBundleUtil-BuildAssetBundles：ResSourceDirectory目录不存在，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：ResSourceDirectory目录不存在，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
             }
             if (!HasFilesWillBeBuiled(new DirectoryInfo(ResSourceDirectory)))
             {
-                throw new System.Exception("AssetBundleUtil-BuildAssetBundles：ResSourceDirectory不存在任何文件，无法build");
+                throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何文件，无法build");
             }
             List<AssetBundleBuild> list = new List<AssetBundleBuild>();
 
@@ -167,7 +174,7 @@ namespace YUtilEditor
 
             if (list.Count <= 0)
             {
-                throw new System.Exception("AssetBundleUtil-BuildAssetBundles：ResSourceDirectory不存在任何符合条件可以打包的文件，无法build");
+                throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何符合条件可以打包的文件，无法build");
             }
 
             // 被打包的文件清单
@@ -339,7 +346,7 @@ namespace YUtilEditor
             }
             catch (Exception ex)
             {
-                throw new Exception("GetMD5HashFromFile() fail, error:" + ex.Message);
+                throw new Exception("AssetBundleBuildUtil-GetMD5HashFromFile() fail, error:" + ex.Message);
             }
         }
         private static void AfterBuild(StringBuilder sbFileList)
