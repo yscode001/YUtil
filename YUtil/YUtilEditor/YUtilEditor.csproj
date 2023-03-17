@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="00_UnityDlls\" />
+    <None Remove="UnityEditor" />
+    <None Remove="UnityEngine" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="00_UnityDlls\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="UnityEditor">
+      <HintPath>00_UnityDlls\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\YUnity\00_UnityDlls\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

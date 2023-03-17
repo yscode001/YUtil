@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YConsole", "YConsole\YConso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YConsoleTest", "YConsoleTest\YConsoleTest.csproj", "{1410102B-6065-4FE8-A7D9-33B0064B3B26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YUtilEditor", "YUtilEditor\YUtilEditor.csproj", "{BDF31141-D682-4931-96FB-C52BC18AC481}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{1410102B-6065-4FE8-A7D9-33B0064B3B26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1410102B-6065-4FE8-A7D9-33B0064B3B26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1410102B-6065-4FE8-A7D9-33B0064B3B26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDF31141-D682-4931-96FB-C52BC18AC481}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDF31141-D682-4931-96FB-C52BC18AC481}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDF31141-D682-4931-96FB-C52BC18AC481}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDF31141-D682-4931-96FB-C52BC18AC481}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
