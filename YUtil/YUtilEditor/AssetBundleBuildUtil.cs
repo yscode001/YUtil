@@ -46,6 +46,9 @@ namespace YUtilEditor
         // 打包选项
         private static BuildAssetBundleOptions BundleOptions = BuildAssetBundleOptions.None;
 
+        // 资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号)
+        private static UInt32 Version = 1;
+
         /// <summary>
         /// 初始化
         /// </summary>
@@ -55,7 +58,8 @@ namespace YUtilEditor
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
         /// <param name="bundleExt">可选参数：bundle包的扩展名(默认：.unity3d)</param>
         /// <param name="bundleOptions">可选参数：打包选项(默认：None)</param>
-        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, string bundleExt = ".unity3d", BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None)
+        /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
+        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, string bundleExt = ".unity3d", BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(resSourceDirectory))
             {
@@ -65,6 +69,7 @@ namespace YUtilEditor
             {
                 throw new System.Exception("AssetBundleBuildUtil-Init：resSourceDirectory目录不存在");
             }
+            Version = (UInt32)Mathf.Max(1, version);
             PlatformName = platformName;
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
             SetBundleExt(bundleExt);
@@ -76,6 +81,10 @@ namespace YUtilEditor
             if (!ResOutputDirectory.EndsWith($"/{PlatformName}/"))
             {
                 ResOutputDirectory += (PlatformName + "/");
+            }
+            if (!ResOutputDirectory.EndsWith($"/Version{Version}/"))
+            {
+                ResOutputDirectory += $"Version{Version}/";
             }
             if (Directory.Exists(ResOutputDirectory))
             {
@@ -367,7 +376,7 @@ namespace YUtilEditor
                     // 删除manifest
                     File.Delete(fileInfo.FullName);
                 }
-                else if (fileInfo.Name == PlatformName)
+                else if (fileInfo.Name == $"Version{Version}")
                 {
                     // 先改名字
                     string newName = fileInfo.Directory + "/" + BundleListFileName;

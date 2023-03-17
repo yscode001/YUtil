@@ -14,7 +14,9 @@ namespace YUnity
     public static partial class AssetBundleUtil
     {
         private static string BundlePath;
+
         private static string BundleExt;
+
         private static AssetBundleManifest Manifest;
 
         /// <summary>
@@ -24,16 +26,17 @@ namespace YUnity
         /// <param name="bundlePath">bundle包所在路径</param>
         /// <param name="manifestBundleName">manifest的bundle包名，用于获取依赖关系</param>
         /// <param name="bundleExt">可选参数：bundle包的扩展名(默认：unity3d)</param>
-        public static void Init(string platformName, string bundlePath, string manifestBundleName, string bundleExt = ".unity3d")
+        /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
+        public static void Init(string platformName, string bundlePath, string manifestBundleName, string bundleExt = ".unity3d", UInt32 version = 1)
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(bundlePath) || string.IsNullOrWhiteSpace(manifestBundleName))
             {
                 throw new System.Exception("AssetBundleUtil-Init：platformName和bundlePath和manifestBundleName不能为空");
             }
-            string path = (bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/") + platformName + "/";
+            string path = (bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/") + platformName + "/" + $"Version{version}/";
             if (!Directory.Exists(path))
             {
-                throw new System.Exception("AssetBundleUtil-Init：bundlePath和platformName组成的路径不存在对应的目录");
+                throw new System.Exception("AssetBundleUtil-Init：bundlePath和platformName和version组成的路径不存在对应的目录");
             }
             SetBundleExt(bundleExt);
             AssetBundle manifestBundle = AssetBundle.LoadFromFile(path + GetBundleName(manifestBundleName));
