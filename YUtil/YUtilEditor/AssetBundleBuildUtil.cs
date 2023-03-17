@@ -435,4 +435,22 @@ namespace YUtilEditor
         }
     }
     #endregion
+
+    #region Clear
+    public static partial class AssetBundleBuildUtil
+    {
+        /// <summary>
+        /// 清理(删除)打包的bundle资源
+        /// </summary>
+        public static void Clear()
+        {
+            if (Directory.Exists(ResOutputDirectory))
+            {
+                Directory.Delete(ResOutputDirectory, true);
+            }
+            Directory.CreateDirectory(ResOutputDirectory);
+            AssetDatabase.Refresh();
+        }
+    }
+    #endregion
 }
