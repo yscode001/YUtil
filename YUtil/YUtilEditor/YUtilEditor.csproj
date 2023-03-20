@@ -8,9 +8,12 @@
     <None Remove="00_UnityDlls\" />
     <None Remove="UnityEditor" />
     <None Remove="UnityEngine" />
+    <None Remove="AB\" />
+    <None Remove="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="00_UnityDlls\" />
+    <Folder Include="01_AB\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEditor">
@@ -18,6 +21,9 @@
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\YUnity\00_UnityDlls\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>00_UnityDlls\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

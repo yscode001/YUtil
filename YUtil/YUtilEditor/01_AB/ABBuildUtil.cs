@@ -20,7 +20,7 @@ using UnityEngine;
 namespace YUtilEditor
 {
     #region Init
-    public static partial class AssetBundleBuildUtil
+    public static partial class ABBuildUtil
     {
         // 平台名称
         private static string PlatformName;
@@ -140,7 +140,7 @@ namespace YUtilEditor
     #endregion
 
     #region Build
-    public static partial class AssetBundleBuildUtil
+    public static partial class ABBuildUtil
     {
         public static void BuildAssetBundles()
         {
@@ -187,34 +187,16 @@ namespace YUtilEditor
             }
 
             // 被打包的文件清单
-            StringBuilder sbFileList = new StringBuilder();
+            ABBuiledFileList fileList = new ABBuiledFileList();
             for (int i = 0; i < list.Count; i++)
             {
                 AssetBundleBuild buildInfo = list[i];
-
-                sbFileList.Append("BundleName:  ");
-                sbFileList.Append(buildInfo.assetBundleName);
-                sbFileList.Append("\n");
-                for (int j = 0; j < buildInfo.assetNames.Length; j++)
-                {
-                    string filePath = buildInfo.assetNames[j];
-                    sbFileList.Append("----  ");
-                    sbFileList.Append("AssetName:  ");
-                    sbFileList.Append(filePath);
-                    if (j < buildInfo.assetNames.Length - 1 || i < list.Count - 1)
-                    {
-                        sbFileList.Append("\n");
-                    }
-                }
-                if (i < list.Count - 1)
-                {
-                    sbFileList.Append("\n");
-                }
+                fileList.Add(buildInfo.assetBundleName, buildInfo.assetNames);
             }
 
             DirectoryInfo outputDirInfo = new DirectoryInfo(ResOutputDirectory);
             BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BundleOptions, EditorUserBuildSettings.activeBuildTarget);
-            AfterBuild(sbFileList);
+            AfterBuild(fileList.Serialize());
         }
 
         // 判断文件夹里面是否有需要build的文件
@@ -358,7 +340,7 @@ namespace YUtilEditor
                 throw new Exception("AssetBundleBuildUtil-GetMD5HashFromFile() fail, error:" + ex.Message);
             }
         }
-        private static void AfterBuild(StringBuilder sbFileList)
+        private static void AfterBuild(string sbFileList)
         {
             DirectoryInfo outputDir = new DirectoryInfo(ResOutputDirectory);
             FileInfo[] fileInfos = outputDir.GetFiles();
@@ -396,23 +378,14 @@ namespace YUtilEditor
                 return;
             }
             // 生成bundle包的清单
-            // 文件名|大小|MD5
-            StringBuilder sbBundleList = new StringBuilder();
+            ABBuiledBundleList bundleList = new ABBuiledBundleList();
             for (int i = 0; i < filelist.Count; i++)
             {
                 FileInfo fileInfo = filelist[i];
-                sbBundleList.Append(fileInfo.Name);
-                sbBundleList.Append("|");
-                sbBundleList.Append(fileInfo.Length);
-                sbBundleList.Append("|");
-                sbBundleList.Append(GetMD5HashFromFile(fileInfo.FullName));
-                if (i < filelist.Count - 1)
-                {
-                    sbBundleList.Append("\n");
-                }
+                bundleList.Add(new ABBuiledBundle(fileInfo.Name, fileInfo.Length, GetMD5HashFromFile(fileInfo.FullName)));
             }
 
-            byte[] bytes = System.Text.Encoding.Default.GetBytes(sbBundleList.ToString());
+            byte[] bytes = System.Text.Encoding.Default.GetBytes(bundleList.Serialize());
             if (bytes == null || bytes.Length <= 0)
             {
                 BuildEnd(false);
@@ -423,7 +396,7 @@ namespace YUtilEditor
             fs.Close();
 
             // 文件清单
-            bytes = System.Text.Encoding.Default.GetBytes(sbFileList.ToString());
+            bytes = System.Text.Encoding.Default.GetBytes(sbFileList);
             if (bytes == null || bytes.Length <= 0)
             {
                 BuildEnd(false);
@@ -446,7 +419,7 @@ namespace YUtilEditor
     #endregion
 
     #region Clear
-    public static partial class AssetBundleBuildUtil
+    public static partial class ABBuildUtil
     {
         /// <summary>
         /// 清理某一版本或所有版本的bundle资源

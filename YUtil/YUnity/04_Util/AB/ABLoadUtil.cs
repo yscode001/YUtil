@@ -6,12 +6,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace YUnity
 {
     #region Init
-    public static partial class AssetBundleUtil
+    public static partial class ABLoadUtil
     {
         private static string BundlePath;
 
@@ -73,7 +75,7 @@ namespace YUnity
     #endregion
 
     #region LoadAsset
-    public static partial class AssetBundleUtil
+    public static partial class ABLoadUtil
     {
         /// <summary>
         /// 加载bundle包及其依赖
@@ -135,7 +137,7 @@ namespace YUnity
     #endregion
 
     #region Clear
-    public static partial class AssetBundleUtil
+    public static partial class ABLoadUtil
     {
         /// <summary>
         /// 清理某一版本或所有版本的bundle资源
@@ -188,6 +190,52 @@ namespace YUnity
             {
                 File.Delete(path);
             }
+        }
+    }
+    #endregion
+
+    #region 清单文件
+    public static partial class ABLoadUtil
+    {
+        /// <summary>
+        /// 加载bundle和file清单文件
+        /// </summary>
+        /// <param name="bundleListFilePath">bundle清单文件路径，默认为初始化时的路径</param>
+        /// <param name="fileListFilePath">file清单文件路径，默认为初始化时的路径</param>
+        /// <returns></returns>
+        public static Tuple<ABLoadBundleList, ABLoadFileList> LoadListFiles(string bundleListFilePath = null, string fileListFilePath = null)
+        {
+            string bundlePath = string.IsNullOrWhiteSpace(bundleListFilePath) ? BundlePath + "ABBundleFiles.txt" : bundleListFilePath;
+            string filePath = string.IsNullOrWhiteSpace(fileListFilePath) ? BundlePath + "ABBuiledFiles.txt" : fileListFilePath;
+
+            ABLoadBundleList bundleList = new ABLoadBundleList();
+            ABLoadFileList fileList = new ABLoadFileList();
+
+            if (File.Exists(bundlePath))
+            {
+                try
+                {
+                    bundleList = JsonConvert.DeserializeObject<ABLoadBundleList>(File.ReadAllText(bundlePath, Encoding.UTF8));
+                }
+                catch (Exception e)
+                {
+                    Debug.Log($"ABLoadUtil-LoadListFiles：加载ABLoadBundleList时失败：{e}");
+                }
+            }
+
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    fileList = JsonConvert.DeserializeObject<ABLoadFileList>(File.ReadAllText(filePath, Encoding.UTF8));
+                }
+                catch (Exception e)
+                {
+                    Debug.Log($"ABLoadUtil-LoadListFiles：加载ABLoadFileList时失败：{e}");
+                }
+            }
+
+            return new Tuple<ABLoadBundleList, ABLoadFileList>(bundleList, fileList);
         }
     }
     #endregion
