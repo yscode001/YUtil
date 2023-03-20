@@ -12,7 +12,12 @@ namespace YUnity
     public class ABLoadBundle
     {
         public string BundleName;
+
+        /// <summary>
+        /// 文件大小(单位字节)
+        /// </summary>
         public long FileSize;
+
         public string FileMD5;
 
         public ABLoadBundle() { }
@@ -33,5 +38,24 @@ namespace YUnity
         }
 
         public List<ABLoadBundle> BundleList = new List<ABLoadBundle>();
+
+        /// <summary>
+        /// 所有的bundle包的大小总和(单位字节)
+        /// </summary>
+        public long FileSizeSum
+        {
+            get
+            {
+                long size = 0;
+                foreach (var item in BundleList)
+                {
+                    if (item != null && !string.IsNullOrWhiteSpace(item.BundleName) && item.FileSize > 0 && !string.IsNullOrWhiteSpace(item.FileMD5))
+                    {
+                        size += item.FileSize;
+                    }
+                }
+                return size;
+            }
+        }
     }
 }

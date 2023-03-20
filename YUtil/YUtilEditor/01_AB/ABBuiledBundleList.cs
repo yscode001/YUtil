@@ -17,7 +17,12 @@ namespace YUtilEditor
     public class ABBuiledBundle
     {
         public string BundleName;
+
+        /// <summary>
+        /// 文件大小(单位字节)
+        /// </summary>
         public long FileSize;
+
         public string FileMD5;
 
         public ABBuiledBundle() { }
