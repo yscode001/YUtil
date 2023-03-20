@@ -38,10 +38,10 @@ namespace YUtilEditor
         private static string BundleExt = ".unity3d";
 
         // 根目录下如果有文件，打成一个root bundle
-        private static string RootBundleName => "root" + BundleExt;
+        private static string RootBundleName = "root" + BundleExt;
 
         // 清单文件名
-        private static string BundleListFileName => "manifest" + BundleExt;
+        private static string BundleListFileName = "manifest" + BundleExt;
 
         // 打包选项
         private static BuildAssetBundleOptions BundleOptions = BuildAssetBundleOptions.None;
@@ -52,14 +52,16 @@ namespace YUtilEditor
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="platformName">平台名称(示例：iOS、android...)</param>
+        /// <param name="platformName"平台名称(示例：iOS、android...)</param>
         /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Res)</param>
         /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/PlatformName/)</param>
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
         /// <param name="bundleExt">可选参数：bundle包的扩展名(默认：.unity3d)</param>
+        /// <param name="manifestBundleName">可选参数：manifest包的名字，默认：manifest.unity3d</param>
+        /// <param name="rootBundleName">可选参数：根目录下资源包默认名字，默认：root.unity3d</param>
         /// <param name="bundleOptions">可选参数：打包选项(默认：None)</param>
         /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, string bundleExt = ".unity3d", BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
+        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, string bundleExt = ".unity3d", string manifestBundleName = "manifest", string rootBundleName = "root", BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(resSourceDirectory))
             {
@@ -72,6 +74,8 @@ namespace YUtilEditor
             Version = (UInt32)Mathf.Max(1, version);
             PlatformName = platformName;
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
+            SetRootBundleName(rootBundleName);
+            SetManifestBundleName(manifestBundleName);
             SetBundleExt(bundleExt);
             SetIgnoreExts(ignoreExts);
             BundleOptions = bundleOptions;
@@ -88,6 +92,36 @@ namespace YUtilEditor
             }
         }
 
+        private static void SetRootBundleName(string rootBundleName)
+        {
+            if (string.IsNullOrWhiteSpace(rootBundleName))
+            {
+                RootBundleName = "root" + BundleExt;
+            }
+            else if (rootBundleName.Contains("."))
+            {
+                RootBundleName = rootBundleName;
+            }
+            else
+            {
+                RootBundleName = rootBundleName + BundleExt;
+            }
+        }
+        private static void SetManifestBundleName(string manifestBundleName)
+        {
+            if (string.IsNullOrWhiteSpace(manifestBundleName))
+            {
+                BundleListFileName = "manifest" + BundleExt;
+            }
+            else if (manifestBundleName.Contains("."))
+            {
+                BundleListFileName = manifestBundleName;
+            }
+            else
+            {
+                BundleListFileName = manifestBundleName + BundleExt;
+            }
+        }
         private static void SetBundleExt(string bundleExt)
         {
             BundleExt = string.IsNullOrWhiteSpace(bundleExt) ? ".unity3d" : bundleExt;

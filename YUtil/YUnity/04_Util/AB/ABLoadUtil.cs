@@ -19,6 +19,7 @@ namespace YUnity
 
         private static string BundleExt;
 
+        private static string ManifestBundleName;
         private static AssetBundleManifest Manifest;
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace YUnity
                 throw new System.Exception("AssetBundleUtil-Init：bundlePath和platformName和version组成的路径不存在对应的目录");
             }
             SetBundleExt(bundleExt);
+            ManifestBundleName = manifestBundleName;
             AssetBundle manifestBundle = AssetBundle.LoadFromFile(path + GetBundleName(manifestBundleName));
             if (manifestBundle == null)
             {
@@ -51,6 +53,7 @@ namespace YUnity
             {
                 throw new System.Exception("AssetBundleUtil-Init：manifestBundleName错误，取不到里面的AssetBundleManifest");
             }
+            manifestBundle.Unload(false);
             BundlePath = path;
         }
 
@@ -71,6 +74,24 @@ namespace YUnity
             }
             return abBundleName + BundleExt;
         }
+
+        public static void ReloadManifest()
+        {
+            if (Manifest == null && !string.IsNullOrWhiteSpace(BundlePath) && !string.IsNullOrWhiteSpace(ManifestBundleName))
+            {
+                AssetBundle manifestBundle = AssetBundle.LoadFromFile(BundlePath + GetBundleName(ManifestBundleName));
+                if (manifestBundle == null)
+                {
+                    throw new System.Exception("AssetBundleUtil-ReloadManifest：manifestBundleName对应的bundle包不存在");
+                }
+                Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+                if (Manifest == null)
+                {
+                    throw new System.Exception("AssetBundleUtil-ReloadManifest：manifestBundleName错误，取不到里面的AssetBundleManifest");
+                }
+                manifestBundle.Unload(false);
+            }
+        }
     }
     #endregion
 
@@ -82,7 +103,7 @@ namespace YUnity
         /// </summary>
         /// <param name="abBundleName"></param>
         /// <returns></returns>
-        private static Tuple<AssetBundle, List<AssetBundle>> LoadAssetBundle(string abBundleName)
+        public static Tuple<AssetBundle, List<AssetBundle>> LoadAssetBundle(string abBundleName)
         {
             List<AssetBundle> dependencieList = null;
             string[] dependencies = Manifest.GetAllDependencies(GetBundleName(abBundleName));
@@ -131,7 +152,14 @@ namespace YUnity
             {
                 throw new System.Exception($"AssetBundleUtil-LoadAsset：{abBundleName}对应的bundle包不存在，请检查");
             }
-            return new Tuple<AssetBundle, AssetBundle[], T>(tupe.Item1, tupe.Item2.ToArray(), tupe.Item1.LoadAsset<T>(assetName));
+            if (tupe.Item2 == null || tupe.Item2.Count <= 0)
+            {
+                return new Tuple<AssetBundle, AssetBundle[], T>(tupe.Item1, null, tupe.Item1.LoadAsset<T>(assetName));
+            }
+            else
+            {
+                return new Tuple<AssetBundle, AssetBundle[], T>(tupe.Item1, tupe.Item2.ToArray(), tupe.Item1.LoadAsset<T>(assetName));
+            }
         }
     }
     #endregion

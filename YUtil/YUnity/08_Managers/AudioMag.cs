@@ -66,28 +66,37 @@ namespace YUnity
         /// <param name="isLoop">是否循环</param>
         public void PlayBGMusic(string fullFilePath, bool isLoop)
         {
-            if (bgAudio == null)
+            if (bgAudio == null || string.IsNullOrWhiteSpace(fullFilePath))
             {
                 return;
             }
-            AudioClip ac = ResourceMag.Instance.LoadAudio(fullFilePath, false);
-            if (ac == null)
+            PlayBGMusic(ResourceMag.Instance.LoadAudio(fullFilePath, false), isLoop);
+        }
+
+        /// <summary>
+        /// 播放背景音效
+        /// </summary>
+        /// <param name="bgMusic">背景音效</param>
+        /// <param name="isLoop">是否循环</param>
+        public void PlayBGMusic(AudioClip bgMusic, bool isLoop)
+        {
+            if (bgMusic == null)
             {
                 return;
             }
-            if (bgAudio.clip == null || bgAudio.clip.name != ac.name || !bgAudio.isPlaying)
+            if (bgAudio.clip == null || bgAudio.clip.name != bgMusic.name || !bgAudio.isPlaying)
             {
-                bgAudio.clip = ac;
+                bgAudio.clip = bgMusic;
                 bgAudio.loop = isLoop;
                 bgAudio.Play();
                 if (preBGClip == null)
                 {
-                    preBGClip = ac;
+                    preBGClip = bgMusic;
                 }
-                else if (preBGClip != ac)
+                else if (preBGClip != bgMusic)
                 {
                     Resources.UnloadAsset(preBGClip);
-                    preBGClip = ac;
+                    preBGClip = bgMusic;
                 }
             }
         }
@@ -129,22 +138,39 @@ namespace YUnity
         /// <param name="fullFilePath">音效完整路径</param>
         public void PlayAudioClip(string fullFilePath)
         {
-            if (!EnableNormalAudioClip || normalAudio == null)
+            if (!EnableNormalAudioClip || normalAudio == null || string.IsNullOrWhiteSpace(fullFilePath))
             {
                 return;
             }
-            AudioClip ac = ResourceMag.Instance.LoadAudio(fullFilePath, true);
-            if (ac == null)
+            PlayAudioClip(ResourceMag.Instance.LoadAudio(fullFilePath, true));
+        }
+
+        /// <summary>
+        /// 播放音效
+        /// </summary>
+        /// <param name="audioClip">音效</param>
+        public void PlayAudioClip(AudioClip audioClip)
+        {
+            if (audioClip == null)
             {
                 return;
             }
-            if (normalAudio.clip != null && normalAudio.clip.name == ac.name && normalAudio.isPlaying)
+            if (normalAudio.clip != null && normalAudio.clip.name == audioClip.name && normalAudio.isPlaying)
             {
                 return;
             }
-            normalAudio.clip = ac;
+            normalAudio.clip = audioClip;
             normalAudio.loop = false;
             normalAudio.Play();
+        }
+
+        public void PlayAudioClipOneShoot(AudioClip audioClip)
+        {
+            if (audioClip == null)
+            {
+                return;
+            }
+            normalAudio.PlayOneShot(audioClip);
         }
 
         public void PauseAudioClip()
