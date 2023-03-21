@@ -29,7 +29,7 @@ namespace YUnity
         // 对外的回调
         private float progressValue = 0f;
         private Action<float> progressCallback = null;
-        private Action complete = null;
+        private Action<AsyncOperation> complete = null;
 
         /// <summary>
         /// 最后一次使用LoadSceneAsync切换的场景的名称
@@ -43,15 +43,15 @@ namespace YUnity
         /// <param name="begin"></param>
         /// <param name="progress"></param>
         /// <param name="complete"></param>
-        public void LoadSceneAsync(string sceneName, Action begin, Action<float> progress, Action complete)
+        public void LoadSceneAsync(string sceneName, Action<AsyncOperation> begin, Action<float> progress, Action<AsyncOperation> complete)
         {
             if (string.IsNullOrWhiteSpace(sceneName) || progressCB != null) { return; } // 上一场景还在加载
             progressValue = 0f;
-            begin?.Invoke();
             progressCallback = progress;
             this.complete = complete;
 
             AsyncOperation sceneAsync = SceneManager.LoadSceneAsync(sceneName);
+            begin?.Invoke(sceneAsync);
             progressCB = () =>
             {
                 progressValue = sceneAsync.progress;
@@ -63,7 +63,7 @@ namespace YUnity
                 {
                     progressValue = 0f;
                     progressCallback = null;
-                    this.complete?.Invoke();
+                    this.complete?.Invoke(sceneAsync);
                     this.complete = null;
                     sceneAsync = null;
                     progressCB = null;

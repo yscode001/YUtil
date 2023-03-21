@@ -42,12 +42,12 @@ namespace YUnity
                 throw new System.Exception("AssetBundleUtil-Init：bundlePath和platformName和version组成的路径不存在对应的目录");
             }
             SetBundleExt(bundleExt);
-            ManifestBundleName = manifestBundleName;
             AssetBundle manifestBundle = AssetBundle.LoadFromFile(path + GetBundleName(manifestBundleName));
             if (manifestBundle == null)
             {
                 throw new System.Exception("AssetBundleUtil-Init：manifestBundleName对应的bundle包不存在");
             }
+            ManifestBundleName = manifestBundleName.ToLower();
             Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
             if (Manifest == null)
             {
@@ -70,9 +70,9 @@ namespace YUnity
             }
             if (abBundleName.EndsWith(BundleExt))
             {
-                return abBundleName;
+                return abBundleName.ToLower();
             }
-            return abBundleName + BundleExt;
+            return abBundleName.ToLower() + BundleExt;
         }
 
         public static void ReloadManifest()

@@ -100,11 +100,11 @@ namespace YUtilEditor
             }
             else if (rootBundleName.Contains("."))
             {
-                RootBundleName = rootBundleName;
+                RootBundleName = rootBundleName.ToLower();
             }
             else
             {
-                RootBundleName = rootBundleName + BundleExt;
+                RootBundleName = rootBundleName.ToLower() + BundleExt;
             }
         }
         private static void SetManifestBundleName(string manifestBundleName)
@@ -115,11 +115,11 @@ namespace YUtilEditor
             }
             else if (manifestBundleName.Contains("."))
             {
-                BundleListFileName = manifestBundleName;
+                BundleListFileName = manifestBundleName.ToLower();
             }
             else
             {
-                BundleListFileName = manifestBundleName + BundleExt;
+                BundleListFileName = manifestBundleName.ToLower() + BundleExt;
             }
         }
         private static void SetBundleExt(string bundleExt)
@@ -338,7 +338,7 @@ namespace YUtilEditor
         private static AssetBundleBuild GetBuildInfo(DirectoryInfo directoryInfo, bool root)
         {
             AssetBundleBuild build = new AssetBundleBuild();
-            build.assetBundleName = root ? RootBundleName : directoryInfo.Name + BundleExt;
+            build.assetBundleName = root ? GetBundleName(RootBundleName) : GetBundleName(directoryInfo.Name);
 
             List<FileInfo> fileInfolist = GetFilesWillBeBuiled(directoryInfo, root);
             List<string> fileNames = new List<string>();
@@ -395,7 +395,7 @@ namespace YUtilEditor
                 else if (fileInfo.Name == $"Version{Version}")
                 {
                     // 先改名字
-                    string newName = fileInfo.Directory + "/" + BundleListFileName;
+                    string newName = fileInfo.Directory + "/" + GetBundleName(BundleListFileName);
                     fileInfo.MoveTo(newName);
                     // 再添加至清单列表
                     filelist.Add(fileInfo);
@@ -518,9 +518,9 @@ namespace YUtilEditor
             }
             if (abBundleName.EndsWith(BundleExt))
             {
-                return abBundleName;
+                return abBundleName.ToLower();
             }
-            return abBundleName + BundleExt;
+            return abBundleName.ToLower() + BundleExt;
         }
     }
     #endregion
