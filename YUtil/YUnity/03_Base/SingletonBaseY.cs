@@ -10,6 +10,8 @@ namespace YUnity
     {
         protected SingletonBaseY() { }
 
+        public abstract void Init();
+
         private static T _instance;
 
         public static T Instance
@@ -24,6 +26,7 @@ namespace YUnity
                     throw new Exception("Non-public ctor() not found");
                 }
                 _instance = ctor.Invoke(null) as T;
+                _instance.Init();
                 return _instance;
             }
         }

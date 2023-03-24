@@ -5,9 +5,13 @@ namespace YUnity
 {
     public static class TransformExt
     {
-        #region 递归查找子物体
+        #region 查找子物体
         public static Transform FindChildRecursively(this Transform parent, string name)
         {
+            if (parent == null || string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
             Transform child = parent.Find(name);
             if (child == null)
             {
@@ -21,6 +25,29 @@ namespace YUnity
                 }
             }
             return child;
+        }
+
+        public static T FindChildRecursively<T>(this Transform parent, string name) where T : Component
+        {
+            Transform child = parent.FindChildRecursively(name);
+            if (child == null) { return null; }
+            return child.GetComponent<T>();
+        }
+
+        public static Transform FindChildByPath(this Transform parent, string path)
+        {
+            if (parent == null || string.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
+            return parent.Find(path);
+        }
+
+        public static T FindChildByPath<T>(this Transform parent, string path) where T : Component
+        {
+            Transform child = parent.FindChildByPath(path);
+            if (child == null) { return null; }
+            return child.GetComponent<T>();
         }
         #endregion
 
