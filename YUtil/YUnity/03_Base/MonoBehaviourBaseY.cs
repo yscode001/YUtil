@@ -9,6 +9,9 @@ namespace YUnity
     #region 常用缓存属性
     public partial class MonoBehaviourBaseY : MonoBehaviour
     {
+        private Camera _mainCamera;
+        private Transform _mainCameraTransform;
+
         private Transform _transform;
         private RectTransform _rectTransform;
         private GameObject _gameObject;
@@ -30,6 +33,36 @@ namespace YUnity
     }
     public partial class MonoBehaviourBaseY
     {
+        /// <summary>
+        /// 主相机
+        /// </summary>
+        public Camera MainCameraY
+        {
+            get
+            {
+                if (_mainCamera == null)
+                {
+                    _mainCamera = Camera.main;
+                }
+                return _mainCamera;
+            }
+        }
+
+        /// <summary>
+        /// 主相机的transform
+        /// </summary>
+        public Transform MainCameraTransformY
+        {
+            get
+            {
+                if (_mainCameraTransform == null && Camera.main != null)
+                {
+                    _mainCameraTransform = Camera.main.transform;
+                }
+                return _mainCameraTransform;
+            }
+        }
+
         /// <summary>
         /// 缓存属性
         /// </summary>

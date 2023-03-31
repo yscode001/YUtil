@@ -18,7 +18,6 @@
     <None Remove="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <None Remove="Mono.Data.Sqlite" />
     <None Remove="05_DataType\" />
-    <None Remove="ObjectPool\" />
     <None Remove="04_Util\AB\" />
     <None Remove="Newtonsoft.Json" />
   </ItemGroup>
@@ -40,7 +39,6 @@
   <ItemGroup>
     <Folder Include="10_Effect\" />
     <Folder Include="05_DataType\" />
-    <Folder Include="ObjectPool\" />
     <Folder Include="04_Util\AB\" />
   </ItemGroup>
 </Project>

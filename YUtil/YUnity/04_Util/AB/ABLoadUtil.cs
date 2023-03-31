@@ -164,6 +164,59 @@ namespace YUnity
     }
     #endregion
 
+    #region 保存清单文件
+    public static partial class ABLoadUtil
+    {
+        /// <summary>
+        /// 保存资源包清单文件
+        /// </summary>
+        /// <param name="bundleList"></param>
+        /// <param name="bundleListFilePath"></param>
+        public static void Save(ABLoadBundleList bundleList, string bundleListFilePath = null)
+        {
+            if (bundleList == null) { return; }
+            byte[] bytes = System.Text.Encoding.Default.GetBytes(bundleList.Serialize());
+            if (bytes == null || bytes.Length <= 0)
+            {
+                return;
+            }
+
+            string bundlePath = string.IsNullOrWhiteSpace(bundleListFilePath) ? BundlePath + "ABBundleFiles.txt" : bundleListFilePath;
+            if (File.Exists(bundlePath))
+            {
+                File.Delete(bundlePath);
+            }
+            FileStream fs = new FileStream(bundlePath, FileMode.Create);
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Close();
+        }
+
+        /// <summary>
+        /// 保存打进资源包的资源清单文件
+        /// </summary>
+        /// <param name="fileList"></param>
+        /// <param name="fileListFilePath"></param>
+        public static void Save(ABLoadFileList fileList, string fileListFilePath = null)
+        {
+            if (fileList == null) { return; }
+            byte[] bytes = System.Text.Encoding.Default.GetBytes(fileList.Serialize());
+            if (bytes == null || bytes.Length <= 0)
+            {
+                return;
+            }
+
+            string filePath = string.IsNullOrWhiteSpace(fileListFilePath) ? BundlePath + "ABBuiledFiles.txt" : fileListFilePath;
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            FileStream fs = new FileStream(filePath, FileMode.Create);
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Close();
+        }
+    }
+    #endregion
+
     #region Clear
     public static partial class ABLoadUtil
     {
@@ -225,6 +278,16 @@ namespace YUnity
     #region 清单文件
     public static partial class ABLoadUtil
     {
+        /// <summary>
+        /// 生成的资源包清单
+        /// </summary>
+        public static string ABBundleFilesFullPath => BundlePath + "ABBundleFiles.txt";
+
+        /// <summary>
+        /// 打进资源包的文件清单
+        /// </summary>
+        public static string ABBuiledFilesFullPath => BundlePath + "ABBuiledFiles.txt";
+
         /// <summary>
         /// 加载bundle和file清单文件
         /// </summary>

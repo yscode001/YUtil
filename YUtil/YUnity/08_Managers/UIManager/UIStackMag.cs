@@ -297,7 +297,7 @@ namespace YUnity
         /// </summary>
         /// <param name="rectTransformName">RectTransform的名字</param>
         /// <returns></returns>
-        public bool IsPushed(string rectTransformName)
+        public bool IsPushedOnce(string rectTransformName)
         {
             if (string.IsNullOrWhiteSpace(rectTransformName)) { return false; }
             return PushedNames.Contains(rectTransformName);

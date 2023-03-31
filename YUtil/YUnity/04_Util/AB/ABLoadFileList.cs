@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace YUnity
 {
@@ -19,5 +20,14 @@ namespace YUnity
     public class ABLoadFileList
     {
         public List<ABLoadFile> FileList = new List<ABLoadFile>();
+
+        public string Serialize()
+        {
+            if (FileList == null || FileList.Count <= 0)
+            {
+                return null;
+            }
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }
