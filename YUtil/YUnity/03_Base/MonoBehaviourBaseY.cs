@@ -16,6 +16,7 @@ namespace YUnity
         private RectTransform _rectTransform;
         private GameObject _gameObject;
         private PlayableDirector _playableDirector;
+        private Animation _animation;
         private Animator _animator;
         private VideoPlayer _videoPlayer;
         private AudioSource _audioSource;
@@ -114,6 +115,21 @@ namespace YUnity
                 if (_playableDirector != null) { return _playableDirector; }
                 _playableDirector = gameObject.AddComponent<PlayableDirector>();
                 return _playableDirector;
+            }
+        }
+
+        /// <summary>
+        /// 获取Animation，如果没有则添加
+        /// </summary>
+        public Animation AnimationY
+        {
+            get
+            {
+                if (_animation != null) { return _animation; }
+                _animation = gameObject.GetComponent<Animation>();
+                if (_animation != null) { return _animation; }
+                _animation = gameObject.AddComponent<Animation>();
+                return _animation;
             }
         }
 
@@ -420,6 +436,29 @@ namespace YUnity
         {
             string arg = args == null ? "" : args.ToString();
             Debug.Log($"动画事件：object：{arg}");
+        }
+    }
+    #endregion
+
+    #region 在相机可见
+    public partial class MonoBehaviourBaseY
+    {
+        /// <summary>
+        /// transform.position是否在相机可见
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
+        public bool IsVisableInCamera(Camera camera, Vector3 worldPos)
+        {
+            if (camera == null) { return false; }
+            Vector3 viewPos = camera.WorldToViewportPoint(worldPos);
+            // z < 0代表在相机背后
+            if (viewPos.z < 0) { return false; }
+            // 太远了！看不到了！
+            if (viewPos.z > camera.farClipPlane) { return false; }
+            // x, y 取值在 0~1 之外时代表在视角范围外
+            if (viewPos.x < 0 || viewPos.y < 0 || viewPos.x > 1 || viewPos.y > 1) { return false; }
+            return true;
         }
     }
     #endregion

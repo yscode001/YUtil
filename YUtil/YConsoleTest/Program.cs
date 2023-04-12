@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using YConsole;
+﻿using System;
 using YCSharp;
 
 namespace YConsoleTest
@@ -8,7 +7,11 @@ namespace YConsoleTest
     {
         static void Main(string[] args)
         {
-            LogTool.InitSettings();
+            BigNumber a = new BigNumber(0, 1);
+            BigNumber b = new BigNumber(1, 1);
+
+            var c = b - a;
+            Console.WriteLine(c);
         }
     }
 }
