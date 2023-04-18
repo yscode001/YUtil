@@ -96,16 +96,18 @@ namespace YUnity
         }
         internal void ReleaseAll(Action<GameObject> release)
         {
-            foreach (var obj in objectList)
+            for (int i = objectList.Count - 1; i >= 0; i--)
             {
+                var obj = objectList[i];
                 Release(release, obj);
             }
             objectList.Clear();
         }
         internal void ReleaseAll(Action<GameObject> release, List<GameObject> except)
         {
-            foreach (var obj in objectList)
+            for (int i = objectList.Count - 1; i >= 0; i--)
             {
+                var obj = objectList[i];
                 if (except != null && except.Contains(obj))
                 {
                     continue;
