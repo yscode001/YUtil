@@ -4,11 +4,10 @@
 // ------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using UnityEngine;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace YUnity
 {
@@ -99,67 +98,53 @@ namespace YUnity
     public static partial class ABLoadUtil
     {
         /// <summary>
-        /// 加载bundle包及其依赖
+        /// 获取所有的依赖包(包含依赖的依赖)
         /// </summary>
-        /// <param name="abBundleName"></param>
+        /// <param name="abBundleName">指定的bundle包的名字</param>
         /// <returns></returns>
-        public static Tuple<AssetBundle, List<AssetBundle>> LoadAssetBundle(string abBundleName)
+        public static string[] GetAllDependencies(string abBundleName)
         {
-            List<AssetBundle> dependencieList = null;
-            string[] dependencies = Manifest.GetAllDependencies(GetBundleName(abBundleName));
-            if (dependencies != null && dependencies.Length > 0)
+            if (string.IsNullOrWhiteSpace(abBundleName))
             {
-                dependencieList = new List<AssetBundle>();
-                foreach (var dependencie in dependencies)
-                {
-                    AssetBundle dependencieBundle = AssetBundle.LoadFromFile(BundlePath + GetBundleName(dependencie));
-                    if (dependencieBundle == null)
-                    {
-                        throw new Exception($"AssetBundleUtil-LoadAssetBundle：{abBundleName}的依赖包：{GetBundleName(dependencie)}不存在");
-                    }
-                    else
-                    {
-                        dependencieList.Add(dependencieBundle);
-                    }
-                }
+                throw new System.Exception("AssetBundleUtil-GetAllDependencies：abBundleName不能为空");
             }
-            return new Tuple<AssetBundle, List<AssetBundle>>(AssetBundle.LoadFromFile(BundlePath + GetBundleName(abBundleName)), dependencieList);
+            return Manifest.GetAllDependencies(GetBundleName(abBundleName));
+        }
+
+        /// <summary>
+        /// 加载bundle包
+        /// </summary>
+        /// <param name="abBundleName">指定的bundle包的名字</param>
+        /// <param name="handleDependencieBeforeLoad">在加载之前先处理依赖包(这里包含所有的依赖包，包含依赖的依赖)</param>
+        /// <returns></returns>
+        public static AssetBundle LoadAssetBundle(string abBundleName, Action<string[]> handleDependencieBeforeLoad)
+        {
+            if (string.IsNullOrWhiteSpace(abBundleName))
+            {
+                throw new System.Exception("AssetBundleUtil-LoadAssetBundle：abBundleName不能为空");
+            }
+            handleDependencieBeforeLoad?.Invoke(GetAllDependencies(abBundleName));
+            return AssetBundle.LoadFromFile(BundlePath + GetBundleName(abBundleName));
         }
 
         /// <summary>
         /// 加载资源
         /// </summary>
         /// <typeparam name="T">资源类型</typeparam>
-        /// <param name="abBundleName">bundle包名称</param>
+        /// <param name="assetBundle">指定的assetBundle包</param>
         /// <param name="assetName">资源名称</param>
-        /// <returns>bundle、dependencieBundleArray、asset</returns>
-        public static Tuple<AssetBundle, AssetBundle[], T> LoadAsset<T>(string abBundleName, string assetName) where T : UnityEngine.Object
+        /// <returns></returns>
+        public static T LoadAsset<T>(AssetBundle assetBundle, string assetName) where T : UnityEngine.Object
         {
-            if (string.IsNullOrWhiteSpace(abBundleName) || string.IsNullOrWhiteSpace(assetName))
+            if (assetBundle == null)
             {
-                throw new System.Exception("AssetBundleUtil-LoadAsset：abBundleName和assetName不能为空");
+                throw new System.Exception("AssetBundleUtil-LoadAsset：assetBundle不能为空");
             }
-            if (string.IsNullOrWhiteSpace(BundlePath) || Manifest == null)
+            if (string.IsNullOrWhiteSpace(assetName))
             {
-                throw new System.Exception("AssetBundleUtil-LoadAsset：请先调用YUnity.AssetBundleUtil.Init进行初始化");
+                throw new System.Exception("AssetBundleUtil-LoadAsset：assetName不能为空");
             }
-            Tuple<AssetBundle, List<AssetBundle>> tupe = LoadAssetBundle(abBundleName);
-            if (tupe == null)
-            {
-                throw new Exception($"AssetBundleUtil-LoadAsset：加载资源出错，abBundleName：{abBundleName}，assetName：{assetName}");
-            }
-            if (tupe.Item1 == null)
-            {
-                throw new System.Exception($"AssetBundleUtil-LoadAsset：{abBundleName}对应的bundle包不存在，请检查");
-            }
-            if (tupe.Item2 == null || tupe.Item2.Count <= 0)
-            {
-                return new Tuple<AssetBundle, AssetBundle[], T>(tupe.Item1, null, tupe.Item1.LoadAsset<T>(assetName));
-            }
-            else
-            {
-                return new Tuple<AssetBundle, AssetBundle[], T>(tupe.Item1, tupe.Item2.ToArray(), tupe.Item1.LoadAsset<T>(assetName));
-            }
+            return assetBundle.LoadAsset<T>(assetName);
         }
     }
     #endregion
