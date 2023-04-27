@@ -5,6 +5,29 @@ namespace YUnity
 {
     public static class TransformExt
     {
+        #region 重置
+        /// <summary>
+        /// 重置
+        /// </summary>
+        /// <param name="tf"></param>
+        /// <param name="isLocal">是否是local，默认为true</param>
+        public static void Reset(this Transform tf, bool isLocal = true)
+        {
+            if (isLocal)
+            {
+                tf.localPosition = Vector3.zero;
+                tf.localScale = Vector3.one;
+                tf.localEulerAngles = Vector3.zero;
+            }
+            else
+            {
+                tf.position = Vector3.zero;
+                tf.localScale = Vector3.one;
+                tf.eulerAngles = Vector3.zero;
+            }
+        }
+        #endregion
+
         #region 查找子物体
         public static Transform FindChildRecursively(this Transform parent, string name)
         {
@@ -269,22 +292,6 @@ namespace YUnity
         }
 
         #endregion
-
-        public static void SetToIdentity(this Transform tf, bool isLocal)
-        {
-            if (isLocal)
-            {
-                tf.localPosition = Vector3.zero;
-                tf.localScale = Vector3.one;
-                tf.localRotation = Quaternion.identity;
-            }
-            else
-            {
-                tf.position = Vector3.zero;
-                tf.localScale = Vector3.one;
-                tf.rotation = Quaternion.identity;
-            }
-        }
 
         /// <summary>
         /// Copy基础属性至另一个(位置、角度、旋转)

@@ -17,6 +17,8 @@ namespace YUnity
         {
             objectList.Clear();
         }
+
+        public bool HasElement => objectList.Count > 0;
     }
 
     internal partial class ObjectSubPool
@@ -34,6 +36,7 @@ namespace YUnity
                 {
                     // 有未激活的游戏物体，取出进行复用
                     go = obj;
+                    go.transform.parent = parent;
                     break;
                 }
             }
@@ -43,6 +46,7 @@ namespace YUnity
                 go = GameObject.Instantiate<GameObject>(prefab, parent, false);
                 objectList.Add(go);
             }
+            go.transform.Reset();
             if (go.activeSelf == false)
             {
                 go.SetActive(true);

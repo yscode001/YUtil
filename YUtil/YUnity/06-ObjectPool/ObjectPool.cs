@@ -93,47 +93,92 @@ namespace YUnity
         public static void Release(Action<GameObject> release, GameObject go)
         {
             if (go == null) { return; }
+            List<string> willRemove = new List<string>();
             foreach (var subpool in subpoolList.Values)
             {
                 if (subpool.Contains(go))
                 {
                     subpool.Release(release, go);
-                    return;
+                    if (!subpool.HasElement)
+                    {
+                        willRemove.Add(subpool.address);
+                    }
+                    break;
                 }
+            }
+            foreach (var remove in willRemove)
+            {
+                subpoolList.Remove(remove);
             }
         }
 
         public static void ReleaseAll(Action<GameObject> release)
         {
+            List<string> willRemove = new List<string>();
             foreach (var subpool in subpoolList.Values)
             {
                 subpool.ReleaseAll(release);
+                if (!subpool.HasElement)
+                {
+                    willRemove.Add(subpool.address);
+                }
+            }
+            foreach (var remove in willRemove)
+            {
+                subpoolList.Remove(remove);
             }
         }
 
         public static void ReleaseAll(Action<GameObject> release, List<GameObject> except)
         {
+            List<string> willRemove = new List<string>();
             foreach (var subpool in subpoolList.Values)
             {
                 subpool.ReleaseAll(release, except);
+                if (!subpool.HasElement)
+                {
+                    willRemove.Add(subpool.address);
+                }
+            }
+            foreach (var remove in willRemove)
+            {
+                subpoolList.Remove(remove);
             }
         }
 
         public static void ReleaseAll(Action<GameObject> release, string address)
         {
             if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
+            List<string> willRemove = new List<string>();
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
                 subpoolItem.ReleaseAll(release);
+                if (!subpoolItem.HasElement)
+                {
+                    willRemove.Add(subpoolItem.address);
+                }
+            }
+            foreach (var remove in willRemove)
+            {
+                subpoolList.Remove(remove);
             }
         }
 
         public static void ReleaseAll(Action<GameObject> release, string address, List<GameObject> except)
         {
             if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
+            List<string> willRemove = new List<string>();
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
                 subpoolItem.ReleaseAll(release, except);
+                if (!subpoolItem.HasElement)
+                {
+                    willRemove.Add(subpoolItem.address);
+                }
+            }
+            foreach (var remove in willRemove)
+            {
+                subpoolList.Remove(remove);
             }
         }
     }

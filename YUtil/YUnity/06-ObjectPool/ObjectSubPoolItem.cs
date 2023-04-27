@@ -7,7 +7,7 @@ namespace YUnity
     internal partial class ObjectSubPoolItem
     {
         // 对象地址，唯一标识
-        private readonly string address;
+        public readonly string address;
 
         private GameObject prefab;
 
@@ -35,6 +35,8 @@ namespace YUnity
         {
             subPool.OnlyClearCacheList();
         }
+
+        public bool HasElement => subPool.HasElement;
     }
     internal partial class ObjectSubPoolItem
     {
