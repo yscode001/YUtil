@@ -444,11 +444,14 @@ namespace YUnity
     public partial class MonoBehaviourBaseY
     {
         /// <summary>
-        /// transform.position是否在相机可见
+        /// 某个点是否在相机视野范围内
         /// </summary>
-        /// <param name="camera"></param>
+        /// <param name="camera">相机</param>
+        /// <param name="worldPos">世界坐标点</param>
+        /// <param name="xEdgeDistance">除去x轴边缘距离(0-0.5f)</param>
+        /// <param name="yEdgeDistance">除去y轴边缘距离(0-0.5f)</param>
         /// <returns></returns>
-        public bool IsVisableInCamera(Camera camera, Vector3 worldPos)
+        public bool IsVisableInCamera(Camera camera, Vector3 worldPos, float xEdgeDistance = 0, float yEdgeDistance = 0)
         {
             if (camera == null) { return false; }
             Vector3 viewPos = camera.WorldToViewportPoint(worldPos);
@@ -456,8 +459,10 @@ namespace YUnity
             if (viewPos.z < 0) { return false; }
             // 太远了！看不到了！
             if (viewPos.z > camera.farClipPlane) { return false; }
-            // x, y 取值在 0~1 之外时代表在视角范围外
-            if (viewPos.x < 0 || viewPos.y < 0 || viewPos.x > 1 || viewPos.y > 1) { return false; }
+            float xEdge = Mathf.Clamp(xEdgeDistance, 0, 0.5f);
+            float yEdge = Mathf.Clamp(yEdgeDistance, 0, 0.5f);
+            // x, y 取值在 xEdge 和 yEdge 之外时代表在视角范围外
+            if (viewPos.x < xEdge || viewPos.y < yEdge || viewPos.x > 1f - xEdge || viewPos.y > 1f - yEdge) { return false; }
             return true;
         }
     }
