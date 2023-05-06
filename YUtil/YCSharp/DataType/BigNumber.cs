@@ -14,25 +14,6 @@ namespace YCSharp
     public partial struct BigNumber
     {
         /// <summary>
-        /// Zero
-        /// </summary>
-        public static BigNumber Zero { get; private set; } = new BigNumber(0, 0);
-
-        /// <summary>
-        /// 1个单位的值，即1个大单位等于多少个小单位，默认1000
-        /// </summary>
-        public static float UnitValue { get; private set; } = 1000;
-
-        /// <summary>
-        /// 初始化单位的值，即1个大单位等于多少个小单位，默认1000
-        /// </summary>
-        /// <param name="unitValue"></param>
-        public static void InitUnitValue(float unitValue = 1000)
-        {
-            UnitValue = Math.Max(1, unitValue);
-        }
-
-        /// <summary>
         /// 单位
         /// </summary>
         public UInt32 Unit { get; private set; }
@@ -74,7 +55,7 @@ namespace YCSharp
                 {
                     // 退位
                     Unit -= 1;
-                    Value *= 1000;
+                    Value *= UnitValue;
                     if (Value < 1)
                     {
                         // 递归退位
@@ -173,6 +154,23 @@ namespace YCSharp
                 ConvertTo(value.Unit).Subtract(value);
             }
         }
+
+        /// <summary>
+        /// 求百分比(0-1)，当前值为分子
+        /// </summary>
+        /// <param name="denominator">分母</param>
+        /// <returns></returns>
+        public float Percent(BigNumber denominator)
+        {
+            if (this <= Zero || denominator <= Zero) { return 0; }
+            if (this >= denominator) { return 1; }
+            if (denominator.Unit - Unit >= 2)
+            {
+                // 超过2个数量级了，直接返回0
+                return 0;
+            }
+            return Value / denominator.ConvertTo(Unit).Value;
+        }
     }
     #endregion
 
@@ -224,6 +222,30 @@ namespace YCSharp
         {
             lhs.Subtract(rhs);
             return new BigNumber(lhs.Unit, lhs.Value);
+        }
+    }
+    #endregion
+
+    #region 静态方法和属性
+    public partial struct BigNumber
+    {
+        /// <summary>
+        /// Zero
+        /// </summary>
+        public static BigNumber Zero { get; private set; } = new BigNumber(0, 0);
+
+        /// <summary>
+        /// 1个单位的值，即1个大单位等于多少个小单位，默认1000
+        /// </summary>
+        public static float UnitValue { get; private set; } = 1000;
+
+        /// <summary>
+        /// 初始化单位的值，即1个大单位等于多少个小单位，默认1000
+        /// </summary>
+        /// <param name="unitValue"></param>
+        public static void InitUnitValue(float unitValue = 1000)
+        {
+            UnitValue = Math.Max(1000, unitValue);
         }
     }
     #endregion

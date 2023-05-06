@@ -7,8 +7,8 @@ namespace YUnity
     public partial class AudioSource3DHelper : MonoBehaviourBaseY
     {
         private AudioSource audioSource;
-        private float minDistance = 0;
-        private float maxDistance = 0;
+        private float minDistance = 1f;
+        private float maxDistance = 10f;
         public Transform listenerTransform;
 
         protected void Awake()
@@ -59,22 +59,18 @@ namespace YUnity
 
     public partial class AudioSource3DHelper
     {
-        /// <summary>
-        /// 播放音效
-        /// </summary>
-        /// <param name="fullFilePath">音效完整路径</param>
-        public void PlayAudioClip(string fullFilePath, bool loop)
+        public void PlayAudioClip(AudioClip audioClip, bool loop)
         {
-            AudioClip ac = ResourceMag.Instance.LoadAudio(fullFilePath, true);
-            if (ac == null) { StopAudioClip(); return; }
+            if (audioClip == null) { StopAudioClip(); return; }
             audioSource.loop = loop;
-            if (audioSource.clip != null && audioSource.clip.name == ac.name && audioSource.isPlaying)
+            if (audioSource.clip != null && audioSource.clip.name == audioClip.name && audioSource.isPlaying)
             {
                 return;
             }
-            audioSource.clip = ac;
+            audioSource.clip = audioClip;
             Play();
         }
+
         private void Play()
         {
             if (EnableAudioSource3D)
