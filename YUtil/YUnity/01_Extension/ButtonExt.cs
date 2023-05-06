@@ -17,19 +17,15 @@ namespace YUnity
         public static void EnableDelay(this Button btn, float delay = 1, TimeUnit timeUnit = TimeUnit.Second)
         {
             if (delay <= 0) { return; }
-            try
+            btn.interactable = false;
+            QueueMag.Instance.RunOnMainQueue(() =>
             {
-                btn.interactable = false;
-                QueueMag.Instance.RunOnMainQueue(() =>
+                try
                 {
-                    try
-                    {
-                        btn.interactable = true;
-                    }
-                    catch { }
-                }, delay, timeUnit);
-            }
-            catch { }
+                    btn.interactable = true;
+                }
+                catch { }
+            }, delay, timeUnit);
         }
     }
 }

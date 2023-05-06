@@ -13,16 +13,15 @@ namespace YUnity
         /// <param name="isLocal">是否是local，默认为true</param>
         public static void Reset(this Transform tf, bool isLocal = true)
         {
+            tf.localScale = Vector3.one;
             if (isLocal)
             {
                 tf.localPosition = Vector3.zero;
-                tf.localScale = Vector3.one;
                 tf.localEulerAngles = Vector3.zero;
             }
             else
             {
                 tf.position = Vector3.zero;
-                tf.localScale = Vector3.one;
                 tf.eulerAngles = Vector3.zero;
             }
         }

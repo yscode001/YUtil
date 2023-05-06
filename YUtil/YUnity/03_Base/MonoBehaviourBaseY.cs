@@ -455,10 +455,8 @@ namespace YUnity
         {
             if (camera == null) { return false; }
             Vector3 viewPos = camera.WorldToViewportPoint(worldPos);
-            // z < 0代表在相机背后
-            if (viewPos.z < 0) { return false; }
-            // 太远了！看不到了！
-            if (viewPos.z > camera.farClipPlane) { return false; }
+            if (viewPos.z < camera.nearClipPlane || viewPos.z > camera.farClipPlane) { return false; }
+
             float xEdge = Mathf.Clamp(xEdgeDistance, 0, 0.5f);
             float yEdge = Mathf.Clamp(yEdgeDistance, 0, 0.5f);
             // x, y 取值在 xEdge 和 yEdge 之外时代表在视角范围外
