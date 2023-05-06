@@ -73,51 +73,29 @@ namespace YUnity
                 UnSpawn(obj);
             }
         }
-        internal void UnSpawnAll(List<GameObject> except)
-        {
-            foreach (var obj in objectList)
-            {
-                if (except != null && except.Contains(obj))
-                {
-                    continue;
-                }
-                UnSpawn(obj);
-            }
-        }
     }
 
     internal partial class ObjectSubPool
     {
-        internal void Release(Action<GameObject> release, GameObject go)
+        internal void Release(GameObject go, bool immediate)
         {
             if (go != null && Contains(go))
             {
                 // 先回收，再释放
                 UnSpawn(go);
-                release?.Invoke(go);
                 objectList.Remove(go);
+                if (immediate) { GameObject.DestroyImmediate(go); }
+                else { GameObject.Destroy(go); }
             }
         }
-        internal void ReleaseAll(Action<GameObject> release)
+        internal void ReleaseAll(bool immediate)
         {
             for (int i = objectList.Count - 1; i >= 0; i--)
             {
                 var obj = objectList[i];
-                Release(release, obj);
+                Release(obj, immediate);
             }
             objectList.Clear();
-        }
-        internal void ReleaseAll(Action<GameObject> release, List<GameObject> except)
-        {
-            for (int i = objectList.Count - 1; i >= 0; i--)
-            {
-                var obj = objectList[i];
-                if (except != null && except.Contains(obj))
-                {
-                    continue;
-                }
-                Release(release, obj);
-            }
         }
     }
 }

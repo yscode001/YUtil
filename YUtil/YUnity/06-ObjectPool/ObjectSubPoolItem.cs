@@ -62,24 +62,16 @@ namespace YUnity
         {
             subPool.UnSpawnAll();
         }
-        internal void UnSpawnAll(List<GameObject> except)
-        {
-            subPool.UnSpawnAll(except);
-        }
     }
     internal partial class ObjectSubPoolItem
     {
-        internal void Release(Action<GameObject> release, GameObject go)
+        internal void Release(GameObject go, bool immediate)
         {
-            subPool.Release(release, go);
+            subPool.Release(go, immediate);
         }
-        internal void ReleaseAll(Action<GameObject> release)
+        internal void ReleaseAll(bool immediate)
         {
-            subPool.ReleaseAll(release);
-        }
-        internal void ReleaseAll(Action<GameObject> release, List<GameObject> except)
-        {
-            subPool.ReleaseAll(release, except);
+            subPool.ReleaseAll(immediate);
         }
     }
 }

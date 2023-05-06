@@ -17,7 +17,7 @@ namespace YCSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static bool HasData<T>(this List<T> list)
+        public static bool HasElements<T>(this List<T> list)
         {
             return list != null && list.Count > 0;
         }
@@ -28,7 +28,7 @@ namespace YCSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static bool HasNoData<T>(this List<T> list)
+        public static bool HasNoElements<T>(this List<T> list)
         {
             return list == null || list.Count <= 0;
         }
@@ -38,7 +38,7 @@ namespace YCSharp
         /// </summary>
         /// <param name="arrayList"></param>
         /// <returns></returns>
-        public static bool HasData(this ArrayList arrayList)
+        public static bool HasElements(this ArrayList arrayList)
         {
             return arrayList != null && arrayList.Count > 0;
         }
@@ -48,7 +48,7 @@ namespace YCSharp
         /// </summary>
         /// <param name="arrayList"></param>
         /// <returns></returns>
-        public static bool HasNoData(this ArrayList arrayList)
+        public static bool HasNoElements(this ArrayList arrayList)
         {
             return arrayList == null || arrayList.Count <= 0;
         }
@@ -58,7 +58,7 @@ namespace YCSharp
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
-        public static bool HasData(this Array array)
+        public static bool HasElements(this Array array)
         {
             return array != null && array.Length > 0;
         }
@@ -68,7 +68,7 @@ namespace YCSharp
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
-        public static bool HasNoData(this Array array)
+        public static bool HasNoElements(this Array array)
         {
             return array == null || array.Length <= 0;
         }

@@ -107,41 +107,23 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 销毁自己的游戏物体
-        /// </summary>
-        /// <param name="component"></param>
-        public static void DestroyGO(this GameObject go)
-        {
-            GameObject.Destroy(go);
-        }
-
-        /// <summary>
-        /// 销毁所有的子物体(先子物体后自己)
-        /// </summary>
-        /// <param name="go"></param>
-        public static void DestroyAllChild(this GameObject go)
-        {
-            for (int i = go.transform.childCount - 1; i >= 0; i--)
-            {
-                GameObject.Destroy(go.transform.GetChild(i).gameObject);
-            }
-        }
-
-        /// <summary>
         /// 销毁所有的子物体
         /// </summary>
         /// <param name="go"></param>
-        /// <param name="expect"></param>
-        public static void DestroyAllChild(this GameObject go, List<GameObject> expect)
+        /// <param name="immediate">是否立即销毁</param>
+        public static void DestroyAllChild(this GameObject go, bool immediate = false)
         {
-            for (int i = go.transform.childCount - 1; i >= 0; i--)
+            Transform goT = go.transform;
+            for (int i = goT.childCount - 1; i >= 0; i--)
             {
-                GameObject childGO = go.transform.GetChild(i).gameObject;
-                if (expect != null && expect.Contains(childGO))
+                if (immediate)
                 {
-                    continue;
+                    GameObject.DestroyImmediate(goT.GetChild(i).gameObject);
                 }
-                GameObject.Destroy(childGO);
+                else
+                {
+                    GameObject.Destroy(goT.GetChild(i).gameObject);
+                }
             }
         }
 

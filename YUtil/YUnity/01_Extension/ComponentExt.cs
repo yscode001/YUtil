@@ -119,42 +119,23 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 销毁组件所在的游戏物体
-        /// </summary>
-        /// <param name="component"></param>
-        public static void DestroyGO(this Component component)
-        {
-            GameObject.Destroy(component.gameObject);
-        }
-
-        /// <summary>
-        /// 销毁所有的子物体(先子物体后自己)
-        /// </summary>
-        /// <param name="component"></param>
-        /// <param name="includeSelf">是否包含自己</param>
-        public static void DestroyAllChild(this Component component)
-        {
-            for (int i = component.transform.childCount - 1; i >= 0; i--)
-            {
-                GameObject.Destroy(component.transform.GetChild(i).gameObject);
-            }
-        }
-
-        /// <summary>
         /// 销毁所有的子物体
         /// </summary>
         /// <param name="component"></param>
-        /// <param name="expect"></param>
-        public static void DestroyAllChild(this Component component, List<GameObject> except)
+        /// <param name="immediate">是否立即销毁</param>
+        public static void DestroyAllChild(this Component component, bool immediate = false)
         {
-            for (int i = component.transform.childCount - 1; i >= 0; i--)
+            Transform goT = component.transform;
+            for (int i = goT.childCount - 1; i >= 0; i--)
             {
-                GameObject childGO = component.transform.GetChild(i).gameObject;
-                if (except != null && except.Contains(childGO))
+                if (immediate)
                 {
-                    continue;
+                    GameObject.DestroyImmediate(goT.GetChild(i).gameObject);
                 }
-                GameObject.Destroy(childGO);
+                else
+                {
+                    GameObject.Destroy(goT.GetChild(i).gameObject);
+                }
             }
         }
 

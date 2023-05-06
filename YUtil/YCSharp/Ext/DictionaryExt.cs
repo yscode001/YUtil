@@ -3,32 +3,11 @@
 // Date：2022-2-10
 // ------------------------------
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace YCSharp
 {
     public static class DictionaryExt
     {
-        /// <summary>
-        /// 根据key获取value
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <param name="key"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        public static TValue TryGet<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, [DefaultValue(null)] TValue defaultValue)
-        {
-            if (dictionary == null) { return defaultValue; }
-            TValue val;
-            if (dictionary.TryGetValue(key, out val))
-            {
-                return val;
-            }
-            return defaultValue;
-        }
-
         /// <summary>
         /// 存在key不添加，否则添加
         /// </summary>

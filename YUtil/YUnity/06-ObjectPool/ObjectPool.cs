@@ -62,14 +62,6 @@ namespace YUnity
             }
         }
 
-        public static void UnSpawnAll(List<GameObject> except)
-        {
-            foreach (var subpool in subpoolList.Values)
-            {
-                subpool.UnSpawnAll(except);
-            }
-        }
-
         public static void UnSpawnAll(string address)
         {
             if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
@@ -78,19 +70,10 @@ namespace YUnity
                 subpoolItem.UnSpawnAll();
             }
         }
-
-        public static void UnSpawnAll(string address, List<GameObject> except)
-        {
-            if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
-            if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
-            {
-                subpoolItem.UnSpawnAll(except);
-            }
-        }
     }
     public partial class ObjectPool
     {
-        public static void Release(Action<GameObject> release, GameObject go)
+        public static void Release(GameObject go, bool immediate = false)
         {
             if (go == null) { return; }
             List<string> willRemove = new List<string>();
@@ -98,7 +81,7 @@ namespace YUnity
             {
                 if (subpool.Contains(go))
                 {
-                    subpool.Release(release, go);
+                    subpool.Release(go, immediate);
                     if (!subpool.HasElement)
                     {
                         willRemove.Add(subpool.address);
@@ -112,12 +95,12 @@ namespace YUnity
             }
         }
 
-        public static void ReleaseAll(Action<GameObject> release)
+        public static void ReleaseAll(bool immediate = false)
         {
             List<string> willRemove = new List<string>();
             foreach (var subpool in subpoolList.Values)
             {
-                subpool.ReleaseAll(release);
+                subpool.ReleaseAll(immediate);
                 if (!subpool.HasElement)
                 {
                     willRemove.Add(subpool.address);
@@ -129,48 +112,13 @@ namespace YUnity
             }
         }
 
-        public static void ReleaseAll(Action<GameObject> release, List<GameObject> except)
-        {
-            List<string> willRemove = new List<string>();
-            foreach (var subpool in subpoolList.Values)
-            {
-                subpool.ReleaseAll(release, except);
-                if (!subpool.HasElement)
-                {
-                    willRemove.Add(subpool.address);
-                }
-            }
-            foreach (var remove in willRemove)
-            {
-                subpoolList.Remove(remove);
-            }
-        }
-
-        public static void ReleaseAll(Action<GameObject> release, string address)
+        public static void ReleaseAll(string address, bool immediate = false)
         {
             if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
             List<string> willRemove = new List<string>();
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
-                subpoolItem.ReleaseAll(release);
-                if (!subpoolItem.HasElement)
-                {
-                    willRemove.Add(subpoolItem.address);
-                }
-            }
-            foreach (var remove in willRemove)
-            {
-                subpoolList.Remove(remove);
-            }
-        }
-
-        public static void ReleaseAll(Action<GameObject> release, string address, List<GameObject> except)
-        {
-            if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
-            List<string> willRemove = new List<string>();
-            if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
-            {
-                subpoolItem.ReleaseAll(release, except);
+                subpoolItem.ReleaseAll(immediate);
                 if (!subpoolItem.HasElement)
                 {
                     willRemove.Add(subpoolItem.address);
