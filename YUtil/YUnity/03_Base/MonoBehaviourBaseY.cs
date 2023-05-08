@@ -1,7 +1,10 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 namespace YUnity
@@ -462,6 +465,57 @@ namespace YUnity
             // x, y 取值在 xEdge 和 yEdge 之外时代表在视角范围外
             if (viewPos.x < xEdge || viewPos.y < yEdge || viewPos.x > 1f - xEdge || viewPos.y > 1f - yEdge) { return false; }
             return true;
+        }
+    }
+    #endregion
+
+    #region 常用方法
+    public partial class MonoBehaviourBaseY
+    {
+        private IEnumerator DoAfterDelayAtor(float delaySeconds, Action delayAction)
+        {
+            yield return new WaitForSeconds(delaySeconds);
+            delayAction?.Invoke();
+        }
+
+        /// <summary>
+        /// 使用协成延迟执行
+        /// </summary>
+        /// <param name="delaySeconds">延迟秒数</param>
+        /// <param name="delayAction">延迟执行的行为</param>
+        /// <returns></returns>
+        public Coroutine DoAfterDelay(float delaySeconds, Action delayAction)
+        {
+            if (delaySeconds <= 0)
+            {
+                delayAction?.Invoke();
+                return null;
+            }
+            return StartCoroutine(DoAfterDelayAtor(delaySeconds, delayAction));
+        }
+
+        /// <summary>
+        /// 使用协成延迟执行
+        /// </summary>
+        /// <param name="delaySeconds">延迟秒数</param>
+        /// <param name="immediateAction">立即执行的行为</param>
+        /// <param name="delayAction">延迟执行的行为</param>
+        /// <returns></returns>
+        public Coroutine DoAfterDelay(float delaySeconds, Action immediateAction, Action delayAction)
+        {
+            immediateAction?.Invoke();
+            return DoAfterDelay(delaySeconds, delayAction);
+        }
+
+        /// <summary>
+        /// 使用协成立即禁用按钮，然后延迟几秒后再次启用
+        /// </summary>
+        /// <param name="button">按钮</param>
+        /// <param name="delaySeconds">延迟秒数</param>
+        public void EnableButtonAfterDelay(Button button, float delaySeconds)
+        {
+            button.interactable = false;
+            DoAfterDelay(delaySeconds, () => { button.interactable = true; });
         }
     }
     #endregion

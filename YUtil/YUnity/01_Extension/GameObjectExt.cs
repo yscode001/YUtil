@@ -74,7 +74,7 @@ namespace YUnity
         /// <param name="go"></param>
         /// <param name="parentGO"></param>
         /// <returns>返回自己</returns>
-        public static GameObject SetToParent(this GameObject go, GameObject parentGO)
+        public static GameObject SetParent(this GameObject go, GameObject parentGO)
         {
             go.transform.SetParent(parentGO.transform, false);
             return go;

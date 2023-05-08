@@ -10,19 +10,9 @@ namespace YCSharp
 {
     public static class StringExt
     {
-        public static bool IsNullOrEmpty(this string str)
-        {
-            return string.IsNullOrEmpty(str);
-        }
-
-        public static bool IsNullOrWhiteSpace(this string str)
-        {
-            return string.IsNullOrWhiteSpace(str);
-        }
-
         public static byte[] ToByteArray(this string str, Encoding encoding)
         {
-            if (string.IsNullOrEmpty(str)) { return null; }
+            if (string.IsNullOrWhiteSpace(str)) { return null; }
             return encoding.GetBytes(str);
         }
 

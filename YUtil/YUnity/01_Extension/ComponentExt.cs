@@ -86,7 +86,7 @@ namespace YUnity
         /// <param name="parentCont"></param>
         /// <param name="worldPositionStays"></param>
         /// <returns>返回自己</returns>
-        public static Component SetToParent(this Component component, Component parentCont, bool worldPositionStays = false)
+        public static Component SetParent(this Component component, Component parentCont, bool worldPositionStays = false)
         {
             component.transform.SetParent(parentCont.transform, worldPositionStays);
             return component;
