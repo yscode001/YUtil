@@ -18,7 +18,7 @@ namespace YUnity
     }
     public partial class ObjectPool
     {
-        public static GameObject Spawn(string address, GameObject prefab, Transform parent)
+        public static GameObject Spawn(string address, GameObject prefab, Transform parent, bool transformReset = true)
         {
             if (string.IsNullOrWhiteSpace(address) || prefab == null)
             {
@@ -30,7 +30,7 @@ namespace YUnity
             }
             if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
             {
-                return subpoolItem.Spawn(parent);
+                return subpoolItem.Spawn(parent, transformReset);
             }
             else
             {

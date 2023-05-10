@@ -23,7 +23,7 @@ namespace YUnity
 
     internal partial class ObjectSubPool
     {
-        internal GameObject Spawn(GameObject prefab, Transform parent)
+        internal GameObject Spawn(GameObject prefab, Transform parent, bool transformReset)
         {
             if (prefab == null)
             {
@@ -46,7 +46,7 @@ namespace YUnity
                 go = GameObject.Instantiate<GameObject>(prefab, parent, false);
                 objectList.Add(go);
             }
-            go.transform.Reset();
+            if (transformReset) { go.transform.Reset(); }
             if (go.activeSelf == false)
             {
                 go.SetActive(true);

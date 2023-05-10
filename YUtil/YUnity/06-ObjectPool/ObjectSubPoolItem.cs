@@ -40,11 +40,11 @@ namespace YUnity
     }
     internal partial class ObjectSubPoolItem
     {
-        internal GameObject Spawn(Transform parent)
+        internal GameObject Spawn(Transform parent, bool transformReset)
         {
             if (prefab != null)
             {
-                return subPool.Spawn(prefab, parent);
+                return subPool.Spawn(prefab, parent, transformReset);
             }
             else
             {

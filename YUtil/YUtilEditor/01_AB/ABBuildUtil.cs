@@ -37,9 +37,6 @@ namespace YUtilEditor
         // ab包后缀
         private static string BundleExt = ".unity3d";
 
-        // 根目录下如果有文件，打成一个root bundle
-        private static string RootBundleName = "root" + BundleExt;
-
         // 清单文件名
         private static string BundleListFileName = "manifest" + BundleExt;
 
@@ -58,10 +55,9 @@ namespace YUtilEditor
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
         /// <param name="bundleExt">可选参数：bundle包的扩展名(默认：.unity3d)</param>
         /// <param name="manifestBundleName">可选参数：manifest包的名字，默认：manifest.unity3d</param>
-        /// <param name="rootBundleName">可选参数：根目录下资源包默认名字，默认：root.unity3d</param>
         /// <param name="bundleOptions">可选参数：打包选项(默认：None)</param>
         /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, string bundleExt = ".unity3d", string manifestBundleName = "manifest", string rootBundleName = "root", BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
+        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, string bundleExt = ".unity3d", string manifestBundleName = "manifest", BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(resSourceDirectory))
             {
@@ -74,7 +70,6 @@ namespace YUtilEditor
             Version = (UInt32)Mathf.Max(1, version);
             PlatformName = platformName;
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
-            SetRootBundleName(rootBundleName);
             SetManifestBundleName(manifestBundleName);
             SetBundleExt(bundleExt);
             SetIgnoreExts(ignoreExts);
@@ -92,21 +87,6 @@ namespace YUtilEditor
             }
         }
 
-        private static void SetRootBundleName(string rootBundleName)
-        {
-            if (string.IsNullOrWhiteSpace(rootBundleName))
-            {
-                RootBundleName = "root" + BundleExt;
-            }
-            else if (rootBundleName.Contains("."))
-            {
-                RootBundleName = rootBundleName.ToLower();
-            }
-            else
-            {
-                RootBundleName = rootBundleName.ToLower() + BundleExt;
-            }
-        }
         private static void SetManifestBundleName(string manifestBundleName)
         {
             if (string.IsNullOrWhiteSpace(manifestBundleName))
@@ -199,16 +179,10 @@ namespace YUtilEditor
             List<AssetBundleBuild> list = new List<AssetBundleBuild>();
 
             DirectoryInfo sourceDir = new DirectoryInfo(ResSourceDirectory);
-            AssetBundleBuild rootBuildInfo = GetBuildInfo(sourceDir, true);
-            if (!string.IsNullOrWhiteSpace(rootBuildInfo.assetBundleName) && rootBuildInfo.assetNames != null && rootBuildInfo.assetNames.Length > 0)
-            {
-                list.Add(rootBuildInfo);
-            }
-
             DirectoryInfo[] childrenDirs = sourceDir.GetDirectories();
             foreach (var childDir in childrenDirs)
             {
-                AssetBundleBuild childBuildInfo = GetBuildInfo(childDir, false);
+                AssetBundleBuild childBuildInfo = GetBuildInfo(childDir);
                 if (!string.IsNullOrWhiteSpace(childBuildInfo.assetBundleName) && childBuildInfo.assetNames != null && childBuildInfo.assetNames.Length > 0)
                 {
                     list.Add(childBuildInfo);
@@ -276,32 +250,12 @@ namespace YUtilEditor
         }
 
         // 获取文件夹中可以build的文件集合
-        private static List<FileInfo> GetFilesWillBeBuiled(DirectoryInfo directoryInfo, bool root)
+        private static List<FileInfo> GetFilesWillBeBuiled(DirectoryInfo directoryInfo)
         {
             if (directoryInfo == null) { return null; }
             List<FileInfo> list = new List<FileInfo>();
-            if (root)
-            {
-                // 不需要递归
-                var fileinfos = directoryInfo.GetFiles();
-                if (fileinfos != null && fileinfos.Length > 0)
-                {
-                    foreach (var fileinfo in fileinfos)
-                    {
-                        if (IgnoreExts != null && IgnoreExts.Count > 0 && IgnoreExts.Contains(Path.GetExtension(fileinfo.Name).ToLower()))
-                        {
-                            // 被忽略的文件忽略掉
-                            continue;
-                        }
-                        list.Add(fileinfo);
-                    }
-                }
-            }
-            else
-            {
-                // 需要递归
-                GetAllFiles(directoryInfo, list);
-            }
+            // 递归遍历文件
+            GetAllFiles(directoryInfo, list);
             return list;
         }
 
@@ -335,12 +289,12 @@ namespace YUtilEditor
             }
         }
 
-        private static AssetBundleBuild GetBuildInfo(DirectoryInfo directoryInfo, bool root)
+        private static AssetBundleBuild GetBuildInfo(DirectoryInfo directoryInfo)
         {
             AssetBundleBuild build = new AssetBundleBuild();
-            build.assetBundleName = root ? GetBundleName(RootBundleName) : GetBundleName(directoryInfo.Name);
+            build.assetBundleName = GetBundleName(directoryInfo.Name);
 
-            List<FileInfo> fileInfolist = GetFilesWillBeBuiled(directoryInfo, root);
+            List<FileInfo> fileInfolist = GetFilesWillBeBuiled(directoryInfo);
             List<string> fileNames = new List<string>();
             foreach (var fileinfo in fileInfolist)
             {
