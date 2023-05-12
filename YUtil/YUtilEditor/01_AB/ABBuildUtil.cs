@@ -299,7 +299,7 @@ namespace YUtilEditor
             foreach (var fileinfo in fileInfolist)
             {
                 // 获取文件的相对路径
-                string filepath = "Assets" + fileinfo.FullName.Replace("\\", " / ").Replace(Application.dataPath.Replace("\\", " / "), "");
+                string filepath = "Assets" + fileinfo.FullName.Replace("\\", "/").Replace(Application.dataPath.Replace("\\", "/"), "");
                 fileNames.Add(filepath);
             }
             build.assetNames = fileNames.ToArray();
