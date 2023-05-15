@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace YUnity
@@ -23,12 +22,27 @@ namespace YUnity
 
     internal partial class ObjectSubPool
     {
+        /// <summary>
+        /// 防止外界由于种种原因销毁了object
+        /// </summary>
+        private void RemoveNullObjectBeforeSpawn()
+        {
+            for (int i = objectList.Count - 1; i >= 0; i--)
+            {
+                if (objectList[i] == null)
+                {
+                    objectList.RemoveAt(i);
+                }
+            }
+        }
+
         internal GameObject Spawn(GameObject prefab, Transform parent, bool transformReset)
         {
             if (prefab == null)
             {
                 throw new System.Exception("ObjectPool-Spawn：prefab不能为空");
             }
+            RemoveNullObjectBeforeSpawn();
             GameObject go = null;
             foreach (var obj in objectList)
             {
