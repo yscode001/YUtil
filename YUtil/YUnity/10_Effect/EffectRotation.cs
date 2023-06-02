@@ -10,7 +10,7 @@ namespace YUnity
     /// <summary>
     /// 旋转特效
     /// </summary>
-    public partial class EffectRotation : MonoBehaviour
+    public partial class EffectRotation : MonoBehaviourBaseY
     {
         [Header("旋转速度")]
         [SerializeField] private float RotationSpeedX;
@@ -24,7 +24,7 @@ namespace YUnity
         {
             if (IsAllowPlay)
             {
-                transform.Rotate(new Vector3(RotationSpeedX, RotationSpeedY, RotationSpeedZ) * Time.deltaTime);
+                TransformY.Rotate(new Vector3(RotationSpeedX, RotationSpeedY, RotationSpeedZ) * Time.deltaTime);
             }
         }
 
