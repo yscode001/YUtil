@@ -50,11 +50,12 @@ namespace YUnity
         /// </summary>
         /// <param name="curveDir">曲线方向，zero表示随机曲线方向</param>
         /// <param name="curveRandomSeed">随机方向种子，仅在curveDir为zero时有意义</param>
+        /// <param name="curveWeight">曲线权重(0-1)</param>
         /// <param name="targetPos">目标位置</param>
         /// <param name="moveSpeed">飞行速度</param>
         /// <param name="limitReachDis">当距目标小于等于这个距离时，就算达到</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void BeginFlying(Vector3 curveDir, int curveRandomSeed, Vector3 targetPos, float moveSpeed, float limitReachDis, Action reachedComplete)
+        public void BeginFlying(Vector3 curveDir, int curveRandomSeed, float curveWeight, Vector3 targetPos, float moveSpeed, float limitReachDis, Action reachedComplete)
         {
             Clear();
             if (moveSpeed <= 0 ||
@@ -75,14 +76,12 @@ namespace YUnity
                 Vector3 v1 = Vector3.Cross(targetPos - TransformY.position, Vector3.up).normalized;
                 v1 *= ran.Next(-100, 100);
                 Vector3 v2 = Vector3.up * ran.Next(0, 100);
-                // CurrentDir = (v1 + v2).normalized * 0.3f;
-                CurveDir = (v1 + v2).normalized;
+                CurveDir = (v1 + v2).normalized * Mathf.Clamp(curveWeight, 0, 1);
             }
             else
             {
                 // 指定曲线弹道
-                // CurrentDir = curveDir.normalized * 0.3f;
-                CurveDir = curveDir;
+                CurveDir = curveDir * Mathf.Clamp(curveWeight, 0, 1);
             }
             IsMoving = true; // 开始飞行
         }
@@ -107,7 +106,7 @@ namespace YUnity
             {
                 dir = (dir + CurveDir).normalized;
             }
-            TransformY.Translate(MoveSpeed * Time.deltaTime * dir);
+            TransformY.Translate(MoveSpeed * Time.deltaTime * dir, Space.World);
         }
     }
 }

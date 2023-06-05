@@ -88,15 +88,8 @@ namespace YUnity
                 return;
             }
             Vector3 targetPosition = TargetTransform.position;
-            if (Vector3.Distance(targetPosition, TransformY.position) <= LimitReachDis)
-            {
-                IsMoving = false;
-                ReachedComplete?.Invoke();
-                Clear();
-                return;
-            }
-            Vector3 willMove = MoveSpeed * Time.deltaTime * (targetPosition - TransformY.position).normalized;
-            if (willMove.magnitude > LimitReachDis)
+            float distance = Vector3.Distance(targetPosition, TransformY.position);
+            if (distance <= LimitReachDis)
             {
                 TransformY.position = targetPosition;
                 IsMoving = false;
@@ -104,7 +97,16 @@ namespace YUnity
                 Clear();
                 return;
             }
-            TransformY.Translate(willMove);
+            Vector3 willMove = MoveSpeed * Time.deltaTime * (targetPosition - TransformY.position).normalized;
+            if (Vector3.Distance(TransformY.position, TransformY.position + willMove) > distance)
+            {
+                TransformY.position = targetPosition;
+                IsMoving = false;
+                ReachedComplete?.Invoke();
+                Clear();
+                return;
+            }
+            TransformY.Translate(willMove, Space.World);
         }
     }
 }

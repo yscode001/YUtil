@@ -157,7 +157,7 @@ namespace YUnity
             {
                 CurDeltaTime += Time.deltaTime;
             }
-            TransformY.Translate(MoveSpeed * Time.deltaTime * Direction);
+            TransformY.Translate(MoveSpeed * Time.deltaTime * Direction, Space.World);
         }
     }
 }
