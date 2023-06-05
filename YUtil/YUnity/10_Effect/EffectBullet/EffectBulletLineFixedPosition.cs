@@ -80,7 +80,16 @@ namespace YUnity
                 Clear();
                 return;
             }
-            TransformY.Translate(MoveSpeed * Time.deltaTime * (TargetPosition - TransformY.position).normalized);
+            Vector3 willMove = MoveSpeed * Time.deltaTime * (TargetPosition - TransformY.position).normalized;
+            if (willMove.magnitude > LimitReachDis)
+            {
+                TransformY.position = TargetPosition;
+                IsMoving = false;
+                ReachedComplete?.Invoke();
+                Clear();
+                return;
+            }
+            TransformY.Translate(willMove);
         }
     }
 }
