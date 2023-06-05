@@ -42,52 +42,44 @@ namespace YUnity
         /// <param name="curveDir">弹道曲线，zero表示随机弹道曲线(仅在isUseCurveDir为true时有意义)</param>
         /// <param name="curveRandomSeed">随机弹道方向种子，仅在curveDir为zero时有意义</param>
         /// <param name="targetPos">目标位置</param>
-        /// <param name="startPos">开始位置，zero表示使用当前位置</param>
         /// <param name="moveSpeed">子弹速度</param>
         /// <param name="limitReachDis">当距目标小于等于这个距离时，就算达到</param>
         /// <param name="reachedTargetComplete">达到目标位置后的回调</param>
-        public void Play(bool isUseCurveDir, Vector3 curveDir, int curveRandomSeed, Vector3 targetPos, Vector3 startPos, float moveSpeed, float limitReachDis, Action reachedTargetComplete)
+        public void Play(bool isUseCurveDir, Vector3 curveDir, int curveRandomSeed, Vector3 targetPos, float moveSpeed, float limitReachDis, Action reachedTargetComplete)
         {
-            IsMoving = false;
+            Clear();
             if (moveSpeed <= 0 ||
                 limitReachDis < 0 ||
                 (isUseCurveDir && curveDir == Vector3.zero && curveRandomSeed <= 0))
             {
                 // 设置的数据不对，啥也不做
+                return;
             }
-            else
+            TargetPos = targetPos;
+            LimitReachDis = limitReachDis;
+            ReachedTargetComplete = reachedTargetComplete;
+            MoveSpeed = moveSpeed;
+            /***/
+            curdir = Vector3.zero;
+            if (isUseCurveDir)
             {
-                TargetPos = targetPos;
-                LimitReachDis = limitReachDis;
-                ReachedTargetComplete = reachedTargetComplete;
-                MoveSpeed = moveSpeed;
-                /***/
-                if (startPos != Vector3.zero)
+                if (curveDir == Vector3.zero)
                 {
-                    TransformY.Translate(startPos - TransformY.position, Space.World);
+                    // 随机曲线弹道
+                    System.Random ran = new System.Random(curveRandomSeed);
+                    Vector3 v1 = Vector3.Cross(targetPos - TransformY.position, Vector3.up).normalized;
+                    v1 *= ran.Next(-100, 100);
+                    Vector3 v2 = Vector3.up * ran.Next(0, 100);
+                    curdir = (v1 + v2).normalized * 0.3f;
                 }
-                /***/
-                curdir = Vector3.zero;
-                if (isUseCurveDir)
+                else
                 {
-                    if (curveDir == Vector3.zero)
-                    {
-                        // 随机曲线弹道
-                        System.Random ran = new System.Random(curveRandomSeed);
-                        Vector3 v1 = Vector3.Cross(targetPos - TransformY.position, Vector3.up).normalized;
-                        v1 *= ran.Next(-100, 100);
-                        Vector3 v2 = Vector3.up * ran.Next(0, 100);
-                        curdir = (v1 + v2).normalized * 0.3f;
-                    }
-                    else
-                    {
-                        // 指定曲线弹道
-                        curdir = curveDir.normalized * 0.3f;
-                    }
+                    // 指定曲线弹道
+                    curdir = curveDir.normalized * 0.3f;
                 }
-                /***/
-                IsMoving = true;
             }
+            /***/
+            IsMoving = true;
         }
     }
     public partial class EffectTargetPositionCurveBullet
