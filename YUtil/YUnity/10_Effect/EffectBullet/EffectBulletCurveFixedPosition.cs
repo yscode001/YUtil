@@ -54,7 +54,7 @@ namespace YUnity
         /// <param name="moveSpeed">飞行速度</param>
         /// <param name="limitReachDis">当距目标小于等于这个距离时，就算达到</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void Play(Vector3 curveDir, int curveRandomSeed, Vector3 targetPos, float moveSpeed, float limitReachDis, Action reachedComplete)
+        public void BeginFlying(Vector3 curveDir, int curveRandomSeed, Vector3 targetPos, float moveSpeed, float limitReachDis, Action reachedComplete)
         {
             Clear();
             if (moveSpeed <= 0 ||

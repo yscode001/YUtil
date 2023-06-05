@@ -60,7 +60,7 @@ namespace YUnity
         /// <param name="limitReachDis">当距目标小于等于这个距离时，就算达到</param>
         /// <param name="targetDeathWhenFlying">飞行过程中目标死亡了(如被其他玩家干掉了，不会再执行ReachedComplete)</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void Play(Vector3 curveDir, int curveRandomSeed, Transform targetTransform, float moveSpeed, float limitReachDis, Action targetDeathWhenFlying, Action reachedComplete)
+        public void BeginFlying(Vector3 curveDir, int curveRandomSeed, Transform targetTransform, float moveSpeed, float limitReachDis, Action targetDeathWhenFlying, Action reachedComplete)
         {
             Clear();
             if (targetTransform == null || !targetTransform.gameObject.activeSelf ||
