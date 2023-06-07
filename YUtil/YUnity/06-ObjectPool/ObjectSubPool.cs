@@ -65,7 +65,7 @@ namespace YUnity
             {
                 go.SetActive(true);
             }
-            go.SendMessage("OnSpawn", SendMessageOptions.DontRequireReceiver);
+            go.SendMessage("OnSpawnOrUnSpawn", true, SendMessageOptions.DontRequireReceiver);
             return go;
         }
     }
@@ -76,7 +76,7 @@ namespace YUnity
         {
             if (go != null && go.activeSelf && Contains(go))
             {
-                go.SendMessage("OnUnSpawn", SendMessageOptions.DontRequireReceiver);
+                go.SendMessage("OnSpawnOrUnSpawn", false, SendMessageOptions.DontRequireReceiver);
                 go.SetActive(false);
             }
         }

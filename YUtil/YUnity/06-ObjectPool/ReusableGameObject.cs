@@ -6,14 +6,10 @@
     public abstract class ReusableGameObject : MonoBehaviourBaseY, IReusable
     {
         /// <summary>
-        /// 当游戏物体从池中取出时，进行的一些操作(如初始化)
+        /// 当游戏物体从池中取出或放入池中时，执行的一些操作(如初始化)
         /// </summary>
-        public abstract void OnSpawn();
-
-        /// <summary>
-        /// 当游戏物体被放入池中时，进行的一些操作(如回收释放)
-        /// </summary>
-        public abstract void OnUnSpawn();
+        /// <param name="isSpawn">是否是spawn</param>
+        public abstract void OnSpawnOrUnSpawn(bool isSpawn);
 
         /// <summary>
         /// 调用对象池，将游戏物体进行回收
