@@ -144,6 +144,10 @@ namespace YUtilEditor
                 {
                     IgnoreExts.Add(".tpsheet");
                 }
+                if (!IgnoreExts.Contains(".unity"))
+                {
+                    IgnoreExts.Add(".unity");
+                }
                 if (!IgnoreExts.Contains(".cs"))
                 {
                     IgnoreExts.Add(".cs");
