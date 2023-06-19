@@ -19,19 +19,9 @@ namespace YUnity
                 throw new Exception("Non-public ctor() not found");
             }
             T data = ctor.Invoke(null) as T;
-            data.Init();
             return data;
         });
 
         public static T Instance => _instance.Value;
     }
-    #region 抽象方法
-    public abstract partial class SingletonMemoryBaseY<T>
-    {
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        public abstract void Init();
-    }
-    #endregion
 }

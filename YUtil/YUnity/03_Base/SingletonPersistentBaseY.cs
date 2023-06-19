@@ -29,7 +29,6 @@ namespace YUnity
                     throw new Exception("Non-public ctor() not found");
                 }
                 data = ctor.Invoke(null) as T;
-                data.Init();
                 data.Persistent();
             }
             return data;
@@ -127,18 +126,13 @@ namespace YUnity
         }
     }
     #endregion
-    #region 抽象方法
+    #region 虚方法
     public abstract partial class SingletonPersistentBaseY<T>
     {
         /// <summary>
         /// 持久化前调用
         /// </summary>
-        public abstract void DoBeforePersistent();
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        public abstract void Init();
+        public virtual void DoBeforePersistent() { }
     }
     #endregion
 }
