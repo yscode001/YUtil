@@ -1,4 +1,6 @@
-﻿namespace YUnity
+﻿using UnityEngine;
+
+namespace YUnity
 {
     /// <summary>
     /// 定义抽象类，需要回收的Object需继承此抽象类
@@ -11,21 +13,43 @@
         /// <param name="isSpawn">是否是spawn</param>
         public abstract void OnSpawnOrUnSpawn(bool isSpawn);
 
+        private Coroutine UnSpawnCoroutine;
+
         /// <summary>
         /// 调用对象池，将游戏物体进行回收
         /// </summary>
-        public void UnSpawnFromObjectPool()
+        /// <param name="delaySeconds">延迟回收秒数</param>
+        public Coroutine UnSpawnFromObjectPool(float delaySeconds = 0)
         {
-            ObjectPool.UnSpawn(GameObjectY);
+            if (UnSpawnCoroutine != null)
+            {
+                StopCoroutine(UnSpawnCoroutine);
+            }
+            UnSpawnCoroutine = DoAfterDelay(delaySeconds, () =>
+            {
+                ObjectPool.UnSpawn(GameObjectY);
+            });
+            return UnSpawnCoroutine;
         }
+
+        private Coroutine ReleaseCoroutine;
 
         /// <summary>
         /// 调用对象池，将游戏物体进行释放
         /// </summary>
-        /// <param name="immediage">是否立即释放</param>
-        public void ReleaseFromObjectPool(bool immediage = false)
+        /// <param name="delaySeconds">延迟释放秒数</param>
+        /// <param name="immediage">到时间后是否立即释放</param>
+        public Coroutine ReleaseFromObjectPool(float delaySeconds = 0, bool immediage = false)
         {
-            ObjectPool.Release(GameObjectY, immediage);
+            if (ReleaseCoroutine != null)
+            {
+                StopCoroutine(ReleaseCoroutine);
+            }
+            ReleaseCoroutine = DoAfterDelay(delaySeconds, () =>
+            {
+                ObjectPool.Release(GameObjectY, immediage);
+            });
+            return ReleaseCoroutine;
         }
     }
 }
