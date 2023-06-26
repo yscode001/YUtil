@@ -56,16 +56,16 @@ namespace YUnity
         /// <returns></returns>
         public static bool RandomPercentWithSeed(int maxPercent)
         {
-            int max = maxPercent;
-            if (max < 0) { max = 0; }
-            else if (max > 100) { max = 100; }
-
-            if (randomSeed == null)
+            if (maxPercent <= 0) { return false; }
+            else if (maxPercent >= 100) { return true; }
+            else
             {
-                randomSeed = new Random(0);
+                if (randomSeed == null)
+                {
+                    randomSeed = new Random(0);
+                }
+                return randomSeed.Next(1, 100) <= maxPercent;
             }
-            int randomValue = randomSeed.Next(0, 101);
-            return 0 <= randomValue && randomValue <= max;
         }
     }
     #endregion
@@ -96,16 +96,16 @@ namespace YUnity
         /// <returns></returns>
         public static bool RandomPercentWithoutSeed(int maxPercent)
         {
-            int max = maxPercent;
-            if (max < 0) { max = 0; }
-            else if (max > 100) { max = 100; }
-
-            if (randomNoSeed == null)
+            if (maxPercent <= 0) { return false; }
+            else if (maxPercent >= 100) { return true; }
+            else
             {
-                randomNoSeed = new Random();
+                if (randomNoSeed == null)
+                {
+                    randomNoSeed = new Random();
+                }
+                return randomNoSeed.Next(1, 100) <= maxPercent;
             }
-            int randomValue = randomNoSeed.Next(0, 101);
-            return 0 <= randomValue && randomValue <= max;
         }
     }
     #endregion
