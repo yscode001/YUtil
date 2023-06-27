@@ -13,10 +13,10 @@ namespace YUnity
         private static Random randomSeed;
 
         /// <summary>
-        /// 初始化
+        /// 初始化随机种子
         /// </summary>
         /// <param name="seed">种子</param>
-        public static void Init(int seed)
+        public static void InitRandomSeed(int seed)
         {
             randomSeed = new Random(seed);
         }
@@ -37,16 +37,24 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 初始化并获取包含上限与下限的随机数(有种子)
+        /// 获取包含上限与下限的随机数(有种子)
         /// </summary>
-        /// <param name="seed">种子</param>
         /// <param name="includeMin">包含下限</param>
         /// <param name="includeMax">包含上限</param>
+        /// <param name="notEqual">结果一定不等于此值</param>
         /// <returns></returns>
-        public static int InitAndGetNextWithSeed(int seed, int includeMin, int includeMax)
+        public static int NextWithSeed(int includeMin, int includeMax, int notEqual)
         {
-            randomSeed = new Random(seed);
-            return randomSeed.Next(includeMin, includeMax + 1);
+            if (randomSeed == null)
+            {
+                randomSeed = new Random(0);
+            }
+            int result = randomSeed.Next(includeMin, includeMax + 1);
+            while (result == notEqual)
+            {
+                result = randomSeed.Next(includeMin, includeMax + 1);
+            }
+            return result;
         }
 
         /// <summary>
@@ -87,6 +95,27 @@ namespace YUnity
                 randomNoSeed = new Random();
             }
             return randomNoSeed.Next(includeMin, includeMax + 1);
+        }
+
+        /// <summary>
+        /// 获取包含上限与下限的随机数(不用种子)
+        /// </summary>
+        /// <param name="includeMin">包含下限</param>
+        /// <param name="includeMax">包含上限</param>
+        /// <param name="notEqual">结果一定不等于此值</param>
+        /// <returns></returns>
+        public static int NextWithoutSeed(int includeMin, int includeMax, int notEqual)
+        {
+            if (randomNoSeed == null)
+            {
+                randomNoSeed = new Random();
+            }
+            int result = randomNoSeed.Next(includeMin, includeMax + 1);
+            while (result == notEqual)
+            {
+                result = randomNoSeed.Next(includeMin, includeMax + 1);
+            }
+            return result;
         }
 
         /// <summary>
