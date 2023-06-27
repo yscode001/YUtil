@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace YUnity
@@ -29,6 +30,44 @@ namespace YUnity
                 subpoolList.Add(prefab, new ObjectSubPool());
             }
             return subpoolList[prefab].Spawn(prefab, parent, transformReset);
+        }
+        public static T Spawn<T>(GameObject prefab, Transform parent, bool transformReset = true) where T : Component
+        {
+            return Spawn(prefab, parent, transformReset).GetOrAddComponent<T>();
+        }
+        public static Tuple<T1, T2> Spawn<T1, T2>(GameObject prefab, Transform parent, bool transformReset = true)
+            where T1 : Component
+            where T2 : Component
+        {
+            GameObject go = Spawn(prefab, parent, transformReset);
+            return new Tuple<T1, T2>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>());
+        }
+        public static Tuple<T1, T2, T3> Spawn<T1, T2, T3>(GameObject prefab, Transform parent, bool transformReset = true)
+           where T1 : Component
+           where T2 : Component
+           where T3 : Component
+        {
+            GameObject go = Spawn(prefab, parent, transformReset);
+            return new Tuple<T1, T2, T3>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>());
+        }
+        public static Tuple<T1, T2, T3, T4> Spawn<T1, T2, T3, T4>(GameObject prefab, Transform parent, bool transformReset = true)
+           where T1 : Component
+           where T2 : Component
+           where T3 : Component
+           where T4 : Component
+        {
+            GameObject go = Spawn(prefab, parent, transformReset);
+            return new Tuple<T1, T2, T3, T4>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>(), go.GetOrAddComponent<T4>());
+        }
+        public static Tuple<T1, T2, T3, T4, T5> Spawn<T1, T2, T3, T4, T5>(GameObject prefab, Transform parent, bool transformReset = true)
+           where T1 : Component
+           where T2 : Component
+           where T3 : Component
+           where T4 : Component
+           where T5 : Component
+        {
+            GameObject go = Spawn(prefab, parent, transformReset);
+            return new Tuple<T1, T2, T3, T4, T5>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>(), go.GetOrAddComponent<T4>(), go.GetOrAddComponent<T5>());
         }
     }
     public partial class ObjectPool
