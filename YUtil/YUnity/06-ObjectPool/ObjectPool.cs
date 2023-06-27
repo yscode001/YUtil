@@ -5,38 +5,30 @@ namespace YUnity
 {
     public partial class ObjectPool
     {
-        private static readonly Dictionary<string, ObjectSubPoolItem> subpoolList = new Dictionary<string, ObjectSubPoolItem>();
+        private static readonly Dictionary<GameObject, ObjectSubPool> subpoolList = new Dictionary<GameObject, ObjectSubPool>();
 
         public static void OnlyClearCacheList()
         {
-            foreach (var item in subpoolList)
+            foreach (var itemValue in subpoolList.Values)
             {
-                item.Value.OnlyClearCacheList();
+                itemValue.OnlyClearCacheList();
             }
             subpoolList.Clear();
         }
     }
     public partial class ObjectPool
     {
-        public static GameObject Spawn(string address, GameObject prefab, Transform parent, bool transformReset = true)
+        public static GameObject Spawn(GameObject prefab, Transform parent, bool transformReset = true)
         {
-            if (string.IsNullOrWhiteSpace(address) || prefab == null)
+            if (prefab == null)
             {
-                throw new System.Exception("ObjectPool-Spawn：address和prefab不能为空");
+                throw new System.Exception("ObjectPool-Spawn：prefab不能为空");
             }
-            if (!subpoolList.ContainsKey(address.Trim()))
+            if (!subpoolList.ContainsKey(prefab))
             {
-                subpoolList.Add(address.Trim(), new ObjectSubPoolItem(address.Trim(), prefab));
+                subpoolList.Add(prefab, new ObjectSubPool());
             }
-            if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
-            {
-
-                return subpoolItem.Spawn(parent, transformReset);
-            }
-            else
-            {
-                throw new System.Exception("ObjectPool-Spawn：取subpool时出错");
-            }
+            return subpoolList[prefab].Spawn(prefab, parent, transformReset);
         }
     }
     public partial class ObjectPool
@@ -44,11 +36,11 @@ namespace YUnity
         public static void UnSpawn(GameObject go)
         {
             if (go == null) { return; }
-            foreach (var subpool in subpoolList.Values)
+            foreach (var itemValue in subpoolList.Values)
             {
-                if (subpool.Contains(go))
+                if (itemValue.Contains(go))
                 {
-                    subpool.UnSpawn(go);
+                    itemValue.UnSpawn(go);
                     return;
                 }
             }
@@ -56,19 +48,16 @@ namespace YUnity
 
         public static void UnSpawnAll()
         {
-            foreach (var subpool in subpoolList.Values)
+            foreach (var itemValue in subpoolList.Values)
             {
-                subpool.UnSpawnAll();
+                itemValue.UnSpawnAll();
             }
         }
 
-        public static void UnSpawnAll(string address)
+        public static void UnSpawnAll(GameObject prefab)
         {
-            if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
-            if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
-            {
-                subpoolItem.UnSpawnAll();
-            }
+            if (prefab == null || !subpoolList.ContainsKey(prefab)) { return; }
+            subpoolList[prefab].UnSpawnAll();
         }
     }
     public partial class ObjectPool
@@ -76,15 +65,15 @@ namespace YUnity
         public static void Release(GameObject go, bool immediate = false)
         {
             if (go == null) { return; }
-            List<string> willRemove = new List<string>();
-            foreach (var subpool in subpoolList.Values)
+            List<GameObject> willRemove = new List<GameObject>();
+            foreach (var item in subpoolList)
             {
-                if (subpool.Contains(go))
+                if (item.Value.Contains(go))
                 {
-                    subpool.Release(go, immediate);
-                    if (!subpool.HasElement)
+                    item.Value.Release(go, immediate);
+                    if (!item.Value.HasElement && item.Key != null)
                     {
-                        willRemove.Add(subpool.address);
+                        willRemove.Add(item.Key);
                     }
                     break;
                 }
@@ -97,13 +86,13 @@ namespace YUnity
 
         public static void ReleaseAll(bool immediate = false)
         {
-            List<string> willRemove = new List<string>();
-            foreach (var subpool in subpoolList.Values)
+            List<GameObject> willRemove = new List<GameObject>();
+            foreach (var item in subpoolList)
             {
-                subpool.ReleaseAll(immediate);
-                if (!subpool.HasElement)
+                item.Value.ReleaseAll(immediate);
+                if (!item.Value.HasElement && item.Key != null)
                 {
-                    willRemove.Add(subpool.address);
+                    willRemove.Add(item.Key);
                 }
             }
             foreach (var remove in willRemove)
@@ -112,16 +101,16 @@ namespace YUnity
             }
         }
 
-        public static void ReleaseAll(string address, bool immediate = false)
+        public static void ReleaseAll(GameObject prefab, bool immediate = false)
         {
-            if (string.IsNullOrWhiteSpace(address) || !subpoolList.ContainsKey(address.Trim())) { return; }
-            List<string> willRemove = new List<string>();
-            if (subpoolList.TryGetValue(address.Trim(), out ObjectSubPoolItem subpoolItem))
+            if (prefab == null || !subpoolList.ContainsKey(prefab)) { return; }
+            List<GameObject> willRemove = new List<GameObject>();
+            if (subpoolList.TryGetValue(prefab, out ObjectSubPool subpool))
             {
-                subpoolItem.ReleaseAll(immediate);
-                if (!subpoolItem.HasElement)
+                subpool.ReleaseAll(immediate);
+                if (!subpool.HasElement && prefab != null)
                 {
-                    willRemove.Add(subpoolItem.address);
+                    willRemove.Add(prefab);
                 }
             }
             foreach (var remove in willRemove)
