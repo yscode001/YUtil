@@ -5,27 +5,37 @@ namespace YUnity
     public static class Vector3Ext
     {
         /// <summary>
-        /// 先执行WorldToViewportPoint，再判断是否在相机的视口坐标范围内
+        /// 从当前点到目标点的方向(已归一化单位化)
         /// </summary>
-        /// <param name="v3"></param>
-        /// <param name="camera"></param>
-        /// <returns></returns>
-        public static bool IsInCamera_After_WorldToViewportPoint(this Vector3 v3, Camera camera)
+        /// <param name="from">当前点，即起始点</param>
+        /// <param name="to">目标点</param>
+        /// <returns>从当前点到目标点的方向(已归一化单位化)</returns>
+        public static Vector3 DirectionTo(this Vector3 from, Vector3 to)
         {
-            Vector3 wtvp = camera.WorldToViewportPoint(v3);
-            return wtvp.x >= 0 && wtvp.x <= 1 && wtvp.y >= 0 && wtvp.y <= 1 && wtvp.z >= camera.nearClipPlane && wtvp.z <= camera.farClipPlane;
+            return (to - from).normalized;
         }
 
         /// <summary>
-        /// 先执行ScreenToViewportPoint，再判断是否在相机的视口坐标范围内
+        /// 从起始点到当前点的方向(已归一化单位化)
         /// </summary>
-        /// <param name="v3"></param>
+        /// <param name="to">当前点，即目标点</param>
+        /// <param name="from">起始点</param>
+        /// <returns>从起始点到当前点的方向(已归一化单位化)</returns>
+        public static Vector3 DirectionFrom(this Vector3 to, Vector3 from)
+        {
+            return (to - from).normalized;
+        }
+
+        /// <summary>
+        /// 先执行WorldToViewportPoint，再判断是否在相机的视口坐标范围内
+        /// </summary>
+        /// <param name="position"></param>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public static bool IsInCamera_After_ScreenToViewportPoint(this Vector3 v3, Camera camera)
+        public static bool IsInCamera(this Vector3 position, Camera camera)
         {
-            Vector3 stvp = camera.ScreenToViewportPoint(v3);
-            return stvp.x >= 0 && stvp.x <= 1 && stvp.y >= 0 && stvp.y <= 1 && stvp.z >= camera.nearClipPlane && stvp.z <= camera.farClipPlane;
+            Vector3 wtvp = camera.WorldToViewportPoint(position);
+            return wtvp.x >= 0 && wtvp.x <= 1 && wtvp.y >= 0 && wtvp.y <= 1 && wtvp.z >= camera.nearClipPlane && wtvp.z <= camera.farClipPlane;
         }
     }
 }

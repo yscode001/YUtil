@@ -27,6 +27,21 @@ namespace YUnity
         }
         #endregion
 
+        #region 当前位置前后间隔距离的点
+        /// <summary>
+        /// 当前位置前后间隔距离(大于0才有意义)的点
+        /// </summary>
+        /// <param name="tf"></param>
+        /// <param name="isForward">前方true，后方false</param>
+        /// <param name="distance">间隔距离，大于0才有意义</param>
+        /// <returns>当前位置前后间隔距离(大于0才有意义)的点</returns>
+        public static Vector3 DistancePosition(this Transform tf, bool isForward, float distance)
+        {
+            if (distance <= 0) { return tf.position; }
+            return tf.position + (isForward ? 1 : -1) * tf.forward.normalized * Mathf.Abs(distance);
+        }
+        #endregion
+
         #region 查找子物体
         public static Transform FindChildRecursively(this Transform parent, string name)
         {
