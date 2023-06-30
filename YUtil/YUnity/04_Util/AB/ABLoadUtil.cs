@@ -14,7 +14,7 @@ namespace YUnity
     #region Init
     public static partial class ABLoadUtil
     {
-        private static string BundlePath;
+        public static string BundlePath { get; private set; }
 
         private static string BundleExt;
 
@@ -22,26 +22,38 @@ namespace YUnity
         private static AssetBundleManifest Manifest;
 
         /// <summary>
-        /// 初始化
+        /// 热更前初始化
         /// </summary>
         /// <param name="platformName">平台名称</param>
         /// <param name="bundlePath">bundle包所在路径</param>
-        /// <param name="manifestBundleName">manifest的bundle包名，用于获取依赖关系</param>
         /// <param name="bundleExt">可选参数：bundle包的扩展名(默认：unity3d)</param>
         /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void Init(string platformName, string bundlePath, string manifestBundleName, string bundleExt = ".unity3d", UInt32 version = 1)
+        public static void InitBeforeHotUpdate(string platformName, string bundlePath, string bundleExt = ".unity3d", UInt32 version = 1)
         {
-            if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(bundlePath) || string.IsNullOrWhiteSpace(manifestBundleName))
+            if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(bundlePath))
             {
-                throw new System.Exception("AssetBundleUtil-Init：platformName和bundlePath和manifestBundleName不能为空");
+                throw new System.Exception("AssetBundleUtil-InitBeforeHotUpdate：platformName和bundlePath不能为空");
             }
             string path = (bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/") + platformName + "/" + $"Version{version}/";
             if (!Directory.Exists(path))
             {
-                throw new System.Exception("AssetBundleUtil-Init：bundlePath和platformName和version组成的路径不存在对应的目录");
+                Directory.CreateDirectory(path);
             }
+            BundlePath = path;
             SetBundleExt(bundleExt);
-            AssetBundle manifestBundle = AssetBundle.LoadFromFile(path + GetBundleName(manifestBundleName));
+        }
+
+        /// <summary>
+        /// 热更后初始化
+        /// </summary>
+        /// <param name="manifestBundleName">manifest的bundle包名，用于获取依赖关系</param>
+        public static void InitAfterHotUpdate(string manifestBundleName)
+        {
+            if (string.IsNullOrWhiteSpace(manifestBundleName))
+            {
+                throw new System.Exception("AssetBundleUtil-InitAfterHotUpdate：manifestBundleName不能为空");
+            }
+            AssetBundle manifestBundle = AssetBundle.LoadFromFile(BundlePath + GetBundleName(manifestBundleName));
             if (manifestBundle == null)
             {
                 throw new System.Exception("AssetBundleUtil-Init：manifestBundleName对应的bundle包不存在");
@@ -53,7 +65,6 @@ namespace YUnity
                 throw new System.Exception("AssetBundleUtil-Init：manifestBundleName错误，取不到里面的AssetBundleManifest");
             }
             manifestBundle.Unload(false);
-            BundlePath = path;
         }
 
         private static void SetBundleExt(string bundleExt)
@@ -155,49 +166,51 @@ namespace YUnity
         /// <summary>
         /// 保存资源包清单文件
         /// </summary>
-        /// <param name="bundleList"></param>
-        /// <param name="bundleListFilePath"></param>
-        public static void Save(ABLoadBundleList bundleList, string bundleListFilePath = null)
+        /// <param name="bytes"></param>
+        public static void SaveBundleListFile(byte[] bytes)
         {
-            if (bundleList == null) { return; }
-            byte[] bytes = System.Text.Encoding.Default.GetBytes(bundleList.Serialize());
-            if (bytes == null || bytes.Length <= 0)
+            try
             {
-                return;
-            }
+                if (bytes == null || bytes.Length <= 0)
+                {
+                    return;
+                }
 
-            string bundlePath = string.IsNullOrWhiteSpace(bundleListFilePath) ? BundlePath + "ABBundleFiles.txt" : bundleListFilePath;
-            if (File.Exists(bundlePath))
-            {
-                File.Delete(bundlePath);
+                if (File.Exists(ABBundleFilesFullPath))
+                {
+                    File.Delete(ABBundleFilesFullPath);
+                }
+                File.WriteAllBytes(ABBundleFilesFullPath, bytes);
             }
-            FileStream fs = new FileStream(bundlePath, FileMode.Create);
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Close();
+            catch (Exception ex)
+            {
+                Debug.Log($"AssetBundleUtil-SaveBundleListFile：{ex}");
+            }
         }
 
         /// <summary>
         /// 保存打进资源包的资源清单文件
         /// </summary>
-        /// <param name="fileList"></param>
-        /// <param name="fileListFilePath"></param>
-        public static void Save(ABLoadFileList fileList, string fileListFilePath = null)
+        /// <param name="bytes"></param>
+        public static void SaveBuiledFileListFile(byte[] bytes)
         {
-            if (fileList == null) { return; }
-            byte[] bytes = System.Text.Encoding.Default.GetBytes(fileList.Serialize());
-            if (bytes == null || bytes.Length <= 0)
+            try
             {
-                return;
-            }
+                if (bytes == null || bytes.Length <= 0)
+                {
+                    return;
+                }
 
-            string filePath = string.IsNullOrWhiteSpace(fileListFilePath) ? BundlePath + "ABBuiledFiles.txt" : fileListFilePath;
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
+                if (File.Exists(ABBuiledFilesFullPath))
+                {
+                    File.Delete(ABBuiledFilesFullPath);
+                }
+                File.WriteAllBytes(ABBuiledFilesFullPath, bytes);
             }
-            FileStream fs = new FileStream(filePath, FileMode.Create);
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Close();
+            catch (Exception ex)
+            {
+                Debug.Log($"AssetBundleUtil-SaveABLoadFileList：{ex}");
+            }
         }
     }
     #endregion
@@ -279,19 +292,16 @@ namespace YUnity
         /// <param name="bundleListFilePath">bundle清单文件路径，默认为初始化时的路径</param>
         /// <param name="fileListFilePath">file清单文件路径，默认为初始化时的路径</param>
         /// <returns></returns>
-        public static Tuple<ABLoadBundleList, ABLoadFileList> LoadListFiles(string bundleListFilePath = null, string fileListFilePath = null)
+        public static Tuple<ABLoadBundleList, ABLoadFileList> LoadListFiles()
         {
-            string bundlePath = string.IsNullOrWhiteSpace(bundleListFilePath) ? BundlePath + "ABBundleFiles.txt" : bundleListFilePath;
-            string filePath = string.IsNullOrWhiteSpace(fileListFilePath) ? BundlePath + "ABBuiledFiles.txt" : fileListFilePath;
-
             ABLoadBundleList bundleList = new ABLoadBundleList();
             ABLoadFileList fileList = new ABLoadFileList();
 
-            if (File.Exists(bundlePath))
+            if (File.Exists(ABBundleFilesFullPath))
             {
                 try
                 {
-                    bundleList = JsonConvert.DeserializeObject<ABLoadBundleList>(File.ReadAllText(bundlePath, Encoding.UTF8));
+                    bundleList = JsonConvert.DeserializeObject<ABLoadBundleList>(File.ReadAllText(ABBundleFilesFullPath, Encoding.UTF8));
                 }
                 catch (Exception e)
                 {
@@ -299,11 +309,11 @@ namespace YUnity
                 }
             }
 
-            if (File.Exists(filePath))
+            if (File.Exists(ABBuiledFilesFullPath))
             {
                 try
                 {
-                    fileList = JsonConvert.DeserializeObject<ABLoadFileList>(File.ReadAllText(filePath, Encoding.UTF8));
+                    fileList = JsonConvert.DeserializeObject<ABLoadFileList>(File.ReadAllText(ABBuiledFilesFullPath, Encoding.UTF8));
                 }
                 catch (Exception e)
                 {
