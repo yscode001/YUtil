@@ -61,11 +61,11 @@ namespace YUtilEditor
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(resSourceDirectory))
             {
-                throw new System.Exception("AssetBundleBuildUtil-Init：platformName或resSourceDirectory不能为空");
+                throw new System.Exception("ABBuildUtil-Init：platformName和resSourceDirectory不能为空");
             }
             if (!Directory.Exists(resSourceDirectory))
             {
-                throw new System.Exception("AssetBundleBuildUtil-Init：resSourceDirectory目录不存在");
+                throw new System.Exception("ABBuildUtil-Init：resSourceDirectory目录不存在");
             }
             Version = (UInt32)Mathf.Max(1, version);
             PlatformName = platformName;
@@ -164,15 +164,15 @@ namespace YUtilEditor
         {
             if (string.IsNullOrWhiteSpace(PlatformName) || string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
             {
-                throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：PlatformName或ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("ABBuildUtil-BuildAssetBundles：PlatformName或ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
             }
             if (!Directory.Exists(ResSourceDirectory))
             {
-                throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：ResSourceDirectory目录不存在，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("ABBuildUtil-BuildAssetBundles：ResSourceDirectory目录不存在，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
             }
             if (!HasFilesWillBeBuiled(new DirectoryInfo(ResSourceDirectory)))
             {
-                throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何文件，无法build");
+                throw new System.Exception("ABBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何文件，无法build");
             }
             if (Directory.Exists(ResOutputDirectory))
             {
@@ -195,20 +195,12 @@ namespace YUtilEditor
 
             if (list.Count <= 0)
             {
-                throw new System.Exception("AssetBundleBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何符合条件可以打包的文件，无法build");
-            }
-
-            // 被打包的文件清单
-            ABBuiledFileList fileList = new ABBuiledFileList();
-            for (int i = 0; i < list.Count; i++)
-            {
-                AssetBundleBuild buildInfo = list[i];
-                fileList.Add(buildInfo.assetBundleName, buildInfo.assetNames);
+                throw new System.Exception("ABBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何符合条件可以打包的文件，无法build");
             }
 
             DirectoryInfo outputDirInfo = new DirectoryInfo(ResOutputDirectory);
             BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BundleOptions, EditorUserBuildSettings.activeBuildTarget);
-            AfterBuild(fileList.Serialize());
+            AfterBuild();
         }
 
         // 判断文件夹里面是否有需要build的文件
@@ -329,10 +321,10 @@ namespace YUtilEditor
             }
             catch (Exception ex)
             {
-                throw new Exception("AssetBundleBuildUtil-GetMD5HashFromFile() fail, error:" + ex.Message);
+                throw new Exception("ABBuildUtil-GetMD5HashFromFile() fail, error:" + ex.Message);
             }
         }
-        private static void AfterBuild(string sbFileList)
+        private static void AfterBuild()
         {
             DirectoryInfo outputDir = new DirectoryInfo(ResOutputDirectory);
             FileInfo[] fileInfos = outputDir.GetFiles();
@@ -370,7 +362,7 @@ namespace YUtilEditor
                 return;
             }
             // 生成bundle包的清单
-            ABBuiledBundleList bundleList = new ABBuiledBundleList();
+            ABBuiledBundleFileList bundleList = new ABBuiledBundleFileList();
             for (int i = 0; i < filelist.Count; i++)
             {
                 FileInfo fileInfo = filelist[i];
@@ -383,21 +375,7 @@ namespace YUtilEditor
                 BuildEnd(false);
                 return;
             }
-            FileStream fs = new FileStream(ResOutputDirectory + "ABBundleFiles.txt", FileMode.Create);
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Close();
-
-            // 文件清单
-            bytes = System.Text.Encoding.Default.GetBytes(sbFileList);
-            if (bytes == null || bytes.Length <= 0)
-            {
-                BuildEnd(false);
-                return;
-            }
-            fs = new FileStream(ResOutputDirectory + "ABBuiledFiles.txt", FileMode.Create);
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Close();
-
+            File.WriteAllBytes(ResOutputDirectory + "ABBundleFiles.txt", bytes);
             BuildEnd(true);
         }
 
@@ -422,7 +400,7 @@ namespace YUtilEditor
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (directoryInfo == null)
             {
-                throw new Exception("AssetBundleBuildUtil-ClearVersion：ResOutputDirectory对应的目录不存在");
+                throw new Exception("ABBuildUtil-ClearVersion：ResOutputDirectory对应的目录不存在");
             }
             if (version < 1)
             {
@@ -453,12 +431,12 @@ namespace YUtilEditor
         {
             if (string.IsNullOrWhiteSpace(abBundleName) || version < 1)
             {
-                throw new Exception("AssetBundleBuildUtil-ClearBundle：abBundleName不能为空，version必须大于0");
+                throw new Exception("ABBuildUtil-ClearBundle：abBundleName不能为空，version必须大于0");
             }
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (directoryInfo == null)
             {
-                throw new Exception("AssetBundleBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
+                throw new Exception("ABBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
             }
             string path = directoryInfo.Parent.FullName + $"/Version{version}/" + GetBundleName(abBundleName);
             if (File.Exists(path))
@@ -472,7 +450,7 @@ namespace YUtilEditor
         {
             if (string.IsNullOrWhiteSpace(abBundleName))
             {
-                throw new Exception("AssetBundleBuildUtil-GetBundleName：abBundleName不能为空");
+                throw new Exception("ABBuildUtil-GetBundleName：abBundleName不能为空");
             }
             if (abBundleName.EndsWith(BundleExt))
             {

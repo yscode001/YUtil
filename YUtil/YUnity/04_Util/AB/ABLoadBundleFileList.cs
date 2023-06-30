@@ -9,47 +9,10 @@ using System.Collections.Generic;
 namespace YUnity
 {
     [Serializable]
-    public struct ABLoadBundle
+    public partial class ABLoadBundleFileList
     {
-        public string BundleName;
-
-        /// <summary>
-        /// 文件大小(单位字节)
-        /// </summary>
-        public long FileSize;
-
-        public string FileMD5;
-
-        public static bool operator ==(ABLoadBundle lhs, ABLoadBundle rhs)
-        {
-            return lhs.BundleName == rhs.BundleName &&
-                   lhs.FileSize == rhs.FileSize &&
-                   lhs.FileMD5 == rhs.FileMD5;
-        }
-        public static bool operator !=(ABLoadBundle lhs, ABLoadBundle rhs)
-        {
-            return lhs.BundleName != rhs.BundleName ||
-                   lhs.FileSize != rhs.FileSize ||
-                   lhs.FileMD5 != rhs.FileMD5;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-    }
-
-    [Serializable]
-    public partial class ABLoadBundleList
-    {
-        public ABLoadBundleList() { }
-
-        public List<ABLoadBundle> BundleList;
+        public List<ABLoadBundle> BundleList = new List<ABLoadBundle>();
+        public ABLoadBundleFileList() { }
 
         /// <summary>
         /// 所有的bundle包的大小总和(单位字节)
@@ -74,15 +37,15 @@ namespace YUnity
         }
     }
 
-    public partial class ABLoadBundleList
+    public partial class ABLoadBundleFileList
     {
         /// <summary>
-        /// 比较本地和远端资源，获取可以下载的文件列表
+        /// 比较本地和远端的bundle清单文件，获取需要下载的bundle清单
         /// </summary>
-        /// <param name="local"></param>
-        /// <param name="remote"></param>
+        /// <param name="local">本地的bundle清单文件</param>
+        /// <param name="remote">远端的bundle清单文件</param>
         /// <returns></returns>
-        public static List<ABLoadBundle> CompareAndGetCanDownloadFiles(ABLoadBundleList local, ABLoadBundleList remote)
+        public static List<ABLoadBundle> CompareAndGetCanDownloadFiles(ABLoadBundleFileList local, ABLoadBundleFileList remote)
         {
             if (remote == null || remote.BundleList == null || remote.BundleList.Count <= 0)
             {
@@ -97,13 +60,20 @@ namespace YUnity
             List<ABLoadBundle> result = new List<ABLoadBundle>();
             foreach (var remoteItem in remote.BundleList)
             {
-                if (result.Contains(remoteItem) || Contains(local.BundleList, remoteItem)) { continue; }
+                if (result.Contains(remoteItem) || Contains(local.BundleList, remoteItem))
+                {
+                    continue;
+                }
                 result.Add(remoteItem);
             }
             return result;
         }
         private static bool Contains(List<ABLoadBundle> list, ABLoadBundle item)
         {
+            if (list == null || list.Count <= 0 || item == null)
+            {
+                return false;
+            }
             foreach (var listItem in list)
             {
                 if (listItem == item)

@@ -14,6 +14,9 @@ namespace YUnity
     #region Init
     public static partial class ABLoadUtil
     {
+        /// <summary>
+        /// 真正存放bundle包的路径，由平台和版本号组成
+        /// </summary>
         public static string BundlePath { get; private set; }
 
         private static string BundleExt;
@@ -22,7 +25,7 @@ namespace YUnity
         private static AssetBundleManifest Manifest;
 
         /// <summary>
-        /// 热更前初始化
+        /// 热更前初始化，主要是初始化路径
         /// </summary>
         /// <param name="platformName">平台名称</param>
         /// <param name="bundlePath">bundle包所在路径</param>
@@ -32,7 +35,7 @@ namespace YUnity
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(bundlePath))
             {
-                throw new System.Exception("AssetBundleUtil-InitBeforeHotUpdate：platformName和bundlePath不能为空");
+                throw new System.Exception("ABLoadUtil-InitBeforeHotUpdate：platformName和bundlePath不能为空");
             }
             string path = (bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/") + platformName + "/" + $"Version{version}/";
             if (!Directory.Exists(path))
@@ -44,25 +47,25 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 热更后初始化
+        /// 热更后初始化，主要是初始化依赖文件
         /// </summary>
         /// <param name="manifestBundleName">manifest的bundle包名，用于获取依赖关系</param>
         public static void InitAfterHotUpdate(string manifestBundleName)
         {
             if (string.IsNullOrWhiteSpace(manifestBundleName))
             {
-                throw new System.Exception("AssetBundleUtil-InitAfterHotUpdate：manifestBundleName不能为空");
+                throw new System.Exception("ABLoadUtil-InitAfterHotUpdate：manifestBundleName不能为空");
             }
             AssetBundle manifestBundle = AssetBundle.LoadFromFile(BundlePath + GetBundleName(manifestBundleName));
             if (manifestBundle == null)
             {
-                throw new System.Exception("AssetBundleUtil-Init：manifestBundleName对应的bundle包不存在");
+                throw new System.Exception("ABLoadUtil-Init：manifestBundleName对应的bundle包不存在");
             }
             ManifestBundleName = manifestBundleName.ToLower();
             Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
             if (Manifest == null)
             {
-                throw new System.Exception("AssetBundleUtil-Init：manifestBundleName错误，取不到里面的AssetBundleManifest");
+                throw new System.Exception("ABLoadUtil-Init：manifestBundleName错误，取不到里面的AssetBundleManifest");
             }
             manifestBundle.Unload(false);
         }
@@ -76,7 +79,7 @@ namespace YUnity
         {
             if (string.IsNullOrWhiteSpace(abBundleName))
             {
-                throw new Exception("AssetBundleUtil-GetBundleName：abBundleName不能为空");
+                throw new Exception("ABLoadUtil-GetBundleName：abBundleName不能为空");
             }
             if (abBundleName.EndsWith(BundleExt))
             {
@@ -92,12 +95,12 @@ namespace YUnity
                 AssetBundle manifestBundle = AssetBundle.LoadFromFile(BundlePath + GetBundleName(ManifestBundleName));
                 if (manifestBundle == null)
                 {
-                    throw new System.Exception("AssetBundleUtil-ReloadManifest：manifestBundleName对应的bundle包不存在");
+                    throw new System.Exception("ABLoadUtil-ReloadManifest：manifestBundleName对应的bundle包不存在");
                 }
                 Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                 if (Manifest == null)
                 {
-                    throw new System.Exception("AssetBundleUtil-ReloadManifest：manifestBundleName错误，取不到里面的AssetBundleManifest");
+                    throw new System.Exception("ABLoadUtil-ReloadManifest：manifestBundleName错误，取不到里面的AssetBundleManifest");
                 }
                 manifestBundle.Unload(false);
             }
@@ -117,7 +120,7 @@ namespace YUnity
         {
             if (string.IsNullOrWhiteSpace(abBundleName))
             {
-                throw new System.Exception("AssetBundleUtil-GetAllDependencies：abBundleName不能为空");
+                throw new System.Exception("ABLoadUtil-GetAllDependencies：abBundleName不能为空");
             }
             return Manifest.GetAllDependencies(GetBundleName(abBundleName));
         }
@@ -132,7 +135,7 @@ namespace YUnity
         {
             if (string.IsNullOrWhiteSpace(abBundleName))
             {
-                throw new System.Exception("AssetBundleUtil-LoadAssetBundle：abBundleName不能为空");
+                throw new System.Exception("ABLoadUtil-LoadAssetBundle：abBundleName不能为空");
             }
             handleDependencieBeforeLoad?.Invoke(GetAllDependencies(abBundleName));
             return AssetBundle.LoadFromFile(BundlePath + GetBundleName(abBundleName));
@@ -149,11 +152,11 @@ namespace YUnity
         {
             if (assetBundle == null)
             {
-                throw new System.Exception("AssetBundleUtil-LoadAsset：assetBundle不能为空");
+                throw new System.Exception("ABLoadUtil-LoadAsset：assetBundle不能为空");
             }
             if (string.IsNullOrWhiteSpace(assetName))
             {
-                throw new System.Exception("AssetBundleUtil-LoadAsset：assetName不能为空");
+                throw new System.Exception("ABLoadUtil-LoadAsset：assetName不能为空");
             }
             return assetBundle.LoadAsset<T>(assetName);
         }
@@ -167,50 +170,17 @@ namespace YUnity
         /// 保存资源包清单文件
         /// </summary>
         /// <param name="bytes"></param>
-        public static void SaveBundleListFile(byte[] bytes)
+        public static void SaveBundleFileList(byte[] bytes)
         {
-            try
+            if (bytes == null || bytes.Length <= 0)
             {
-                if (bytes == null || bytes.Length <= 0)
-                {
-                    return;
-                }
-
-                if (File.Exists(ABBundleFilesFullPath))
-                {
-                    File.Delete(ABBundleFilesFullPath);
-                }
-                File.WriteAllBytes(ABBundleFilesFullPath, bytes);
+                return;
             }
-            catch (Exception ex)
+            if (File.Exists(ABBundleFileListFullPath))
             {
-                Debug.Log($"AssetBundleUtil-SaveBundleListFile：{ex}");
+                File.Delete(ABBundleFileListFullPath);
             }
-        }
-
-        /// <summary>
-        /// 保存打进资源包的资源清单文件
-        /// </summary>
-        /// <param name="bytes"></param>
-        public static void SaveBuiledFileListFile(byte[] bytes)
-        {
-            try
-            {
-                if (bytes == null || bytes.Length <= 0)
-                {
-                    return;
-                }
-
-                if (File.Exists(ABBuiledFilesFullPath))
-                {
-                    File.Delete(ABBuiledFilesFullPath);
-                }
-                File.WriteAllBytes(ABBuiledFilesFullPath, bytes);
-            }
-            catch (Exception ex)
-            {
-                Debug.Log($"AssetBundleUtil-SaveABLoadFileList：{ex}");
-            }
+            File.WriteAllBytes(ABBundleFileListFullPath, bytes);
         }
     }
     #endregion
@@ -227,7 +197,7 @@ namespace YUnity
             DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
             if (directoryInfo == null)
             {
-                Debug.Log("AssetBundleUtil-ClearVersion：BundlePath对应的目录不存在");
+                Debug.Log("ABLoadUtil-ClearVersion：BundlePath对应的目录不存在");
             }
             if (version < 1)
             {
@@ -257,12 +227,12 @@ namespace YUnity
         {
             if (string.IsNullOrWhiteSpace(abBundleName) || version < 1)
             {
-                Debug.Log("AssetBundleUtil-ClearBundle：abBundleName不能为空，version必须大于0");
+                Debug.Log("ABLoadUtil-ClearBundle：abBundleName不能为空，version必须大于0");
             }
             DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
             if (directoryInfo == null)
             {
-                Debug.Log("AssetBundleUtil-ClearBundle：BundlePath对应的目录不存在");
+                Debug.Log("ABLoadUtil-ClearBundle：BundlePath对应的目录不存在");
             }
             string path = directoryInfo.Parent.FullName + $"/Version{version}/" + GetBundleName(abBundleName);
             if (File.Exists(path))
@@ -279,12 +249,7 @@ namespace YUnity
         /// <summary>
         /// 生成的资源包清单
         /// </summary>
-        public static string ABBundleFilesFullPath => BundlePath + "ABBundleFiles.txt";
-
-        /// <summary>
-        /// 打进资源包的文件清单
-        /// </summary>
-        public static string ABBuiledFilesFullPath => BundlePath + "ABBuiledFiles.txt";
+        public static string ABBundleFileListFullPath => BundlePath + "ABBundleFiles.txt";
 
         /// <summary>
         /// 加载bundle和file清单文件
@@ -292,36 +257,22 @@ namespace YUnity
         /// <param name="bundleListFilePath">bundle清单文件路径，默认为初始化时的路径</param>
         /// <param name="fileListFilePath">file清单文件路径，默认为初始化时的路径</param>
         /// <returns></returns>
-        public static Tuple<ABLoadBundleList, ABLoadFileList> LoadListFiles()
+        public static ABLoadBundleFileList LoadBundleFileList()
         {
-            ABLoadBundleList bundleList = new ABLoadBundleList();
-            ABLoadFileList fileList = new ABLoadFileList();
+            ABLoadBundleFileList bundleList = new ABLoadBundleFileList();
 
-            if (File.Exists(ABBundleFilesFullPath))
+            if (File.Exists(ABBundleFileListFullPath))
             {
                 try
                 {
-                    bundleList = JsonConvert.DeserializeObject<ABLoadBundleList>(File.ReadAllText(ABBundleFilesFullPath, Encoding.UTF8));
+                    bundleList = JsonConvert.DeserializeObject<ABLoadBundleFileList>(File.ReadAllText(ABBundleFileListFullPath, Encoding.UTF8));
                 }
                 catch (Exception e)
                 {
                     Debug.Log($"ABLoadUtil-LoadListFiles：加载ABLoadBundleList时失败：{e}");
                 }
             }
-
-            if (File.Exists(ABBuiledFilesFullPath))
-            {
-                try
-                {
-                    fileList = JsonConvert.DeserializeObject<ABLoadFileList>(File.ReadAllText(ABBuiledFilesFullPath, Encoding.UTF8));
-                }
-                catch (Exception e)
-                {
-                    Debug.Log($"ABLoadUtil-LoadListFiles：加载ABLoadFileList时失败：{e}");
-                }
-            }
-
-            return new Tuple<ABLoadBundleList, ABLoadFileList>(bundleList, fileList);
+            return bundleList;
         }
     }
     #endregion
