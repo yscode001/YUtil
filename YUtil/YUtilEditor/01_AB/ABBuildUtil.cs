@@ -22,9 +22,6 @@ namespace YUtilEditor
     #region Init
     public static partial class ABBuildUtil
     {
-        // 平台名称
-        private static string PlatformName;
-
         // 资源所在的根目录
         private static string ResSourceDirectory;
 
@@ -34,11 +31,11 @@ namespace YUtilEditor
         // 忽略文件的扩展名集合
         private static List<string> IgnoreExts;
 
-        // ab包后缀
-        private static string BundleExt = ".unity3d";
+        // ab包后缀名
+        private const string BundleExt = ".unity3d";
 
         // 清单文件名
-        private static string BundleListFileName = "manifest" + BundleExt;
+        private const string BundleListFileName = "manifest.unity3d";
 
         // 打包选项
         private static BuildAssetBundleOptions BundleOptions = BuildAssetBundleOptions.None;
@@ -53,11 +50,9 @@ namespace YUtilEditor
         /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Res)</param>
         /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/PlatformName/)</param>
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
-        /// <param name="bundleExt">可选参数：bundle包的扩展名(默认：.unity3d)</param>
-        /// <param name="manifestBundleName">可选参数：manifest包的名字，默认：manifest.unity3d</param>
         /// <param name="bundleOptions">可选参数：打包选项(默认：None)</param>
         /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, string bundleExt = ".unity3d", string manifestBundleName = "manifest", BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
+        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(resSourceDirectory))
             {
@@ -68,44 +63,20 @@ namespace YUtilEditor
                 throw new System.Exception("ABBuildUtil-Init：resSourceDirectory目录不存在");
             }
             Version = (UInt32)Mathf.Max(1, version);
-            PlatformName = platformName;
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
-            SetManifestBundleName(manifestBundleName);
-            SetBundleExt(bundleExt);
             SetIgnoreExts(ignoreExts);
             BundleOptions = bundleOptions;
 
-            ResOutputDirectory = string.IsNullOrWhiteSpace(resOutputDirectory) ? $"./AssetBundleFiles/{PlatformName}/" : resOutputDirectory;
+            ResOutputDirectory = string.IsNullOrWhiteSpace(resOutputDirectory) ? $"./AssetBundleFiles/{platformName}/" : resOutputDirectory;
             ResOutputDirectory = ResOutputDirectory.EndsWith("/") ? ResOutputDirectory : ResOutputDirectory + "/";
-            if (!ResOutputDirectory.EndsWith($"/{PlatformName}/"))
+            if (!ResOutputDirectory.EndsWith($"/{platformName}/"))
             {
-                ResOutputDirectory += (PlatformName + "/");
+                ResOutputDirectory += (platformName + "/");
             }
             if (!ResOutputDirectory.EndsWith($"/Version{Version}/"))
             {
                 ResOutputDirectory += $"Version{Version}/";
             }
-        }
-
-        private static void SetManifestBundleName(string manifestBundleName)
-        {
-            if (string.IsNullOrWhiteSpace(manifestBundleName))
-            {
-                BundleListFileName = "manifest" + BundleExt;
-            }
-            else if (manifestBundleName.Contains("."))
-            {
-                BundleListFileName = manifestBundleName.ToLower();
-            }
-            else
-            {
-                BundleListFileName = manifestBundleName.ToLower() + BundleExt;
-            }
-        }
-        private static void SetBundleExt(string bundleExt)
-        {
-            BundleExt = string.IsNullOrWhiteSpace(bundleExt) ? ".unity3d" : bundleExt;
-            BundleExt = BundleExt.StartsWith(".") ? BundleExt : "." + BundleExt;
         }
         private static void SetIgnoreExts(string[] ignoreExts)
         {
@@ -162,9 +133,9 @@ namespace YUtilEditor
     {
         public static void BuildAssetBundles()
         {
-            if (string.IsNullOrWhiteSpace(PlatformName) || string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
+            if (string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
             {
-                throw new System.Exception("ABBuildUtil-BuildAssetBundles：PlatformName或ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("ABBuildUtil-BuildAssetBundles：ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
             }
             if (!Directory.Exists(ResSourceDirectory))
             {
@@ -425,20 +396,20 @@ namespace YUtilEditor
         /// <summary>
         /// 清理指定版本指定名称的bundle资源
         /// </summary>
-        /// <param name="abBundleName">指定的bundle的名称</param>
+        /// <param name="bundleName">指定的bundle的名称</param>
         /// <param name="version">指定的版本号</param>
-        public static void ClearBundle(string abBundleName, UInt32 version)
+        public static void ClearBundle(string bundleName, UInt32 version)
         {
-            if (string.IsNullOrWhiteSpace(abBundleName) || version < 1)
+            if (string.IsNullOrWhiteSpace(bundleName) || version < 1)
             {
-                throw new Exception("ABBuildUtil-ClearBundle：abBundleName不能为空，version必须大于0");
+                throw new Exception("ABBuildUtil-ClearBundle：bundleName不能为空，version必须大于0");
             }
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (directoryInfo == null)
             {
                 throw new Exception("ABBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
             }
-            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + GetBundleName(abBundleName);
+            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + GetBundleName(bundleName);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -446,17 +417,17 @@ namespace YUtilEditor
             AssetDatabase.Refresh();
         }
 
-        private static string GetBundleName(string abBundleName)
+        private static string GetBundleName(string bundleName)
         {
-            if (string.IsNullOrWhiteSpace(abBundleName))
+            if (string.IsNullOrWhiteSpace(bundleName))
             {
-                throw new Exception("ABBuildUtil-GetBundleName：abBundleName不能为空");
+                throw new Exception("ABBuildUtil-GetBundleName：bundleName不能为空");
             }
-            if (abBundleName.EndsWith(BundleExt))
+            if (bundleName.EndsWith(BundleExt))
             {
-                return abBundleName.ToLower();
+                return bundleName.ToLower();
             }
-            return abBundleName.ToLower() + BundleExt;
+            return bundleName.ToLower() + BundleExt;
         }
     }
     #endregion
