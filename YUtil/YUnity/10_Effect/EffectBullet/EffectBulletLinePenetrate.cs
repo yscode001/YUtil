@@ -63,7 +63,7 @@ namespace YUnity
         /// <summary>
         /// 对路径上的敌人造成伤害
         /// </summary>
-        private Action<Transform> Damage;
+        private Action<Transform, bool> Damage;
 
         /// <summary>
         /// 完成回调
@@ -102,7 +102,7 @@ namespace YUnity
         /// <param name="allEnemyList">路径上的敌人集合</param>
         /// <param name="damage">对路径上的敌人造成伤害</param>
         /// <param name="complete">完成回调</param>
-        public void BeginFlying(EffectBulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, float limitReachDis, List<Transform> allEnemyList, Action<Transform> damage, Action complete)
+        public void BeginFlying(EffectBulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, float limitReachDis, List<Transform> allEnemyList, Action<Transform, bool> damage, Action complete)
         {
             Clear();
             if (direction == Vector3.zero || moveSpeed <= 0 || maxValue <= 0 || limitReachDis < 0)
@@ -128,13 +128,15 @@ namespace YUnity
         private void DamageEnemy()
         {
             if (Damage == null || AllEnemyList == null || AllEnemyList.Count <= 0) { return; }
+            int index = 0;
             for (int i = AllEnemyList.Count - 1; i >= 0; i--)
             {
                 Transform enemyTransform = AllEnemyList[i];
                 if (Vector3.Distance(enemyTransform.position, TransformY.position) <= LimitReachDis)
                 {
-                    Damage?.Invoke(enemyTransform);
+                    Damage?.Invoke(enemyTransform, index == 0);
                     AllEnemyList.RemoveAt(i);
+                    index += 1;
                 }
             }
         }
