@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace YUnity
 {
+    public enum PositionEnum
+    {
+        World,
+        Local,
+    }
+
     internal partial class ObjectSubPool
     {
         private readonly List<GameObject> objectList = new List<GameObject>();
@@ -36,7 +42,7 @@ namespace YUnity
             }
         }
 
-        internal GameObject Spawn(GameObject prefab, Transform parent, bool transformReset)
+        private GameObject SpawnAction(GameObject prefab, Transform parent)
         {
             if (prefab == null)
             {
@@ -50,7 +56,7 @@ namespace YUnity
                 {
                     // 有未激活的游戏物体，取出进行复用
                     go = obj;
-                    go.transform.parent = parent;
+                    go.transform.SetParent(parent);
                     break;
                 }
             }
@@ -60,7 +66,35 @@ namespace YUnity
                 go = GameObject.Instantiate<GameObject>(prefab, parent, false);
                 objectList.Add(go);
             }
-            if (transformReset) { go.transform.Reset(); }
+            return go;
+        }
+
+        internal GameObject Spawn(GameObject prefab, Transform parent, bool transformReset)
+        {
+            GameObject go = SpawnAction(prefab, parent);
+            if (transformReset) { go.transform.Reset(true); }
+            if (go.activeSelf == false)
+            {
+                go.SetActive(true);
+            }
+            go.SendMessage("OnSpawnOrUnSpawn", true, SendMessageOptions.DontRequireReceiver);
+            return go;
+        }
+
+        internal GameObject SpawnWithPosition(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position)
+        {
+            GameObject go = SpawnAction(prefab, parent);
+            go.transform.localScale = Vector3.one;
+            go.transform.localEulerAngles = Vector3.zero;
+            switch (positionEnum)
+            {
+                case PositionEnum.Local:
+                    go.transform.localPosition = position;
+                    break;
+                default:
+                    go.transform.position = position;
+                    break;
+            }
             if (go.activeSelf == false)
             {
                 go.SetActive(true);

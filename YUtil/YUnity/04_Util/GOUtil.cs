@@ -20,7 +20,7 @@ namespace YUnity
             {
                 go.transform.parent = parentT;
             }
-            go.transform.Reset();
+            go.transform.Reset(true);
             return go;
         }
 
