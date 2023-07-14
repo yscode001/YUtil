@@ -36,6 +36,26 @@ namespace YUnity
             return UnSpawnCoroutine;
         }
 
+        /// <summary>
+        /// 调用对象池，将继承自ReusableGameObject的子物体(不包括自己)进行回收
+        /// </summary>
+        public void UnSpawnChildrenWhoInheritReusableGameObjectFromObjectPool()
+        {
+            if (TransformY.childCount <= 0) { return; }
+            for (int i = 0; i < TransformY.childCount; i++)
+            {
+                Transform childT = TransformY.GetChild(i);
+                ReusableGameObject[] objs = childT.GetComponentsInChildren<ReusableGameObject>(true);
+                if (objs != null && objs.Length > 0)
+                {
+                    foreach (var obj in objs)
+                    {
+                        obj.UnSpawnFromObjectPool();
+                    }
+                }
+            }
+        }
+
         private Coroutine ReleaseCoroutine;
 
         /// <summary>
@@ -57,6 +77,26 @@ namespace YUnity
                 ObjectPool.Release(GameObjectY, immediage);
             });
             return ReleaseCoroutine;
+        }
+
+        /// <summary>
+        /// 调用对象池，将继承自ReusableGameObject的子物体(不包括自己)进行释放
+        /// </summary>
+        public void ReleaseChildrenWhoInheritReusableGameObjectFromObjectPool()
+        {
+            if (TransformY.childCount <= 0) { return; }
+            for (int i = 0; i < TransformY.childCount; i++)
+            {
+                Transform childT = TransformY.GetChild(i);
+                ReusableGameObject[] objs = childT.GetComponentsInChildren<ReusableGameObject>(true);
+                if (objs != null && objs.Length > 0)
+                {
+                    foreach (var obj in objs)
+                    {
+                        obj.ReleaseFromObjectPool();
+                    }
+                }
+            }
         }
     }
 }

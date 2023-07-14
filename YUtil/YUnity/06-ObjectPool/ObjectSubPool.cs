@@ -73,6 +73,13 @@ namespace YUnity
         {
             GameObject go = SpawnAction(prefab, parent);
             if (transformReset) { go.transform.Reset(true); }
+
+            ReusableGameObject reusable = go.GetComponent<ReusableGameObject>();
+            if (reusable != null)
+            {
+                reusable.UnSpawnChildrenWhoInheritReusableGameObjectFromObjectPool();
+            }
+
             if (go.activeSelf == false)
             {
                 go.SetActive(true);
@@ -95,6 +102,13 @@ namespace YUnity
                     go.transform.position = position;
                     break;
             }
+
+            ReusableGameObject reusable = go.GetComponent<ReusableGameObject>();
+            if (reusable != null)
+            {
+                reusable.UnSpawnChildrenWhoInheritReusableGameObjectFromObjectPool();
+            }
+
             if (go.activeSelf == false)
             {
                 go.SetActive(true);
@@ -111,7 +125,10 @@ namespace YUnity
             if (go != null && go.activeSelf && Contains(go))
             {
                 go.SendMessage("OnSpawnOrUnSpawn", false, SendMessageOptions.DontRequireReceiver);
-                go.SetActive(false);
+                if (go.activeSelf)
+                {
+                    go.SetActive(false);
+                }
             }
         }
         internal void UnSpawnAll()
