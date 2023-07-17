@@ -312,6 +312,11 @@ namespace YUnity
                 _navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
                 if (_navMeshAgent != null) { return _navMeshAgent; }
                 _navMeshAgent = gameObject.AddComponent<NavMeshAgent>();
+                _navMeshAgent.acceleration = 10000; // 加速度很大，瞬间加速
+                _navMeshAgent.speed = 0; // 最大速度
+                _navMeshAgent.angularSpeed = 300; // 转角速度(度/秒)
+                _navMeshAgent.autoBraking = false; // 不要刹车效果(缓慢减速)
+                _navMeshAgent.autoRepath = true; // 自动重新寻路，如果发现现有路径已失效，那么它将获得新的路径
                 return _navMeshAgent;
             }
         }
