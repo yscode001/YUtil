@@ -132,7 +132,7 @@ namespace YUnity
             for (int i = AllEnemyList.Count - 1; i >= 0; i--)
             {
                 Transform enemyTransform = AllEnemyList[i];
-                if (Vector3.Distance(enemyTransform.position, TransformY.position) <= LimitReachDis)
+                if (enemyTransform != null && Vector3.Distance(enemyTransform.position, TransformY.position) <= LimitReachDis)
                 {
                     Damage?.Invoke(enemyTransform, index == 0);
                     AllEnemyList.RemoveAt(i);
