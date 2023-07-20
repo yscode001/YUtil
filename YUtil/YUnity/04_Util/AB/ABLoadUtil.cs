@@ -122,26 +122,6 @@ namespace YUnity
             handleDependencieBeforeLoad?.Invoke(GetAllDependencies(bundleName));
             return AssetBundle.LoadFromFile(BundlePath + GetBundleName(bundleName));
         }
-
-        /// <summary>
-        /// 加载资源
-        /// </summary>
-        /// <typeparam name="T">资源类型</typeparam>
-        /// <param name="assetBundle">指定的assetBundle包</param>
-        /// <param name="assetName">资源名称</param>
-        /// <returns></returns>
-        public static T LoadAsset<T>(AssetBundle assetBundle, string assetName) where T : UnityEngine.Object
-        {
-            if (assetBundle == null)
-            {
-                throw new System.Exception("ABLoadUtil-LoadAsset：assetBundle不能为空");
-            }
-            if (string.IsNullOrWhiteSpace(assetName))
-            {
-                throw new System.Exception("ABLoadUtil-LoadAsset：assetName不能为空");
-            }
-            return assetBundle.LoadAsset<T>(assetName);
-        }
     }
     #endregion
 
