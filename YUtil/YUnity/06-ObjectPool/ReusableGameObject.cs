@@ -9,6 +9,11 @@ namespace YUnity
     public class ReusableGameObject : MonoBehaviourBaseY, IReusable
     {
         /// <summary>
+        /// 在从池中取出之前SetActive之前调用
+        /// </summary>
+        public virtual void BeforeSpawnSetActive() { }
+
+        /// <summary>
         /// 当游戏物体从池中取出或放入池中时，执行的一些操作(如初始化)
         /// </summary>
         /// <param name="isSpawn">是否是spawn</param>

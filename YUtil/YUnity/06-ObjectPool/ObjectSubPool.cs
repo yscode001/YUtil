@@ -77,9 +77,9 @@ namespace YUnity
             ReusableGameObject reusable = go.GetComponent<ReusableGameObject>();
             if (reusable != null)
             {
+                reusable.BeforeSpawnSetActive();
                 reusable.UnSpawnChildrenWhoInheritReusableGameObjectFromObjectPool();
             }
-
             if (go.activeSelf == false)
             {
                 go.SetActive(true);
@@ -106,9 +106,9 @@ namespace YUnity
             ReusableGameObject reusable = go.GetComponent<ReusableGameObject>();
             if (reusable != null)
             {
+                reusable.BeforeSpawnSetActive();
                 reusable.UnSpawnChildrenWhoInheritReusableGameObjectFromObjectPool();
             }
-
             if (go.activeSelf == false)
             {
                 go.SetActive(true);
