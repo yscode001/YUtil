@@ -75,6 +75,29 @@ namespace YUnity
                 return randomSeed.Next(1, 100) <= maxPercent;
             }
         }
+
+        /// <summary>
+        /// 将数组打乱
+        /// </summary>
+        /// <param name="array"></param>
+        public static void RandomIntArrayWithSeed(int[] array)
+        {
+            if (array == null || array.Length <= 0)
+            {
+                return;
+            }
+            if (randomSeed == null)
+            {
+                randomSeed = new Random(0);
+            }
+            for (int i = 0; i < array.Length; i++)
+            {
+                int index = randomSeed.Next(array.Length);
+                int temp = array[index];
+                array[i] = array[index];
+                array[index] = temp;
+            }
+        }
     }
     #endregion
     #region 非种子
@@ -134,6 +157,29 @@ namespace YUnity
                     randomNoSeed = new Random();
                 }
                 return randomNoSeed.Next(1, 100) <= maxPercent;
+            }
+        }
+
+        /// <summary>
+        /// 将数组打乱
+        /// </summary>
+        /// <param name="array"></param>
+        public static void RandomIntArrayWithoutSeed(int[] array)
+        {
+            if (array == null || array.Length <= 0)
+            {
+                return;
+            }
+            if (randomNoSeed == null)
+            {
+                randomNoSeed = new Random();
+            }
+            for (int i = 0; i < array.Length; i++)
+            {
+                int index = randomNoSeed.Next(array.Length);
+                int temp = array[index];
+                array[i] = array[index];
+                array[index] = temp;
             }
         }
     }
