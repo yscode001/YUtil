@@ -93,7 +93,7 @@ namespace YUnity
             for (int i = 0; i < array.Length; i++)
             {
                 int index = randomSeed.Next(array.Length);
-                int temp = array[index];
+                int temp = array[i];
                 array[i] = array[index];
                 array[index] = temp;
             }
@@ -177,7 +177,7 @@ namespace YUnity
             for (int i = 0; i < array.Length; i++)
             {
                 int index = randomNoSeed.Next(array.Length);
-                int temp = array[index];
+                int temp = array[i];
                 array[i] = array[index];
                 array[index] = temp;
             }
