@@ -18,18 +18,18 @@ namespace YUnity
         /// <param name="originDirection">原点方向(原点朝向)</param>
         /// <param name="originPosition">原点位置</param>
         /// <param name="targetPosition">目标位置</param>
-        /// <param name="minDistance">扇形范围距离原点的最小距离</param>
-        /// <param name="maxDistance">扇形范围距离原点的最大距离</param>
+        /// <param name="distance">扇形范围距原点位置的距离</param>
+        /// <param name="sectorHeight">扇形范围的高度</param>
         /// <param name="maxAngle">扇形范围的最大角度</param>
         /// <returns>目标位置是否在原点为扇形的范围内</returns>
-        public static bool SectorContains(Vector3 originDirection, Vector3 originPosition, Vector3 targetPosition, float minDistance, float maxDistance, float maxAngle)
+        public static bool SectorContains(Vector3 originDirection, Vector3 originPosition, Vector3 targetPosition, float distance, float sectorHeight, float maxAngle)
         {
             if (Vector3.Angle(targetPosition - originPosition, originDirection) > maxAngle * 0.5f)
             {
                 return false;
             }
-            float distance = Vector3.Distance(targetPosition, originPosition);
-            return minDistance <= distance && distance <= maxDistance;
+            float targetDistance = Vector3.Distance(targetPosition, originPosition);
+            return distance <= targetDistance && targetDistance <= distance + sectorHeight;
         }
 
         /// <summary>
@@ -38,12 +38,12 @@ namespace YUnity
         /// <param name="originDirection">原点方向(原点朝向)</param>
         /// <param name="originPosition">原点位置</param>
         /// <param name="targetPosition">目标位置</param>
-        /// <param name="maxDistance">扇形范围距离原点的最大距离</param>
+        /// <param name="sectorHeight">扇形范围的高度</param>
         /// <param name="maxAngle">扇形范围的最大角度</param>
         /// <returns>目标位置是否在原点为扇形的范围内</returns>
-        public static bool SectorContains(Vector3 originDirection, Vector3 originPosition, Vector3 targetPosition, float maxDistance, float maxAngle)
+        public static bool SectorContains(Vector3 originDirection, Vector3 originPosition, Vector3 targetPosition, float sectorHeight, float maxAngle)
         {
-            return SectorContains(originDirection, originPosition, targetPosition, 0, maxDistance, maxAngle);
+            return SectorContains(originDirection, originPosition, targetPosition, 0, sectorHeight, maxAngle);
         }
 
         /// <summary>
@@ -51,13 +51,13 @@ namespace YUnity
         /// </summary>
         /// <param name="originPosition">原点位置</param>
         /// <param name="targetPosition">目标位置</param>
-        /// <param name="minDistance">圆形范围距离原点的最小距离</param>
-        /// <param name="maxDistance">圆形范围距离原点的最大距离</param>
+        /// <param name="distance">圆形范围距原点位置的距离</param>
+        /// <param name="circleHeight">圆形范围的高度</param>
         /// <returns>目标位置是否在原点为圆形的范围内</returns>
-        public static bool CircleContains(Vector3 originPosition, Vector3 targetPosition, float minDistance, float maxDistance)
+        public static bool CircleContains(Vector3 originPosition, Vector3 targetPosition, float distance, float circleHeight)
         {
-            float distance = Vector3.Distance(targetPosition, originPosition);
-            return minDistance <= distance && distance <= maxDistance;
+            float targetDistance = Vector3.Distance(targetPosition, originPosition);
+            return distance <= targetDistance && targetDistance <= distance + circleHeight;
         }
 
         /// <summary>
@@ -65,11 +65,11 @@ namespace YUnity
         /// </summary>
         /// <param name="originPosition">原点位置</param>
         /// <param name="targetPosition">目标位置</param>
-        /// <param name="maxDistance">圆形范围距离原点的最大距离</param>
+        /// <param name="circleHeight">扇形范围的高度</param>
         /// <returns>目标位置是否在原点为圆形的范围内</returns>
-        public static bool CircleContains(Vector3 originPosition, Vector3 targetPosition, float maxDistance)
+        public static bool CircleContains(Vector3 originPosition, Vector3 targetPosition, float circleHeight)
         {
-            return CircleContains(originPosition, targetPosition, 0, maxDistance);
+            return CircleContains(originPosition, targetPosition, 0, circleHeight);
         }
 
         /// <summary>
