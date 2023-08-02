@@ -51,9 +51,9 @@ namespace YUnity
         private float MoveSpeed = 0;
 
         /// <summary>
-        /// 当距敌人小于等于这个距离时，就算伤害了敌人
+        /// 最大误差距离
         /// </summary>
-        private float LimitReachDis = 0;
+        private float MaxErrorDistance = 0;
 
         /// <summary>
         /// 路径上的敌人集合
@@ -80,7 +80,7 @@ namespace YUnity
             IsMoving = false;
 
             Direction = Vector3.zero;
-            MaxSeconds = MaxDistance = MoveSpeed = LimitReachDis = 0;
+            MaxSeconds = MaxDistance = MoveSpeed = MaxErrorDistance = 0;
             AllEnemyList = null;
             Damage = null;
             Complete = null;
@@ -98,14 +98,14 @@ namespace YUnity
         /// <param name="direction">飞行方向</param>
         /// <param name="maxValue">最长飞行秒数或最远飞行距离</param>
         /// <param name="moveSpeed">飞行速度</param>
-        /// <param name="limitReachDis">当距敌人小于等于这个距离时，就算伤害了敌人</param>
+        /// <param name="maxErrorDistance">最大误差距离</param>
         /// <param name="allEnemyList">路径上的敌人集合</param>
         /// <param name="damage">对路径上的敌人造成伤害</param>
         /// <param name="complete">完成回调</param>
-        public void BeginFlying(EffectBulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, float limitReachDis, List<Transform> allEnemyList, Action<Transform, bool> damage, Action complete)
+        public void BeginFlying(EffectBulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, float maxErrorDistance, List<Transform> allEnemyList, Action<Transform, bool> damage, Action complete)
         {
             Clear();
-            if (direction == Vector3.zero || moveSpeed <= 0 || maxValue <= 0 || limitReachDis < 0)
+            if (direction == Vector3.zero || moveSpeed <= 0 || maxValue <= 0 || maxErrorDistance < 0)
             {
                 // 设置的数据不对，啥也不做，直接返回
                 return;
@@ -115,7 +115,7 @@ namespace YUnity
             if (type == EffectBulletLinePenetrateType.Distance) { MaxDistance = maxValue; StartPos = TransformY.position; }
             else { MaxSeconds = maxValue; }
             MoveSpeed = moveSpeed;
-            LimitReachDis = limitReachDis;
+            MaxErrorDistance = maxErrorDistance;
             AllEnemyList = allEnemyList;
             Damage = damage;
             Complete = complete;
@@ -132,7 +132,7 @@ namespace YUnity
             for (int i = AllEnemyList.Count - 1; i >= 0; i--)
             {
                 Transform enemyTransform = AllEnemyList[i];
-                if (enemyTransform != null && Vector3.Distance(enemyTransform.position, TransformY.position) <= LimitReachDis)
+                if (enemyTransform != null && Vector3.Distance(enemyTransform.position, TransformY.position) <= MaxErrorDistance)
                 {
                     Damage?.Invoke(enemyTransform, index == 0);
                     AllEnemyList.RemoveAt(i);

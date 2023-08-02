@@ -19,9 +19,9 @@ namespace YUnity
         private float MoveSpeed = 0;
 
         /// <summary>
-        /// 当距目标小于等于这个距离时，就算达到
+        /// 最大误差距离
         /// </summary>
-        private float LimitReachDis = 0;
+        private float MaxErrorDistance = 0;
 
         /// <summary>
         /// 达到目标位置后的回调
@@ -37,7 +37,7 @@ namespace YUnity
             IsMoving = false;
 
             TargetPos = Vector3.zero;
-            MoveSpeed = LimitReachDis = 0;
+            MoveSpeed = MaxErrorDistance = 0;
             ReachedComplete = null;
 
             CurveDir = Vector3.zero;
@@ -53,13 +53,13 @@ namespace YUnity
         /// <param name="curveWeight">曲线权重(0-1)</param>
         /// <param name="targetPos">目标位置</param>
         /// <param name="moveSpeed">飞行速度</param>
-        /// <param name="limitReachDis">当距目标小于等于这个距离时，就算达到</param>
+        /// <param name="maxErrorDistance">最大误差距离</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void BeginFlying(Vector3 curveDir, int curveRandomSeed, float curveWeight, Vector3 targetPos, float moveSpeed, float limitReachDis, Action reachedComplete)
+        public void BeginFlying(Vector3 curveDir, int curveRandomSeed, float curveWeight, Vector3 targetPos, float moveSpeed, float maxErrorDistance, Action reachedComplete)
         {
             Clear();
             if (moveSpeed <= 0 ||
-                limitReachDis < 0 ||
+                maxErrorDistance < 0 ||
                 (curveDir == Vector3.zero && curveRandomSeed <= 0))
             {
                 // 设置的数据不对，啥也不做，直接返回
@@ -67,7 +67,7 @@ namespace YUnity
             }
             TargetPos = targetPos;
             MoveSpeed = moveSpeed;
-            LimitReachDis = limitReachDis;
+            MaxErrorDistance = maxErrorDistance;
             ReachedComplete = reachedComplete;
             if (curveDir == Vector3.zero)
             {
@@ -94,7 +94,7 @@ namespace YUnity
             {
                 return;
             }
-            if (Vector3.Distance(TargetPos, TransformY.position) <= LimitReachDis)
+            if (Vector3.Distance(TargetPos, TransformY.position) <= MaxErrorDistance)
             {
                 IsMoving = false;
                 ReachedComplete?.Invoke();

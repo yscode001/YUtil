@@ -11,14 +11,14 @@ namespace YUnity
     {
         public static Color Color(this string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) { return new Color(0, 0, 0, 0); }
+            if (string.IsNullOrWhiteSpace(value)) { return UnityEngine.Color.clear; }
             if (ColorUtility.TryParseHtmlString(value, out Color col))
             {
                 return col;
             }
             else
             {
-                return new Color(0, 0, 0, 0);
+                return UnityEngine.Color.clear;
             }
         }
     }
