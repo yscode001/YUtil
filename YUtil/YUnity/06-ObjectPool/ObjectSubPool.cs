@@ -78,7 +78,7 @@ namespace YUnity
             if (reusable != null)
             {
                 reusable.UnSpawnChildrenWhoInheritReusableGameObjectFromObjectPool();
-                reusable.BeforeSpawnSetActive();
+                reusable.BeforeSpawn();
             }
             if (go.activeSelf == false)
             {
@@ -107,7 +107,7 @@ namespace YUnity
             if (reusable != null)
             {
                 reusable.UnSpawnChildrenWhoInheritReusableGameObjectFromObjectPool();
-                reusable.BeforeSpawnSetActive();
+                reusable.BeforeSpawn();
             }
             if (go.activeSelf == false)
             {

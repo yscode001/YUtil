@@ -11,7 +11,7 @@ namespace YUnity
         /// <summary>
         /// 在从池中取出之前SetActive之前调用
         /// </summary>
-        public virtual void BeforeSpawnSetActive() { }
+        public virtual void BeforeSpawn() { }
 
         /// <summary>
         /// 当游戏物体从池中取出或放入池中时，执行的一些操作(如初始化)
