@@ -28,27 +28,33 @@ namespace YUnity
 
     internal partial class ObjectSubPool
     {
-        /// <summary>
-        /// 防止外界由于种种原因销毁了object
-        /// </summary>
-        private void RemoveNullObjectBeforeSpawn()
+        private uint RemoveNullObjectAndThenGetActiveCountBeforeSpawn()
         {
+            uint count = 0;
             for (int i = objectList.Count - 1; i >= 0; i--)
             {
                 if (objectList[i] == null)
                 {
                     objectList.RemoveAt(i);
                 }
+                else if (objectList[i].activeSelf)
+                {
+                    count += 1;
+                }
             }
+            return count;
         }
 
-        private GameObject SpawnAction(GameObject prefab, Transform parent)
+        private GameObject SpawnAction(GameObject prefab, Transform parent, uint maxActiveCount)
         {
             if (prefab == null)
             {
                 throw new System.Exception("ObjectPool-Spawn：prefab不能为空");
             }
-            RemoveNullObjectBeforeSpawn();
+            if (RemoveNullObjectAndThenGetActiveCountBeforeSpawn() >= maxActiveCount)
+            {
+                return null;
+            }
             GameObject go = null;
             foreach (var obj in objectList)
             {
@@ -69,9 +75,13 @@ namespace YUnity
             return go;
         }
 
-        internal GameObject Spawn(GameObject prefab, Transform parent, bool transformReset)
+        internal GameObject Spawn(GameObject prefab, Transform parent, bool transformReset, uint maxActiveCount)
         {
-            GameObject go = SpawnAction(prefab, parent);
+            GameObject go = SpawnAction(prefab, parent, maxActiveCount);
+            if (go == null)
+            {
+                return null;
+            }
             if (transformReset) { go.transform.Reset(true); }
 
             ReusableGameObject reusable = go.GetComponent<ReusableGameObject>();
@@ -88,9 +98,13 @@ namespace YUnity
             return go;
         }
 
-        internal GameObject SpawnWithPosition(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position)
+        internal GameObject SpawnWithPosition(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position, uint maxActiveCount)
         {
-            GameObject go = SpawnAction(prefab, parent);
+            GameObject go = SpawnAction(prefab, parent, maxActiveCount);
+            if (go == null)
+            {
+                return null;
+            }
             go.transform.localScale = Vector3.one;
             go.transform.localEulerAngles = Vector3.zero;
             switch (positionEnum)

@@ -19,99 +19,111 @@ namespace YUnity
     }
     public partial class ObjectPool
     {
-        public static GameObject Spawn(GameObject prefab, Transform parent, bool transformReset = true)
+        public static GameObject Spawn(GameObject prefab, Transform parent, bool transformReset = true, uint maxActiveCount = uint.MaxValue)
         {
             if (!subpoolList.ContainsKey(prefab))
             {
                 subpoolList.Add(prefab, new ObjectSubPool());
             }
-            return subpoolList[prefab].Spawn(prefab, parent, transformReset);
+            return subpoolList[prefab].Spawn(prefab, parent, transformReset, maxActiveCount);
         }
-        public static T Spawn<T>(GameObject prefab, Transform parent, bool transformReset = true) where T : Component
+        public static T Spawn<T>(GameObject prefab, Transform parent, bool transformReset = true, uint maxActiveCount = uint.MaxValue) where T : Component
         {
-            return Spawn(prefab, parent, transformReset).GetOrAddComponent<T>();
+            GameObject go = Spawn(prefab, parent, transformReset, maxActiveCount);
+            if (go == null) { return null; }
+            return go.GetOrAddComponent<T>();
         }
-        public static Tuple<T1, T2> Spawn<T1, T2>(GameObject prefab, Transform parent, bool transformReset = true)
+        public static Tuple<T1, T2> Spawn<T1, T2>(GameObject prefab, Transform parent, bool transformReset = true, uint maxActiveCount = uint.MaxValue)
             where T1 : Component
             where T2 : Component
         {
-            GameObject go = Spawn(prefab, parent, transformReset);
+            GameObject go = Spawn(prefab, parent, transformReset, maxActiveCount);
+            if (go == null) { return null; }
             return new Tuple<T1, T2>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>());
         }
-        public static Tuple<T1, T2, T3> Spawn<T1, T2, T3>(GameObject prefab, Transform parent, bool transformReset = true)
+        public static Tuple<T1, T2, T3> Spawn<T1, T2, T3>(GameObject prefab, Transform parent, bool transformReset = true, uint maxActiveCount = uint.MaxValue)
            where T1 : Component
            where T2 : Component
            where T3 : Component
         {
-            GameObject go = Spawn(prefab, parent, transformReset);
+            GameObject go = Spawn(prefab, parent, transformReset, maxActiveCount);
+            if (go == null) { return null; }
             return new Tuple<T1, T2, T3>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>());
         }
-        public static Tuple<T1, T2, T3, T4> Spawn<T1, T2, T3, T4>(GameObject prefab, Transform parent, bool transformReset = true)
+        public static Tuple<T1, T2, T3, T4> Spawn<T1, T2, T3, T4>(GameObject prefab, Transform parent, bool transformReset = true, uint maxActiveCount = uint.MaxValue)
            where T1 : Component
            where T2 : Component
            where T3 : Component
            where T4 : Component
         {
-            GameObject go = Spawn(prefab, parent, transformReset);
+            GameObject go = Spawn(prefab, parent, transformReset, maxActiveCount);
+            if (go == null) { return null; }
             return new Tuple<T1, T2, T3, T4>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>(), go.GetOrAddComponent<T4>());
         }
-        public static Tuple<T1, T2, T3, T4, T5> Spawn<T1, T2, T3, T4, T5>(GameObject prefab, Transform parent, bool transformReset = true)
+        public static Tuple<T1, T2, T3, T4, T5> Spawn<T1, T2, T3, T4, T5>(GameObject prefab, Transform parent, bool transformReset = true, uint maxActiveCount = uint.MaxValue)
            where T1 : Component
            where T2 : Component
            where T3 : Component
            where T4 : Component
            where T5 : Component
         {
-            GameObject go = Spawn(prefab, parent, transformReset);
+            GameObject go = Spawn(prefab, parent, transformReset, maxActiveCount);
+            if (go == null) { return null; }
             return new Tuple<T1, T2, T3, T4, T5>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>(), go.GetOrAddComponent<T4>(), go.GetOrAddComponent<T5>());
         }
     }
     public partial class ObjectPool
     {
-        public static GameObject SpawnWithPosition(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position)
+        public static GameObject SpawnWithPosition(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position, uint maxActiveCount = uint.MaxValue)
         {
             if (!subpoolList.ContainsKey(prefab))
             {
                 subpoolList.Add(prefab, new ObjectSubPool());
             }
-            return subpoolList[prefab].SpawnWithPosition(prefab, parent, positionEnum, position);
+            return subpoolList[prefab].SpawnWithPosition(prefab, parent, positionEnum, position, maxActiveCount);
         }
-        public static T SpawnWithPosition<T>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position) where T : Component
+        public static T SpawnWithPosition<T>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position, uint maxActiveCount = uint.MaxValue) where T : Component
         {
-            return SpawnWithPosition(prefab, parent, positionEnum, position).GetOrAddComponent<T>();
+            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position, maxActiveCount);
+            if (go == null) { return null; }
+            return go.GetOrAddComponent<T>();
         }
-        public static Tuple<T1, T2> SpawnWithPosition<T1, T2>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position)
+        public static Tuple<T1, T2> SpawnWithPosition<T1, T2>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position, uint maxActiveCount = uint.MaxValue)
             where T1 : Component
             where T2 : Component
         {
-            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position);
+            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position, maxActiveCount);
+            if (go == null) { return null; }
             return new Tuple<T1, T2>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>());
         }
-        public static Tuple<T1, T2, T3> SpawnWithPosition<T1, T2, T3>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position)
+        public static Tuple<T1, T2, T3> SpawnWithPosition<T1, T2, T3>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position, uint maxActiveCount = uint.MaxValue)
            where T1 : Component
            where T2 : Component
            where T3 : Component
         {
-            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position);
+            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position, maxActiveCount);
+            if (go == null) { return null; }
             return new Tuple<T1, T2, T3>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>());
         }
-        public static Tuple<T1, T2, T3, T4> SpawnWithPosition<T1, T2, T3, T4>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position)
+        public static Tuple<T1, T2, T3, T4> SpawnWithPosition<T1, T2, T3, T4>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position, uint maxActiveCount = uint.MaxValue)
            where T1 : Component
            where T2 : Component
            where T3 : Component
            where T4 : Component
         {
-            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position);
+            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position, maxActiveCount);
+            if (go == null) { return null; }
             return new Tuple<T1, T2, T3, T4>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>(), go.GetOrAddComponent<T4>());
         }
-        public static Tuple<T1, T2, T3, T4, T5> SpawnWithPosition<T1, T2, T3, T4, T5>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position)
+        public static Tuple<T1, T2, T3, T4, T5> SpawnWithPosition<T1, T2, T3, T4, T5>(GameObject prefab, Transform parent, PositionEnum positionEnum, Vector3 position, uint maxActiveCount = uint.MaxValue)
            where T1 : Component
            where T2 : Component
            where T3 : Component
            where T4 : Component
            where T5 : Component
         {
-            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position);
+            GameObject go = SpawnWithPosition(prefab, parent, positionEnum, position, maxActiveCount);
+            if (go == null) { return null; }
             return new Tuple<T1, T2, T3, T4, T5>(go.GetOrAddComponent<T1>(), go.GetOrAddComponent<T2>(), go.GetOrAddComponent<T3>(), go.GetOrAddComponent<T4>(), go.GetOrAddComponent<T5>());
         }
     }

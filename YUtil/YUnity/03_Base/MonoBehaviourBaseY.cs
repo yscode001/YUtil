@@ -31,6 +31,7 @@ namespace YUnity
         private MeshRenderer _meshRenderer;
         private Renderer _renderer;
         private SkinnedMeshRenderer _skinnedMeshRenderer;
+        private LineRenderer _lineRenderer;
         private NavMeshAgent _navMeshAgent;
         private NavMeshObstacle _navMeshObstacle;
         private HumanBodyBoneUtil _humanBodyBoneUtil;
@@ -298,6 +299,21 @@ namespace YUnity
                 if (_skinnedMeshRenderer != null) { return _skinnedMeshRenderer; }
                 _skinnedMeshRenderer = gameObject.AddComponent<SkinnedMeshRenderer>();
                 return _skinnedMeshRenderer;
+            }
+        }
+
+        /// <summary>
+        /// 获取LineRenderer，如果没有则添加
+        /// </summary>
+        public LineRenderer LineRendererY
+        {
+            get
+            {
+                if (_lineRenderer != null) { return _lineRenderer; }
+                _lineRenderer = gameObject.GetComponent<LineRenderer>();
+                if (_lineRenderer != null) { return _lineRenderer; }
+                _lineRenderer = gameObject.AddComponent<LineRenderer>();
+                return _lineRenderer;
             }
         }
 
