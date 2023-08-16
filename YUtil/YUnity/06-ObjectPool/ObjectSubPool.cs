@@ -24,6 +24,9 @@ namespace YUnity
         }
 
         public bool HasElement => objectList.Count > 0;
+
+        private string PrefabName;
+        private int SpawnCount = 0;
     }
 
     internal partial class ObjectSubPool
@@ -51,6 +54,10 @@ namespace YUnity
             {
                 throw new System.Exception("ObjectPool-Spawn：prefab不能为空");
             }
+            if (string.IsNullOrWhiteSpace(PrefabName))
+            {
+                PrefabName = prefab.name;
+            }
             if (RemoveNullObjectAndThenGetActiveCountBeforeSpawn() >= maxActiveCount)
             {
                 return null;
@@ -71,6 +78,8 @@ namespace YUnity
                 // 无未激活的游戏物体，重新生成
                 go = GameObject.Instantiate<GameObject>(prefab, parent, false);
                 objectList.Add(go);
+                SpawnCount += 1;
+                go.name = $"{PrefabName}({SpawnCount})";
             }
             return go;
         }
