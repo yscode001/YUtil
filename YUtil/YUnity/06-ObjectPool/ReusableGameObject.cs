@@ -17,7 +17,10 @@ namespace YUnity
         /// 当游戏物体从池中取出或放入池中时，执行的一些操作(如初始化)
         /// </summary>
         /// <param name="isSpawn">是否是spawn</param>
-        public virtual void OnSpawnOrUnSpawn(bool isSpawn) { }
+        public virtual void OnSpawnOrUnSpawn(bool isSpawn)
+        {
+            StopAllCoroutines();
+        }
 
         private Coroutine UnSpawnCoroutine;
 
