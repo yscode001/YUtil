@@ -10,7 +10,15 @@ namespace YUnity
     #region 种子
     public partial class RandomMag
     {
-        private static Random randomSeed;
+        private static Random _randomSeed;
+        private static Random RandomSeed
+        {
+            get
+            {
+                if (_randomSeed == null) { _randomSeed = new Random(0); }
+                return _randomSeed;
+            }
+        }
 
         /// <summary>
         /// 初始化随机种子
@@ -18,7 +26,7 @@ namespace YUnity
         /// <param name="seed">种子</param>
         public static void InitRandomSeed(int seed)
         {
-            randomSeed = new Random(seed);
+            _randomSeed = new Random(seed);
         }
 
         /// <summary>
@@ -29,11 +37,7 @@ namespace YUnity
         /// <returns></returns>
         public static int NextWithSeed(int includeMin, int includeMax)
         {
-            if (randomSeed == null)
-            {
-                randomSeed = new Random(0);
-            }
-            return randomSeed.Next(includeMin, includeMax + 1);
+            return RandomSeed.Next(includeMin, includeMax + 1);
         }
 
         /// <summary>
@@ -45,14 +49,10 @@ namespace YUnity
         /// <returns></returns>
         public static int NextWithSeed(int includeMin, int includeMax, int notEqual)
         {
-            if (randomSeed == null)
-            {
-                randomSeed = new Random(0);
-            }
-            int result = randomSeed.Next(includeMin, includeMax + 1);
+            int result = RandomSeed.Next(includeMin, includeMax + 1);
             while (result == notEqual)
             {
-                result = randomSeed.Next(includeMin, includeMax + 1);
+                result = RandomSeed.Next(includeMin, includeMax + 1);
             }
             return result;
         }
@@ -68,11 +68,7 @@ namespace YUnity
             else if (maxPercent >= 100) { return true; }
             else
             {
-                if (randomSeed == null)
-                {
-                    randomSeed = new Random(0);
-                }
-                return randomSeed.Next(1, 100) <= maxPercent;
+                return RandomSeed.Next(1, 100) <= maxPercent;
             }
         }
 
@@ -86,13 +82,9 @@ namespace YUnity
             {
                 return;
             }
-            if (randomSeed == null)
-            {
-                randomSeed = new Random(0);
-            }
             for (int i = 0; i < array.Length; i++)
             {
-                int index = randomSeed.Next(array.Length);
+                int index = RandomSeed.Next(array.Length);
                 int temp = array[i];
                 array[i] = array[index];
                 array[index] = temp;
@@ -103,7 +95,15 @@ namespace YUnity
     #region 非种子
     public partial class RandomMag
     {
-        private static Random randomNoSeed;
+        private static Random _randomNoSeed;
+        private static Random RandomNoSeed
+        {
+            get
+            {
+                if (_randomNoSeed == null) { _randomNoSeed = new Random(); }
+                return _randomNoSeed;
+            }
+        }
 
         /// <summary>
         /// 获取包含上限与下限的随机数(不用种子)
@@ -113,11 +113,7 @@ namespace YUnity
         /// <returns></returns>
         public static int NextWithoutSeed(int includeMin, int includeMax)
         {
-            if (randomNoSeed == null)
-            {
-                randomNoSeed = new Random();
-            }
-            return randomNoSeed.Next(includeMin, includeMax + 1);
+            return RandomNoSeed.Next(includeMin, includeMax + 1);
         }
 
         /// <summary>
@@ -129,14 +125,10 @@ namespace YUnity
         /// <returns></returns>
         public static int NextWithoutSeed(int includeMin, int includeMax, int notEqual)
         {
-            if (randomNoSeed == null)
-            {
-                randomNoSeed = new Random();
-            }
-            int result = randomNoSeed.Next(includeMin, includeMax + 1);
+            int result = RandomNoSeed.Next(includeMin, includeMax + 1);
             while (result == notEqual)
             {
-                result = randomNoSeed.Next(includeMin, includeMax + 1);
+                result = RandomNoSeed.Next(includeMin, includeMax + 1);
             }
             return result;
         }
@@ -152,11 +144,7 @@ namespace YUnity
             else if (maxPercent >= 100) { return true; }
             else
             {
-                if (randomNoSeed == null)
-                {
-                    randomNoSeed = new Random();
-                }
-                return randomNoSeed.Next(1, 100) <= maxPercent;
+                return RandomNoSeed.Next(1, 100) <= maxPercent;
             }
         }
 
@@ -170,13 +158,9 @@ namespace YUnity
             {
                 return;
             }
-            if (randomNoSeed == null)
-            {
-                randomNoSeed = new Random();
-            }
             for (int i = 0; i < array.Length; i++)
             {
-                int index = randomNoSeed.Next(array.Length);
+                int index = RandomNoSeed.Next(array.Length);
                 int temp = array[i];
                 array[i] = array[index];
                 array[index] = temp;
