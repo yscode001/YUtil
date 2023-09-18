@@ -73,6 +73,21 @@ namespace YUnity
         }
 
         /// <summary>
+        /// 随机数是否在最大概率以内(用种子)
+        /// </summary>
+        /// <param name="maxPercent">最大概率，0-100的浮点数</param>
+        /// <returns></returns>
+        public static bool RandomPercentWithSeed(float maxPercent)
+        {
+            if (maxPercent <= 0) { return false; }
+            else if (maxPercent >= 100) { return true; }
+            else
+            {
+                return RandomSeed.Next(1, 10000) <= (maxPercent * 100);
+            }
+        }
+
+        /// <summary>
         /// 将数组打乱
         /// </summary>
         /// <param name="array"></param>
@@ -145,6 +160,21 @@ namespace YUnity
             else
             {
                 return RandomNoSeed.Next(1, 100) <= maxPercent;
+            }
+        }
+
+        /// <summary>
+        /// 随机数是否在最大概率以内(不用种子)
+        /// </summary>
+        /// <param name="maxPercent">最大概率，0-100的浮点数</param>
+        /// <returns></returns>
+        public static bool RandomPercentWithoutSeed(float maxPercent)
+        {
+            if (maxPercent <= 0) { return false; }
+            else if (maxPercent >= 100) { return true; }
+            else
+            {
+                return RandomNoSeed.Next(1, 10000) <= (maxPercent * 100);
             }
         }
 
