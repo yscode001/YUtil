@@ -512,6 +512,10 @@ namespace YUnity
                 delayAction?.Invoke();
                 return null;
             }
+            if (!gameObject.activeInHierarchy)
+            {
+                return null;
+            }
             return StartCoroutine(DoAfterDelayAtor(delaySeconds, delayAction));
         }
 
