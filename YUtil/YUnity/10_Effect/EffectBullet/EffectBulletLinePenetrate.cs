@@ -125,14 +125,14 @@ namespace YUnity
     }
     public partial class EffectBulletLinePenetrate
     {
-        private void DamageEnemy()
+        private void DamageEnemy(Vector3 bulletStartPosition, Vector3 bulletEndPosition)
         {
             if (Damage == null || AllEnemyList == null || AllEnemyList.Count <= 0) { return; }
             int index = 0;
             for (int i = AllEnemyList.Count - 1; i >= 0; i--)
             {
                 Transform enemyTransform = AllEnemyList[i];
-                if (enemyTransform != null && Vector3.Distance(enemyTransform.position, TransformY.position) <= MaxErrorDistance)
+                if (enemyTransform != null && MathfUtil.GetPointToStraightLineDistance(enemyTransform.position, bulletStartPosition, bulletEndPosition) <= MaxErrorDistance)
                 {
                     Damage?.Invoke(enemyTransform, index == 0);
                     AllEnemyList.RemoveAt(i);
@@ -146,7 +146,7 @@ namespace YUnity
             {
                 return;
             }
-            DamageEnemy();
+            DamageEnemy(TransformY.position, TransformY.position + MoveSpeed * Time.deltaTime * Direction);
             if ((Type == EffectBulletLinePenetrateType.Distance && Vector3.Distance(TransformY.position, StartPos) >= MaxDistance) ||
                 (Type == EffectBulletLinePenetrateType.Time && CurDeltaTime >= MaxSeconds))
             {

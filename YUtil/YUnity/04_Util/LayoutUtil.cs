@@ -66,29 +66,7 @@ namespace YUnity
         public static void LayoutMaskImages(RectTransform maskBox, RectTransform maskTop, RectTransform maskBottom, RectTransform maskLeft, RectTransform maskRight, Canvas canvas, Vector2 hollowOutLeftDownPoint, Vector2 hollowOutRightTopPoint)
         {
             Rect canvasRect = (canvas.transform as RectTransform).rect;
-
             LayoutMaskImages(maskBox, maskTop, maskBottom, maskLeft, maskRight, canvasRect.width, canvasRect.height, hollowOutLeftDownPoint, hollowOutRightTopPoint);
-        }
-
-        /// <summary>
-        /// 布局遮罩图片集合，使其组成中间矩形镂空
-        /// </summary>
-        /// <param name="maskBox">遮罩图片集合的父容器</param>
-        /// <param name="maskTop">上边的遮罩图片</param>
-        /// <param name="maskBottom">下边的遮罩图片</param>
-        /// <param name="maskLeft">左边的遮罩图片</param>
-        /// <param name="maskRight">右边的遮罩图片</param>
-        /// <param name="canvasRectTransformWidth">参考布局Canvas的RectTransform的宽度</param>
-        /// <param name="canvasRectTransformHeight">参考布局Canvas的RectTransform的高度</param>
-        /// <param name="targetHollowOutRectTransform">根据Target计算镂空区域的左下角右上角坐标，然后布局遮罩图片留出镂空区域</param>
-        public static void LayoutMaskImages(RectTransform maskBox, RectTransform maskTop, RectTransform maskBottom, RectTransform maskLeft, RectTransform maskRight, float canvasRectTransformWidth, float canvasRectTransformHeight, RectTransform targetHollowOutRectTransform)
-        {
-            Vector3[] corners = new Vector3[4];
-            targetHollowOutRectTransform.GetWorldCorners(corners); // 获得对象的四个角坐标
-            Vector2 leftDown = corners[0]; // 选取左下角
-            Vector2 rightTop = corners[2]; // 选取右上角
-
-            LayoutMaskImages(maskBox, maskTop, maskBottom, maskLeft, maskRight, canvasRectTransformWidth, canvasRectTransformHeight, leftDown, rightTop);
         }
 
         /// <summary>
@@ -105,12 +83,57 @@ namespace YUnity
         {
             Rect canvasRect = (canvas.transform as RectTransform).rect;
 
-            Vector3[] corners = new Vector3[4];
-            targetHollowOutRectTransform.GetWorldCorners(corners); // 获得对象的四个角坐标
-            Vector2 leftDown = corners[0]; // 选取左下角
-            Vector2 rightTop = corners[2]; // 选取右上角
+            var data = GetTargetRectTransformPointsInCanvas(targetHollowOutRectTransform, canvas);
+            Vector2 leftDown = data.Item1;
+            Vector2 rightTop = data.Item3;
 
             LayoutMaskImages(maskBox, maskTop, maskBottom, maskLeft, maskRight, canvasRect.width, canvasRect.height, leftDown, rightTop);
+        }
+
+        /// <summary>
+        /// 获取RectTransform的左下、左上、右上、右下、中心点在Canvas上的坐标相对于Canvas的左下角)
+        /// </summary>
+        /// <param name="canvas">Canvas</param>
+        /// <param name="world">世界坐标点</param>
+        /// <returns></returns>
+        public static Tuple<Vector2,Vector2,Vector2,Vector2,Vector2> GetTargetRectTransformPointsInCanvas(RectTransform targetRectTransform, Canvas canvas)
+        {
+            Vector3[] _corners = new Vector3[4];
+            targetRectTransform.GetWorldCorners(_corners); // 获得对象的四个角世界坐标
+
+            _corners[0] = WorldToCanvasPoint(canvas, _corners[0]);
+            _corners[1] = WorldToCanvasPoint(canvas, _corners[1]);
+            _corners[2] = WorldToCanvasPoint(canvas, _corners[2]);
+            _corners[3] = WorldToCanvasPoint(canvas, _corners[3]);
+
+            float x = _corners[0].x + ((_corners[3].x - _corners[0].x) / 2f);
+            float y = _corners[0].y + ((_corners[1].y - _corners[0].y) / 2f);
+            Vector2 centerPos = new Vector2(x, y);
+
+            return new Tuple<Vector2,Vector2,Vector2,Vector2,Vector2>(_corners[0],_corners[1],_corners[2],_corners[3],centerPos);
+        }
+
+        /// <summary>
+        /// 将世界坐标转换为Canvas上的坐标点(相对于Canvas的左下角)
+        /// </summary>
+        /// <param name="canvas">Canvas</param>
+        /// <param name="world">世界坐标点</param>
+        /// <returns></returns>
+        public static Vector2 WorldToCanvasPoint(Canvas canvas, Vector3 world)
+        {
+            // 把世界坐标转化为屏幕坐标
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, world);
+
+            // 屏幕坐标转换为局部坐标
+            Vector2 localPoint;
+            RectTransform canvasRT = canvas.GetComponent<RectTransform>();
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRT, screenPoint, canvas.worldCamera, out localPoint);
+
+            // 相对屏幕最小角
+            localPoint.x += canvasRT.rect.width * 0.5f;
+            localPoint.y += canvasRT.rect.height * 0.5f;
+
+            return localPoint;
         }
 
         /// <summary>

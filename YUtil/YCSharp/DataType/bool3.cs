@@ -2,7 +2,7 @@
 // Email：yscode@126.com
 // Date：2022-8-1
 // ------------------------------
-namespace YCsharp
+namespace YCSharp
 {
     /// <summary>
     /// 自定义bool类型

@@ -2,7 +2,7 @@
 // Email：yscode@126.com
 // Date：2021-11-25
 // ------------------------------
-namespace YCsharp
+namespace YCSharp
 {
     public class EventDelegate
     {

@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace YCsharp
+namespace YCSharp
 {
     public partial class EventCenter
     {
