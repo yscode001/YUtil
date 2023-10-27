@@ -54,7 +54,7 @@ namespace YUnity
             begin?.Invoke(sceneAsync);
             progressCB = () =>
             {
-                if (sceneAsync.progress < 1)
+                if (sceneAsync.progress < 1f)
                 {
                     if (progressValue != sceneAsync.progress)
                     {
