@@ -74,9 +74,16 @@ namespace YUnity
                 }
             };
         }
+
+        private int curCount = 0;
+        private const int maxCount = 10;
         private void Update()
         {
-            progressCB?.Invoke();
+            if (curCount > maxCount)
+            {
+                curCount = 0;
+                progressCB?.Invoke();
+            }
         }
     }
 }
