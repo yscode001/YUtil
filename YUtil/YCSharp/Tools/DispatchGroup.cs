@@ -24,7 +24,7 @@ namespace YCSharp
                 counter += 1;
             }
         }
-        /// <summary>
+        /// <summary>ni
         /// 离开
         /// </summary>
         public void Leave()

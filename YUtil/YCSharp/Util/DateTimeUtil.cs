@@ -13,7 +13,7 @@ namespace YCSharp
         /// <summary>
         /// 时间戳计时开始时间
         /// </summary>
-        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime TimeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
         /// DateTime转换为10位时间戳（单位：秒）
@@ -22,7 +22,7 @@ namespace YCSharp
         /// <returns>10位时间戳（单位：秒）</returns>
         public static long DateTimeToTimeStamp(DateTime dateTime)
         {
-            return (long)(dateTime.ToUniversalTime() - timeStampStartTime).TotalSeconds;
+            return (long)(dateTime.ToUniversalTime() - TimeStampStartTime).TotalSeconds;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace YCSharp
         /// <returns>13位时间戳（单位：毫秒）</returns>
         public static long DateTimeToLongTimeStamp(DateTime dateTime)
         {
-            return (long)(dateTime.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
+            return (long)(dateTime.ToUniversalTime() - TimeStampStartTime).TotalMilliseconds;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace YCSharp
         /// <returns>DateTime</returns>
         public static DateTime TimeStampToDateTime(long timeStamp)
         {
-            return timeStampStartTime.AddSeconds(timeStamp).ToLocalTime();
+            return TimeStampStartTime.AddSeconds(timeStamp).ToLocalTime();
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace YCSharp
         /// <returns>DateTime</returns>
         public static DateTime LongTimeStampToDateTime(long longTimeStamp)
         {
-            return timeStampStartTime.AddMilliseconds(longTimeStamp).ToLocalTime();
+            return TimeStampStartTime.AddMilliseconds(longTimeStamp).ToLocalTime();
         }
     }
 }
