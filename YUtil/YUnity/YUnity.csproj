@@ -17,7 +17,6 @@
     <None Remove="07_UI\" />
     <None Remove="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <None Remove="Mono.Data.Sqlite" />
-    <None Remove="05_DataType\" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="10_Effect\EffectBullet\" />
   </ItemGroup>
@@ -37,8 +36,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="10_Effect\" />
-    <Folder Include="05_DataType\" />
-    <Folder Include="10_Effect\EffectBullet\" />
+    <Folder Include="09_Effect\" />
+    <Folder Include="09_Effect\EffectBullet\" />
   </ItemGroup>
 </Project>

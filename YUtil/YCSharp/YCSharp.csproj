@@ -11,7 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ext\" />
-    <Folder Include="DataType\" />
+    <Folder Include="CustomDataType\" />
     <Folder Include="Tools\" />
   </ItemGroup>
 </Project>
