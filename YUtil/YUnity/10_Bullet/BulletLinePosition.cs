@@ -4,9 +4,9 @@ using UnityEngine;
 namespace YUnity
 {
     /// <summary>
-    /// 子弹直线飞行追踪固定位置
+    /// 子弹直线飞行到固定位置
     /// </summary>
-    public partial class EffectBulletLineFixedPosition : MonoBehaviourBaseY
+    public partial class BulletLinePosition : MonoBehaviourBaseY
     {
         /// <summary>
         /// 目标位置
@@ -29,18 +29,18 @@ namespace YUnity
         private Action ReachedComplete = null;
 
         // 下面是辅助属性
-        private bool IsMoving = false; // 是否正在移动
+        private bool IsFlying = false; // 是否正在飞行
 
         private void Clear()
         {
-            IsMoving = false;
+            IsFlying = false;
 
             TargetPosition = Vector3.zero;
             MoveSpeed = MaxErrorDistance = 0;
             ReachedComplete = null;
         }
     }
-    public partial class EffectBulletLineFixedPosition
+    public partial class BulletLinePosition
     {
         /// <summary>
         /// 子弹开始飞行
@@ -49,12 +49,11 @@ namespace YUnity
         /// <param name="moveSpeed">飞行速度</param>
         /// <param name="maxErrorDistance">最大误差距离</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void BeginFlying(Vector3 targetPosition, float moveSpeed, float maxErrorDistance, Action reachedComplete)
+        public void BeginFly(Vector3 targetPosition, float moveSpeed, float maxErrorDistance, Action reachedComplete)
         {
             Clear();
             if (moveSpeed <= 0 || maxErrorDistance < 0)
             {
-                // 设置的数据不对，啥也不做，直接返回
                 return;
             }
             TargetPosition = targetPosition;
@@ -62,36 +61,31 @@ namespace YUnity
             MaxErrorDistance = maxErrorDistance;
             ReachedComplete = reachedComplete;
 
-            IsMoving = true; // 开始飞行
+            TransformY.LookAt(targetPosition);
+
+            IsFlying = true;
         }
     }
-    public partial class EffectBulletLineFixedPosition
+    public partial class BulletLinePosition
     {
         private void Update()
         {
-            if (IsMoving == false)
+            if (IsFlying == false)
             {
                 return;
             }
-            float distance = Vector3.Distance(TargetPosition, TransformY.position);
-            if (distance <= MaxErrorDistance)
+            if (Vector3.Distance(TargetPosition, TransformY.position) <= MaxErrorDistance)
             {
-                TransformY.position = TargetPosition;
-                IsMoving = false;
+                // 抵达终点
                 ReachedComplete?.Invoke();
                 Clear();
-                return;
             }
-            Vector3 willMove = MoveSpeed * Time.deltaTime * (TargetPosition - TransformY.position).normalized;
-            if (Vector3.Distance(TransformY.position, TransformY.position + willMove) > distance)
+            else
             {
-                TransformY.position = TargetPosition;
-                IsMoving = false;
-                ReachedComplete?.Invoke();
-                Clear();
-                return;
+                // 飞向目标
+                Vector3 willMove = MoveSpeed * Time.deltaTime * TransformY.forward.normalized;
+                TransformY.Translate(willMove, Space.World);
             }
-            TransformY.Translate(willMove, Space.World);
         }
     }
 }

@@ -19,6 +19,7 @@
     <None Remove="Mono.Data.Sqlite" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="10_Effect\EffectBullet\" />
+    <None Remove="10_Bullet\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -37,6 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="09_Effect\" />
-    <Folder Include="09_Effect\EffectBullet\" />
+    <Folder Include="10_Bullet\" />
   </ItemGroup>
 </Project>

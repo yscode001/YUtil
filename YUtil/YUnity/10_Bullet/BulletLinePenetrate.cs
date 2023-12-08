@@ -7,7 +7,7 @@ namespace YUnity
     /// <summary>
     /// 直线穿透子弹类型
     /// </summary>
-    public enum EffectBulletLinePenetrateType
+    public enum BulletLinePenetrateType
     {
         /// <summary>
         /// 飞行达到最长时间消失
@@ -15,7 +15,7 @@ namespace YUnity
         Time,
 
         /// <summary>
-        /// 飞行超过最远距离小时
+        /// 飞行超过最远距离消失
         /// </summary>
         Distance,
     }
@@ -23,12 +23,12 @@ namespace YUnity
     /// <summary>
     /// 直线穿透子弹，飞行达到最长时间或超过最远距离后消失
     /// </summary>
-    public partial class EffectBulletLinePenetrate : MonoBehaviourBaseY
+    public partial class BulletLinePenetrate : MonoBehaviourBaseY
     {
         /// <summary>
         /// 子弹类型
         /// </summary>
-        private EffectBulletLinePenetrateType Type = EffectBulletLinePenetrateType.Distance;
+        private BulletLinePenetrateType Type = BulletLinePenetrateType.Distance;
 
         /// <summary>
         /// 飞行方向
@@ -61,7 +61,7 @@ namespace YUnity
         private List<Transform> AllEnemyList;
 
         /// <summary>
-        /// 对路径上的敌人造成伤害
+        /// 对路径上的敌人造成伤害，参数是否是第一个敌人造成伤害
         /// </summary>
         private Action<Transform, bool> Damage;
 
@@ -71,25 +71,26 @@ namespace YUnity
         private Action Complete = null;
 
         // 下面是辅助属性
-        private bool IsMoving = false; // 是否正在移动
+        private bool IsFlying = false; // 是否正在飞行
         private float CurDeltaTime = 0; // 辅助子弹类型为时间类型
         private Vector3 StartPos = Vector3.zero; // 辅助子弹类型为距离类型
+        private int DamageCount = 0; // 这颗子弹对多少个敌人造成伤害了
 
         private void Clear()
         {
-            IsMoving = false;
+            IsFlying = false;
+            CurDeltaTime = 0;
+            StartPos = Vector3.zero;
+            DamageCount = 0;
 
             Direction = Vector3.zero;
             MaxSeconds = MaxDistance = MoveSpeed = MaxErrorDistance = 0;
             AllEnemyList = null;
             Damage = null;
             Complete = null;
-
-            CurDeltaTime = 0;
-            StartPos = Vector3.zero;
         }
     }
-    public partial class EffectBulletLinePenetrate
+    public partial class BulletLinePenetrate
     {
         /// <summary>
         /// 子弹开始飞行
@@ -100,19 +101,18 @@ namespace YUnity
         /// <param name="moveSpeed">飞行速度</param>
         /// <param name="maxErrorDistance">最大误差距离</param>
         /// <param name="allEnemyList">路径上的敌人集合</param>
-        /// <param name="damage">对路径上的敌人造成伤害</param>
+        /// <param name="damage">对路径上的敌人造成伤害，参数是否是第一个敌人造成伤害</param>
         /// <param name="complete">完成回调</param>
-        public void BeginFlying(EffectBulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, float maxErrorDistance, List<Transform> allEnemyList, Action<Transform, bool> damage, Action complete)
+        public void BeginFly(BulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, float maxErrorDistance, List<Transform> allEnemyList, Action<Transform, bool> damage, Action complete)
         {
             Clear();
             if (direction == Vector3.zero || moveSpeed <= 0 || maxValue <= 0 || maxErrorDistance < 0)
             {
-                // 设置的数据不对，啥也不做，直接返回
                 return;
             }
             Type = type;
             Direction = direction;
-            if (type == EffectBulletLinePenetrateType.Distance) { MaxDistance = maxValue; StartPos = TransformY.position; }
+            if (type == BulletLinePenetrateType.Distance) { MaxDistance = maxValue; StartPos = TransformY.position; }
             else { MaxSeconds = maxValue; }
             MoveSpeed = moveSpeed;
             MaxErrorDistance = maxErrorDistance;
@@ -120,42 +120,45 @@ namespace YUnity
             Damage = damage;
             Complete = complete;
 
-            IsMoving = true; // 开始飞行
+            IsFlying = true; // 开始飞行
         }
     }
-    public partial class EffectBulletLinePenetrate
+    public partial class BulletLinePenetrate
     {
         private void DamageEnemy(Vector3 bulletStartPosition, Vector3 bulletEndPosition)
         {
-            if (Damage == null || AllEnemyList == null || AllEnemyList.Count <= 0) { return; }
-            int index = 0;
+            if (Damage == null || AllEnemyList == null || AllEnemyList.Count <= 0)
+            {
+                return;
+            }
             for (int i = AllEnemyList.Count - 1; i >= 0; i--)
             {
                 Transform enemyTransform = AllEnemyList[i];
                 if (enemyTransform != null && MathfUtil.GetPointToStraightLineDistance(enemyTransform.position, bulletStartPosition, bulletEndPosition) <= MaxErrorDistance)
                 {
-                    Damage?.Invoke(enemyTransform, index == 0);
+                    Damage?.Invoke(enemyTransform, DamageCount == 0);
                     AllEnemyList.RemoveAt(i);
-                    index += 1;
+                    DamageCount += 1;
                 }
             }
         }
         private void Update()
         {
-            if (IsMoving == false)
+            if (IsFlying == false)
             {
                 return;
             }
+
             DamageEnemy(TransformY.position, TransformY.position + MoveSpeed * Time.deltaTime * Direction);
-            if ((Type == EffectBulletLinePenetrateType.Distance && Vector3.Distance(TransformY.position, StartPos) >= MaxDistance) ||
-                (Type == EffectBulletLinePenetrateType.Time && CurDeltaTime >= MaxSeconds))
+
+            if ((Type == BulletLinePenetrateType.Distance && Vector3.Distance(TransformY.position, StartPos) >= MaxDistance) ||
+                (Type == BulletLinePenetrateType.Time && CurDeltaTime >= MaxSeconds))
             {
-                IsMoving = false;
                 Complete?.Invoke();
                 Clear();
                 return;
             }
-            if (Type == EffectBulletLinePenetrateType.Time)
+            if (Type == BulletLinePenetrateType.Time)
             {
                 CurDeltaTime += Time.deltaTime;
             }

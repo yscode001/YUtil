@@ -4,9 +4,9 @@ using UnityEngine;
 namespace YUnity
 {
     /// <summary>
-    /// 子弹直线飞行追踪移动目标
+    /// 子弹直线飞行追踪目标
     /// </summary>
-    public partial class EffectBulletLineMovingTarget : MonoBehaviourBaseY
+    public partial class BulletLineTarget : MonoBehaviourBaseY
     {
         /// <summary>
         /// 移动目标
@@ -34,18 +34,18 @@ namespace YUnity
         private Action ReachedComplete = null;
 
         // 下面是辅助属性
-        private bool IsMoving = false; // 是否正在移动
+        private bool IsFlying = false; // 是否正在飞行
 
         private void Clear()
         {
-            IsMoving = false;
+            IsFlying = false;
 
             TargetTransform = null;
             MoveSpeed = MaxErrorDistance = 0;
             TargetDeathWhenFlying = ReachedComplete = null;
         }
     }
-    public partial class EffectBulletLineMovingTarget
+    public partial class BulletLineTarget
     {
         /// <summary>
         /// 子弹开始飞行
@@ -55,12 +55,11 @@ namespace YUnity
         /// <param name="maxErrorDistance">最大误差距离</param>
         /// <param name="targetDeathWhenFlying">飞行过程中目标死亡了(如被其他玩家干掉了，不会再执行ReachedComplete)</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void BeginFlying(Transform targetTransform, float moveSpeed, float maxErrorDistance, Action targetDeathWhenFlying, Action reachedComplete)
+        public void BeginFly(Transform targetTransform, float moveSpeed, float maxErrorDistance, Action targetDeathWhenFlying, Action reachedComplete)
         {
             Clear();
-            if (targetTransform == null || !targetTransform.gameObject.activeSelf || moveSpeed <= 0 || maxErrorDistance < 0)
+            if (targetTransform == null || !targetTransform.gameObject.activeInHierarchy || moveSpeed <= 0 || maxErrorDistance < 0)
             {
-                // 设置的数据不对，啥也不做，直接返回
                 return;
             }
             TargetTransform = targetTransform;
@@ -69,44 +68,36 @@ namespace YUnity
             TargetDeathWhenFlying = targetDeathWhenFlying;
             ReachedComplete = reachedComplete;
 
-            IsMoving = true; // 开始飞行
+            IsFlying = true;
         }
     }
-    public partial class EffectBulletLineMovingTarget
+    public partial class BulletLineTarget
     {
         private void Update()
         {
-            if (IsMoving == false)
+            if (IsFlying == false)
             {
                 return;
             }
-            if (TargetTransform == null || !TargetTransform.gameObject.activeSelf)
+            if (TargetTransform == null || !TargetTransform.gameObject.activeInHierarchy)
             {
-                IsMoving = false;
                 TargetDeathWhenFlying?.Invoke();
                 Clear();
                 return;
             }
-            Vector3 targetPosition = TargetTransform.position;
-            float distance = Vector3.Distance(targetPosition, TransformY.position);
-            if (distance <= MaxErrorDistance)
+            if (Vector3.Distance(TargetTransform.position, TransformY.position) <= MaxErrorDistance)
             {
-                TransformY.position = targetPosition;
-                IsMoving = false;
+                // 抵达终点
                 ReachedComplete?.Invoke();
                 Clear();
-                return;
             }
-            Vector3 willMove = MoveSpeed * Time.deltaTime * (targetPosition - TransformY.position).normalized;
-            if (Vector3.Distance(TransformY.position, TransformY.position + willMove) > distance)
+            else
             {
-                TransformY.position = targetPosition;
-                IsMoving = false;
-                ReachedComplete?.Invoke();
-                Clear();
-                return;
+                // 飞向目标
+                TransformY.LookAt(TargetTransform.position);
+                Vector3 willMove = MoveSpeed * Time.deltaTime * TransformY.forward.normalized;
+                TransformY.Translate(willMove, Space.World);
             }
-            TransformY.Translate(willMove, Space.World);
         }
     }
 }

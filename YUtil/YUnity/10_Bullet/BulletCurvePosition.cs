@@ -6,7 +6,7 @@ namespace YUnity
     /// <summary>
     /// 子弹曲线追踪固定位置
     /// </summary>
-    public partial class EffectBulletCurveFixedPosition : MonoBehaviourBaseY
+    public partial class BulletCurvePosition : MonoBehaviourBaseY
     {
         /// <summary>
         /// 目标位置
@@ -29,21 +29,20 @@ namespace YUnity
         private Action ReachedComplete = null;
 
         // 下面是辅助属性
-        private bool IsMoving = false; // 是否正在移动
+        private bool IsFlying = false; // 是否正在飞行
         private Vector3 CurveDir = Vector3.zero; // 曲线方向
 
         private void Clear()
         {
-            IsMoving = false;
+            IsFlying = false;
+            CurveDir = Vector3.zero;
 
             TargetPos = Vector3.zero;
             MoveSpeed = MaxErrorDistance = 0;
             ReachedComplete = null;
-
-            CurveDir = Vector3.zero;
         }
     }
-    public partial class EffectBulletCurveFixedPosition
+    public partial class BulletCurvePosition
     {
         /// <summary>
         /// 开始飞行
@@ -55,14 +54,11 @@ namespace YUnity
         /// <param name="moveSpeed">飞行速度</param>
         /// <param name="maxErrorDistance">最大误差距离</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void BeginFlying(Vector3 curveDir, int curveRandomSeed, float curveWeight, Vector3 targetPos, float moveSpeed, float maxErrorDistance, Action reachedComplete)
+        public void BeginFly(Vector3 curveDir, int curveRandomSeed, float curveWeight, Vector3 targetPos, float moveSpeed, float maxErrorDistance, Action reachedComplete)
         {
             Clear();
-            if (moveSpeed <= 0 ||
-                maxErrorDistance < 0 ||
-                (curveDir == Vector3.zero && curveRandomSeed <= 0))
+            if (moveSpeed <= 0 || maxErrorDistance < 0 || (curveDir == Vector3.zero && curveRandomSeed <= 0))
             {
-                // 设置的数据不对，啥也不做，直接返回
                 return;
             }
             TargetPos = targetPos;
@@ -83,30 +79,33 @@ namespace YUnity
                 // 指定曲线弹道
                 CurveDir = curveDir * Mathf.Clamp(curveWeight, 0, 1);
             }
-            IsMoving = true; // 开始飞行
+            IsFlying = true; // 开始飞行
         }
     }
-    public partial class EffectBulletCurveFixedPosition
+    public partial class BulletCurvePosition
     {
         private void Update()
         {
-            if (IsMoving == false)
+            if (IsFlying == false)
             {
                 return;
             }
             if (Vector3.Distance(TargetPos, TransformY.position) <= MaxErrorDistance)
             {
-                IsMoving = false;
+                // 抵达终点
                 ReachedComplete?.Invoke();
                 Clear();
-                return;
             }
-            Vector3 dir = (TargetPos - TransformY.position).normalized;
-            if (CurveDir != Vector3.zero)
+            else
             {
-                dir = (dir + CurveDir).normalized;
+                // 飞向目标
+                Vector3 dir = (TargetPos - TransformY.position).normalized;
+                if (CurveDir != Vector3.zero)
+                {
+                    dir = (dir + CurveDir).normalized;
+                }
+                TransformY.Translate(MoveSpeed * Time.deltaTime * dir, Space.World);
             }
-            TransformY.Translate(MoveSpeed * Time.deltaTime * dir, Space.World);
         }
     }
 }
