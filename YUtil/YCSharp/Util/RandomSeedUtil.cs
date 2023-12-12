@@ -40,7 +40,7 @@ namespace YCSharp
         /// <returns></returns>
         public static int NextValue(int includeMin, int includeMax)
         {
-            return RandomSeed.NextValue(includeMin, includeMax + 1);
+            return RandomSeed.NextValue(includeMin, includeMax);
         }
 
         /// <summary>

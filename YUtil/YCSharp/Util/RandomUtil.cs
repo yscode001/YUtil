@@ -35,7 +35,7 @@ namespace YCSharp
         /// <returns></returns>
         public static int NextValue(int includeMin, int includeMax)
         {
-            return Random.NextValue(includeMin, includeMax + 1);
+            return Random.NextValue(includeMin, includeMax);
         }
 
         /// <summary>
