@@ -32,6 +32,12 @@ namespace YCSharp
             return BitConverter.ToString(output).Replace("-", "");
         }
 
+        /// <summary>
+        /// 将字符串分割成字符串集合，item如果是空值将会被忽略
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
         public static List<string> ToStringList(this string str, string separator)
         {
             if (string.IsNullOrWhiteSpace(str) || string.IsNullOrWhiteSpace(separator))
@@ -81,6 +87,29 @@ namespace YCSharp
             return intList;
         }
 
+        public static List<int> ToIntList(this string str, string separator, int exceptValue)
+        {
+            List<string> originalList = str.ToStringList(separator);
+            if (originalList == null || originalList.Count <= 0)
+            {
+                return null;
+            }
+            List<int> intList = new List<int>();
+            foreach (var itemStr in originalList)
+            {
+                try
+                {
+                    int intValue = Convert.ToInt32(itemStr);
+                    if (intValue != exceptValue)
+                    {
+                        intList.Add(intValue);
+                    }
+                }
+                catch { }
+            }
+            return intList;
+        }
+
         public static List<float> ToFloatList(this string str, string separator)
         {
             List<string> originalList = str.ToStringList(separator);
@@ -101,6 +130,29 @@ namespace YCSharp
             return floatList;
         }
 
+        public static List<float> ToFloatList(this string str, string separator, float exceptValue)
+        {
+            List<string> originalList = str.ToStringList(separator);
+            if (originalList == null || originalList.Count <= 0)
+            {
+                return null;
+            }
+            List<float> floatList = new List<float>();
+            foreach (var itemStr in originalList)
+            {
+                try
+                {
+                    float floatValue = (float)Convert.ToDouble(itemStr);
+                    if (floatValue != exceptValue)
+                    {
+                        floatList.Add(floatValue);
+                    }
+                }
+                catch { }
+            }
+            return floatList;
+        }
+
         public static List<double> ToDoubleList(this string str, string separator)
         {
             List<string> originalList = str.ToStringList(separator);
@@ -115,6 +167,29 @@ namespace YCSharp
                 {
                     double doubleValue = Convert.ToDouble(itemStr);
                     doubleList.Add(doubleValue);
+                }
+                catch { }
+            }
+            return doubleList;
+        }
+
+        public static List<double> ToDoubleList(this string str, string separator, double exceptValue)
+        {
+            List<string> originalList = str.ToStringList(separator);
+            if (originalList == null || originalList.Count <= 0)
+            {
+                return null;
+            }
+            List<double> doubleList = new List<double>();
+            foreach (var itemStr in originalList)
+            {
+                try
+                {
+                    double doubleValue = Convert.ToDouble(itemStr);
+                    if (doubleValue != exceptValue)
+                    {
+                        doubleList.Add(doubleValue);
+                    }
                 }
                 catch { }
             }
