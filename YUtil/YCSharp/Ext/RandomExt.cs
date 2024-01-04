@@ -88,28 +88,6 @@ namespace YCSharp
         }
 
         /// <summary>
-        /// 获取随机索引数组
-        /// </summary>
-        /// <param name="random">随机对象</param>
-        /// <param name="length">数组的长度</param>
-        /// <returns></returns>
-        public static int[] GetRandomIndexArray(this Random random, int length)
-        {
-            if (random == null)
-            {
-                throw new Exception("random不能为空");
-            }
-            if (length <= 0) { return null; }
-            int[] array = new int[length];
-            for (int i = 0; i < length; i++)
-            {
-                array[i] = i;
-            }
-            random.RandomArray(array);
-            return array;
-        }
-
-        /// <summary>
         /// 将数组打乱后重新排列
         /// </summary>
         /// <param name="random">随机对象</param>

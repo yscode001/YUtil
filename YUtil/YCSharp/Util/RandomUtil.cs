@@ -71,16 +71,6 @@ namespace YCSharp
         }
 
         /// <summary>
-        /// 获取随机索引数组
-        /// </summary>
-        /// <param name="length">数组的长度</param>
-        /// <returns></returns>
-        public static int[] GetRandomIndexArray(int length)
-        {
-            return Random.GetRandomIndexArray(length);
-        }
-
-        /// <summary>
         /// 将数组打乱后重新排列
         /// </summary>
         /// <typeparam name="T">泛型</typeparam>
