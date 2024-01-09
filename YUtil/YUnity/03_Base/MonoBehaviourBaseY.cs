@@ -42,6 +42,7 @@ namespace YUnity
         private CapsuleCollider _capsuleCollider;
         private CapsuleCollider2D _capsuleCollider2D;
         private CircleCollider2D _circleCollider2D;
+        private EdgeCollider2D _edgeCollider2D;
         private HumanBodyBoneUtil _humanBodyBoneUtil;
     }
     public partial class MonoBehaviourBaseY
@@ -477,6 +478,21 @@ namespace YUnity
                 if (_circleCollider2D != null) { return _circleCollider2D; }
                 _circleCollider2D = gameObject.AddComponent<CircleCollider2D>();
                 return _circleCollider2D;
+            }
+        }
+
+        /// <summary>
+        /// 获取EdgeCollider2D，如果没有则添加
+        /// </summary>
+        public EdgeCollider2D EdgeCollider2DY
+        {
+            get
+            {
+                if (_edgeCollider2D != null) { return _edgeCollider2D; }
+                _edgeCollider2D = gameObject.GetComponent<EdgeCollider2D>();
+                if (_edgeCollider2D != null) { return _edgeCollider2D; }
+                _edgeCollider2D = gameObject.AddComponent<EdgeCollider2D>();
+                return _edgeCollider2D;
             }
         }
     }
