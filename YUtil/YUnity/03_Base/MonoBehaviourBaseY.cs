@@ -36,6 +36,11 @@ namespace YUnity
         private LineRenderer _lineRenderer;
         private NavMeshAgent _navMeshAgent;
         private NavMeshObstacle _navMeshObstacle;
+        private BoxCollider _boxCollider;
+        private BoxCollider2D _boxCollider2D;
+        private CapsuleCollider _capsuleCollider;
+        private CapsuleCollider2D _capsuleCollider2D;
+        private CircleCollider2D _circleCollider2D;
         private HumanBodyBoneUtil _humanBodyBoneUtil;
     }
     public partial class MonoBehaviourBaseY
@@ -381,6 +386,81 @@ namespace YUnity
                 if (_navMeshObstacle != null) { return _navMeshObstacle; }
                 _navMeshObstacle = gameObject.AddComponent<NavMeshObstacle>();
                 return _navMeshObstacle;
+            }
+        }
+
+        /// <summary>
+        /// 获取BoxCollider，如果没有则添加
+        /// </summary>
+        public BoxCollider BoxColliderY
+        {
+            get
+            {
+                if (_boxCollider != null) { return _boxCollider; }
+                _boxCollider = gameObject.GetComponent<BoxCollider>();
+                if (_boxCollider != null) { return _boxCollider; }
+                _boxCollider = gameObject.AddComponent<BoxCollider>();
+                return _boxCollider;
+            }
+        }
+
+        /// <summary>
+        /// 获取BoxCollider2D，如果没有则添加
+        /// </summary>
+        public BoxCollider2D BoxCollider2DY
+        {
+            get
+            {
+                if (_boxCollider2D != null) { return _boxCollider2D; }
+                _boxCollider2D = gameObject.GetComponent<BoxCollider2D>();
+                if (_boxCollider2D != null) { return _boxCollider2D; }
+                _boxCollider2D = gameObject.AddComponent<BoxCollider2D>();
+                return _boxCollider2D;
+            }
+        }
+
+        /// <summary>
+        /// 获取CapsuleCollider，如果没有则添加
+        /// </summary>
+        public CapsuleCollider CapsuleColliderY
+        {
+            get
+            {
+                if (_capsuleCollider != null) { return _capsuleCollider; }
+                _capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
+                if (_capsuleCollider != null) { return _capsuleCollider; }
+                _capsuleCollider = gameObject.AddComponent<CapsuleCollider>();
+                return _capsuleCollider;
+            }
+        }
+
+        /// <summary>
+        /// 获取CapsuleCollider2D，如果没有则添加
+        /// </summary>
+        public CapsuleCollider2D CapsuleCollider2DY
+        {
+            get
+            {
+                if (_capsuleCollider2D != null) { return _capsuleCollider2D; }
+                _capsuleCollider2D = gameObject.GetComponent<CapsuleCollider2D>();
+                if (_capsuleCollider2D != null) { return _capsuleCollider2D; }
+                _capsuleCollider2D = gameObject.AddComponent<CapsuleCollider2D>();
+                return _capsuleCollider2D;
+            }
+        }
+
+        /// <summary>
+        /// 获取CircleCollider2D，如果没有则添加
+        /// </summary>
+        public CircleCollider2D CircleCollider2DY
+        {
+            get
+            {
+                if (_circleCollider2D != null) { return _circleCollider2D; }
+                _circleCollider2D = gameObject.GetComponent<CircleCollider2D>();
+                if (_circleCollider2D != null) { return _circleCollider2D; }
+                _circleCollider2D = gameObject.AddComponent<CircleCollider2D>();
+                return _circleCollider2D;
             }
         }
     }
