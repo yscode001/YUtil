@@ -26,11 +26,13 @@ namespace YUnity
         private AudioListener _audioListener;
         private CharacterController _characterController;
         private Rigidbody _rigidbody;
+        private Rigidbody2D _rigidbod2Dy;
         private CanvasGroup _canvasGroup;
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
         private Renderer _renderer;
         private SkinnedMeshRenderer _skinnedMeshRenderer;
+        private SpriteRenderer _spriteRenderer;
         private LineRenderer _lineRenderer;
         private NavMeshAgent _navMeshAgent;
         private NavMeshObstacle _navMeshObstacle;
@@ -228,6 +230,21 @@ namespace YUnity
         }
 
         /// <summary>
+        /// 获取Rigidbody2D，如果没有则添加
+        /// </summary>
+        public Rigidbody2D Rigidbody2DY
+        {
+            get
+            {
+                if (_rigidbod2Dy != null) { return _rigidbod2Dy; }
+                _rigidbod2Dy = gameObject.GetComponent<Rigidbody2D>();
+                if (_rigidbod2Dy != null) { return _rigidbod2Dy; }
+                _rigidbod2Dy = gameObject.AddComponent<Rigidbody2D>();
+                return _rigidbod2Dy;
+            }
+        }
+
+        /// <summary>
         /// 获取CanvasGroup(UI专用)，如果没有则添加
         /// </summary>
         public CanvasGroup CanvasGroupY
@@ -299,6 +316,21 @@ namespace YUnity
                 if (_skinnedMeshRenderer != null) { return _skinnedMeshRenderer; }
                 _skinnedMeshRenderer = gameObject.AddComponent<SkinnedMeshRenderer>();
                 return _skinnedMeshRenderer;
+            }
+        }
+
+        /// <summary>
+        /// 获取SpriteRenderer，如果没有则添加
+        /// </summary>
+        public SpriteRenderer SpriteRendererY
+        {
+            get
+            {
+                if (_spriteRenderer != null) { return _spriteRenderer; }
+                _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+                if (_spriteRenderer != null) { return _spriteRenderer; }
+                _spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+                return _spriteRenderer;
             }
         }
 
