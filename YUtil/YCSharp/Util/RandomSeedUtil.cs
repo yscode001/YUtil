@@ -86,6 +86,17 @@ namespace YCSharp
         }
 
         /// <summary>
+        /// 随机获取数组里的一个元素
+        /// </summary>
+        /// <typeparam name="T">泛型</typeparam>
+        /// <param name="array">数组</param>
+        /// <returns></returns>
+        public static T RandomElement<T>(T[] array)
+        {
+            return RandomSeed.RandomElement(array);
+        }
+
+        /// <summary>
         /// 将集合打乱后重新排列
         /// </summary>
         /// <typeparam name="T">泛型</typeparam>
@@ -93,6 +104,17 @@ namespace YCSharp
         public static void RandomList<T>(List<T> list)
         {
             RandomSeed.RandomList(list);
+        }
+
+        /// <summary>
+        /// 随机获取集合里的一个元素
+        /// </summary>
+        /// <typeparam name="T">泛型</typeparam>
+        /// <param name="list">集合</param>
+        /// <returns></returns>
+        public static T RandomElement<T>(List<T> list)
+        {
+            return RandomSeed.RandomElement(list);
         }
     }
 }

@@ -90,6 +90,7 @@ namespace YCSharp
         /// <summary>
         /// 将数组打乱后重新排列
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="random">随机对象</param>
         /// <param name="array">数组</param>
         public static void RandomArray<T>(this Random random, T[] array)
@@ -112,10 +113,35 @@ namespace YCSharp
         }
 
         /// <summary>
+        /// 随机获取数组里的一个元素
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="random">随机对象</param>
+        /// <param name="array">数组</param>
+        /// <returns></returns>
+        public static T RandomElement<T>(this Random random, T[] array)
+        {
+            if (random == null)
+            {
+                throw new Exception("random不能为空");
+            }
+            if (array == null || array.Length <= 0)
+            {
+                throw new Exception("array不能为空");
+            }
+            if (array.Length == 1)
+            {
+                return array[0];
+            }
+            return array[random.Next(0, array.Length)];
+        }
+
+        /// <summary>
         /// 将集合打乱后重新排列
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="random">随机对象</param>
-        /// <param name="array">集合</param>
+        /// <param name="list">集合</param>
         public static void RandomList<T>(this Random random, List<T> list)
         {
             if (random == null)
@@ -133,6 +159,30 @@ namespace YCSharp
                 list[i] = list[randomIndex];
                 list[randomIndex] = temp;
             }
+        }
+
+        /// <summary>
+        /// 随机获取集合里的一个元素
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="random">随机对象</param>
+        /// <param name="list">集合</param>
+        /// <returns></returns>
+        public static T RandomElement<T>(this Random random, List<T> list)
+        {
+            if (random == null)
+            {
+                throw new Exception("random不能为空");
+            }
+            if (list == null || list.Count <= 0)
+            {
+                throw new Exception("list不能为空");
+            }
+            if (list.Count == 1)
+            {
+                return list[0];
+            }
+            return list[random.Next(0, list.Count)];
         }
     }
 }
