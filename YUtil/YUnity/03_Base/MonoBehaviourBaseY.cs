@@ -33,6 +33,7 @@ namespace YUnity
         private Renderer _renderer;
         private SkinnedMeshRenderer _skinnedMeshRenderer;
         private SpriteRenderer _spriteRenderer;
+        private TrailRenderer _trailRenderer;
         private LineRenderer _lineRenderer;
         private NavMeshAgent _navMeshAgent;
         private NavMeshObstacle _navMeshObstacle;
@@ -336,6 +337,21 @@ namespace YUnity
                 if (_spriteRenderer != null) { return _spriteRenderer; }
                 _spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
                 return _spriteRenderer;
+            }
+        }
+
+        /// <summary>
+        /// 获取TrailRenderer，如果没有则添加
+        /// </summary>
+        public TrailRenderer TrailRendererY
+        {
+            get
+            {
+                if (_trailRenderer != null) { return _trailRenderer; }
+                _trailRenderer = gameObject.GetComponent<TrailRenderer>();
+                if (_trailRenderer != null) { return _trailRenderer; }
+                _trailRenderer = gameObject.AddComponent<TrailRenderer>();
+                return _trailRenderer;
             }
         }
 
