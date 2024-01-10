@@ -116,5 +116,14 @@ namespace YCSharp
         {
             return RandomSeed.RandomElement(list);
         }
+
+        /// <summary>
+        /// 随机一个bool值
+        /// </summary>
+        /// <returns></returns>
+        public static bool RandomBool()
+        {
+            return RandomSeed.RandomBool();
+        }
     }
 }

@@ -184,5 +184,19 @@ namespace YCSharp
             }
             return list[random.Next(0, list.Count)];
         }
+
+        /// <summary>
+        /// 随机一个bool值
+        /// </summary>
+        /// <param name="random">随机对象</param>
+        /// <returns></returns>
+        public static bool RandomBool(this Random random)
+        {
+            if (random == null)
+            {
+                throw new Exception("random不能为空");
+            }
+            return random.Next(0, 11) % 2 == 0;
+        }
     }
 }
