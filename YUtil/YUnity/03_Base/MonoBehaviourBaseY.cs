@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -45,6 +46,8 @@ namespace YUnity
         private EdgeCollider2D _edgeCollider2D;
         private SpringJoint _springJoint;
         private SpringJoint2D _springJoint2D;
+        private TilemapCollider2D _tilemapCollider2D;
+        private CompositeCollider2D _compositeCollider2D;
         private HumanBodyBoneUtil _humanBodyBoneUtil;
     }
     public partial class MonoBehaviourBaseY
@@ -525,6 +528,36 @@ namespace YUnity
                 if (_springJoint2D != null) { return _springJoint2D; }
                 _springJoint2D = gameObject.AddComponent<SpringJoint2D>();
                 return _springJoint2D;
+            }
+        }
+
+        /// <summary>
+        /// 获取TilemapCollider2D，如果没有则添加
+        /// </summary>
+        public TilemapCollider2D TilemapCollider2DY
+        {
+            get
+            {
+                if (_tilemapCollider2D != null) { return _tilemapCollider2D; }
+                _tilemapCollider2D = gameObject.GetComponent<TilemapCollider2D>();
+                if (_tilemapCollider2D != null) { return _tilemapCollider2D; }
+                _tilemapCollider2D = gameObject.AddComponent<TilemapCollider2D>();
+                return _tilemapCollider2D;
+            }
+        }
+
+        /// <summary>
+        /// 获取CompositeCollider2D，如果没有则添加
+        /// </summary>
+        public CompositeCollider2D CompositeCollider2DY
+        {
+            get
+            {
+                if (_compositeCollider2D != null) { return _compositeCollider2D; }
+                _compositeCollider2D = gameObject.GetComponent<CompositeCollider2D>();
+                if (_compositeCollider2D != null) { return _compositeCollider2D; }
+                _compositeCollider2D = gameObject.AddComponent<CompositeCollider2D>();
+                return _compositeCollider2D;
             }
         }
     }
