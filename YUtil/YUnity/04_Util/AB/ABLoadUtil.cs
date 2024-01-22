@@ -32,17 +32,21 @@ namespace YUnity
         /// </summary>
         /// <param name="platformName">平台名称</param>
         /// <param name="bundlePath">bundle包所在路径</param>
+        /// <param name="createBundleDirectory">是否需要创建bundle包所在的目录</param>
         /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void InitBeforeHotUpdate(string platformName, string bundlePath, UInt32 version = 1)
+        public static void InitBeforeHotUpdate(string platformName, string bundlePath, bool createBundleDirectory = true, UInt32 version = 1)
         {
             if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(bundlePath))
             {
                 throw new System.Exception("ABLoadUtil-InitBeforeHotUpdate：platformName和bundlePath不能为空");
             }
             BundlePath = (bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/") + platformName + "/" + $"Version{version}/";
-            if (!Directory.Exists(BundlePath))
+            if (createBundleDirectory)
             {
-                Directory.CreateDirectory(BundlePath);
+                if (!Directory.Exists(BundlePath))
+                {
+                    Directory.CreateDirectory(BundlePath);
+                }
             }
         }
 
