@@ -113,6 +113,33 @@ namespace YCSharp
         }
 
         /// <summary>
+        /// 深copy一个在源数组的基础上打乱顺序后的新数组，源数组不受任何影响
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="random">随机对象</param>
+        /// <param name="array">源数组</param>
+        /// <returns>深copy一个在源数组的基础上打乱顺序后的新数组</returns>
+        /// <exception cref="Exception"></exception>
+        public static T[] DeepCopyRandomArray<T>(this Random random, T[] array)
+        {
+            if (random == null)
+            {
+                throw new Exception("random不能为空");
+            }
+            if (array == null || array.Length <= 0)
+            {
+                throw new Exception("array不能为空");
+            }
+            T[] newArray = new T[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                newArray[i] = array[i];
+            }
+            RandomArray(random, newArray);
+            return newArray;
+        }
+
+        /// <summary>
         /// 随机获取数组里的一个元素
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -162,6 +189,33 @@ namespace YCSharp
         }
 
         /// <summary>
+        /// 深copy一个在源集合的基础上打乱顺序后的新集合，源集合不受任何影响
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="random">随机对象</param>
+        /// <param name="list">源集合</param>
+        /// <returns>深copy一个在源集合的基础上打乱顺序后的新集合</returns>
+        /// <exception cref="Exception"></exception>
+        public static List<T> DeepCopyRandomList<T>(this Random random, List<T> list)
+        {
+            if (random == null)
+            {
+                throw new Exception("random不能为空");
+            }
+            if (list == null || list.Count <= 0)
+            {
+                throw new Exception("list不能为空");
+            }
+            List<T> newList = new List<T>();
+            foreach (var item in list)
+            {
+                newList.Add(item);
+            }
+            RandomList(random, newList);
+            return newList;
+        }
+
+        /// <summary>
         /// 随机获取集合里的一个元素
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -197,6 +251,102 @@ namespace YCSharp
                 throw new Exception("random不能为空");
             }
             return random.Next(0, 11) % 2 == 0;
+        }
+
+        /// <summary>
+        /// 根据权重随机出一个权重的索引
+        /// </summary>
+        /// <param name="random">随机对象</param>
+        /// <param name="weightArray">权重数组</param>
+        /// <returns>随机出权重数组中的索引</returns>
+        /// <exception cref="Exception"></exception>
+        public static int GetWeightIndex(this Random random, int[] weightArray)
+        {
+            if (random == null)
+            {
+                throw new Exception("random不能为空");
+            }
+            if (weightArray == null || weightArray.Length <= 0)
+            {
+                throw new Exception("array不能为空");
+            }
+            int maxValue = 0;
+            foreach (var weightValue in weightArray)
+            {
+                if (weightValue > 0)
+                {
+                    maxValue += weightValue;
+                }
+            }
+            if (maxValue > 0)
+            {
+                int curMin = 0;
+                int curMax = 0;
+                int randomValue = random.NextValue(0, maxValue);
+                for (int i = 0; i < weightArray.Length; i++)
+                {
+                    int weightValue = weightArray[i];
+                    if (weightValue > 0)
+                    {
+                        curMin += 1;
+                        curMax += weightValue;
+                        if (curMin <= randomValue && randomValue <= curMax)
+                        {
+                            return i;
+                        }
+                        curMin = curMax;
+                    }
+                }
+            }
+            return random.Next(0, weightArray.Length);
+        }
+
+        /// <summary>
+        /// 根据权重随机出一个权重的索引
+        /// </summary>
+        /// <param name="random">随机对象</param>
+        /// <param name="weightList">权重集合</param>
+        /// <returns>随机出权重集合中的索引</returns>
+        /// <exception cref="Exception"></exception>
+        public static int GetWeightIndex(this Random random, List<int> weightList)
+        {
+            if (random == null)
+            {
+                throw new Exception("random不能为空");
+            }
+            if (weightList == null || weightList.Count <= 0)
+            {
+                throw new Exception("list不能为空");
+            }
+            int maxValue = 0;
+            foreach (var weightValue in weightList)
+            {
+                if (weightValue > 0)
+                {
+                    maxValue += weightValue;
+                }
+            }
+            if (maxValue > 0)
+            {
+                int curMin = 0;
+                int curMax = 0;
+                int randomValue = random.NextValue(0, maxValue);
+                for (int i = 0; i < weightList.Count; i++)
+                {
+                    int weightValue = weightList[i];
+                    if (weightValue > 0)
+                    {
+                        curMin += 1;
+                        curMax += weightValue;
+                        if (curMin <= randomValue && randomValue <= curMax)
+                        {
+                            return i;
+                        }
+                        curMin = curMax;
+                    }
+                }
+            }
+            return random.Next(0, weightList.Count);
         }
     }
 }

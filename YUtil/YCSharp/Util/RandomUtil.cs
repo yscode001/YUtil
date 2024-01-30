@@ -81,6 +81,17 @@ namespace YCSharp
         }
 
         /// <summary>
+        /// 深copy一个在源数组的基础上打乱顺序后的新数组，源数组不受任何影响
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array">源数组</param>
+        /// <returns>深copy一个在源数组的基础上打乱顺序后的新数组</returns>
+        public static T[] DeepCopyRandomArray<T>(T[] array)
+        {
+            return Random.DeepCopyRandomArray(array);
+        }
+
+        /// <summary>
         /// 随机获取数组里的一个元素
         /// </summary>
         /// <typeparam name="T">泛型</typeparam>
@@ -102,6 +113,17 @@ namespace YCSharp
         }
 
         /// <summary>
+        /// 深copy一个在源集合的基础上打乱顺序后的新集合，源集合不受任何影响
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">源集合</param>
+        /// <returns>深copy一个在源集合的基础上打乱顺序后的新集合</returns>
+        public static List<T> DeepCopyRandomList<T>(List<T> list)
+        {
+            return Random.DeepCopyRandomList(list);
+        }
+
+        /// <summary>
         /// 随机获取集合里的一个元素
         /// </summary>
         /// <typeparam name="T">泛型</typeparam>
@@ -119,6 +141,26 @@ namespace YCSharp
         public static bool RandomBool()
         {
             return Random.RandomBool();
+        }
+
+        /// <summary>
+        /// 根据权重随机出一个权重的索引
+        /// </summary>
+        /// <param name="weightArray">权重数组</param>
+        /// <returns>随机出权重数组中的索引</returns>
+        public static int GetWeightIndex(int[] weightArray)
+        {
+            return Random.GetWeightIndex(weightArray);
+        }
+
+        /// <summary>
+        /// 根据权重随机出一个权重的索引
+        /// </summary>
+        /// <param name="weightList">权重集合</param>
+        /// <returns>随机出权重集合中的索引</returns>
+        public static int GetWeightIndex(List<int> weightList)
+        {
+            return Random.GetWeightIndex(weightList);
         }
     }
 }
