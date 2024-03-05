@@ -5,9 +5,11 @@
 
 using System;
 using System.IO;
+using System.Numerics;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace YUnity
 {
@@ -53,8 +55,25 @@ namespace YUnity
         /// <summary>
         /// 热更后初始化，主要是初始化依赖文件
         /// </summary>
-        public static void InitAfterHotUpdate()
+        public static void InitAfterHotUpdate(Action complete)
         {
+            YSRoot.Instance.Load(BundlePath + GetBundleName(ManifestBundleName), (bytes) =>
+            {
+                AssetBundle manifestBundle = AssetBundle.LoadFromMemory(bytes);
+                if (manifestBundle == null)
+                {
+                    throw new System.Exception($"ABLoadUtil-Init：{ManifestBundleName}，这个bundle包不存在");
+                }
+                Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+                if (Manifest == null)
+                {
+                    throw new System.Exception($"ABLoadUtil-Init：{ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
+                }
+                manifestBundle.Unload(false);
+                complete?.Invoke();
+            });
+
+            /*
             AssetBundle manifestBundle = AssetBundle.LoadFromFile(BundlePath + GetBundleName(ManifestBundleName));
             if (manifestBundle == null)
             {
@@ -66,6 +85,7 @@ namespace YUnity
                 throw new System.Exception($"ABLoadUtil-Init：{ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
             }
             manifestBundle.Unload(false);
+            */
         }
 
         public static string GetBundleName(string bundleName)
@@ -84,11 +104,15 @@ namespace YUnity
         /// <summary>
         /// 从新加载依赖文件
         /// </summary>
-        public static void ReloadManifest()
+        public static void ReloadManifest(Action complete)
         {
             if (Manifest == null)
             {
-                InitAfterHotUpdate();
+                InitAfterHotUpdate(complete);
+            }
+            else
+            {
+                complete?.Invoke();
             }
         }
     }

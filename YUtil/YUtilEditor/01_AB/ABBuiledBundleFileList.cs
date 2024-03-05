@@ -16,7 +16,7 @@ namespace YUtilEditor
     [Serializable]
     public class ABBuiledBundleFileList
     {
-        public List<ABBuiledBundle> BundleList = new List<ABBuiledBundle>();
+        public List<ABBuiledBundle> BundleList { get; private set; } = new List<ABBuiledBundle>();
         public ABBuiledBundleFileList() { }
 
         public void Add(ABBuiledBundle builedBundle)
@@ -29,7 +29,7 @@ namespace YUtilEditor
         }
         public string Serialize()
         {
-            if (BundleList == null || BundleList.Count <= 0)
+            if (BundleList == null || BundleList.Count == 0)
             {
                 throw new Exception("ABBuiledBundleFileList-Serialize：没有要保存的bundle清单，无法序列化");
             }

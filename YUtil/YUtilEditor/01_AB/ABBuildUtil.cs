@@ -131,7 +131,7 @@ namespace YUtilEditor
     #region Build
     public static partial class ABBuildUtil
     {
-        public static void BuildAssetBundles()
+        public static void BuildAssetBundles(BuildTarget buildTarget)
         {
             if (string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
             {
@@ -170,7 +170,9 @@ namespace YUtilEditor
             }
 
             DirectoryInfo outputDirInfo = new DirectoryInfo(ResOutputDirectory);
-            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BundleOptions, EditorUserBuildSettings.activeBuildTarget);
+
+            // EditorUserBuildSettings.activeBuildTarget
+            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BundleOptions, buildTarget);
             AfterBuild();
         }
 

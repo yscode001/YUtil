@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 namespace YUnity
@@ -48,6 +51,19 @@ namespace YUnity
         {
             QueueMag.Instance?.LogicTick();
             TimeTaskMag.Instance?.LogicTick();
+        }
+    }
+    public partial class YSRoot
+    {
+        public void Load(string fileFullPath, Action<byte[]> complete)
+        {
+            StartCoroutine(LoadAction(fileFullPath, complete));
+        }
+        private IEnumerator LoadAction(string fileFullPath, Action<byte[]> complete)
+        {
+            var request = UnityWebRequest.Get(new System.Uri(fileFullPath));
+            yield return request.SendWebRequest();
+            complete?.Invoke(request.downloadHandler.data);
         }
     }
 }
