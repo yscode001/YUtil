@@ -19,10 +19,7 @@ namespace YUnity
             // 日志必须最先初始化
             if (logConfig == null)
             {
-                logConfig = new LogConfig()
-                {
-                    IsEnableSave = false,
-                };
+                logConfig = new LogConfig();
             }
             LogTool.InitSettings(logConfig);
             // 初始化YSRoot

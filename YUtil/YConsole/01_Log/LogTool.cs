@@ -17,50 +17,11 @@ namespace YConsole
 
         public static void InitSettings(LogConfig logConfig = null)
         {
-            if (logConfig == null) { logConfig = new LogConfig(); }
+            if (logConfig == null)
+            {
+                logConfig = new LogConfig();
+            }
             LogTool.logConfig = logConfig;
-            if (!logConfig.IsEnableSave) { return; }
-            if (logConfig.IsEnableSaveCover)
-            {
-                try
-                {
-                    if (Directory.Exists(logConfig.LogDirectoryPath))
-                    {
-                        if (File.Exists(logConfig.LogDefaultFileFullPath))
-                        {
-                            File.Delete(logConfig.LogDefaultFileFullPath);
-                        }
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory(logConfig.LogDirectoryPath);
-                    }
-                    logFileWriter = File.AppendText(logConfig.LogDefaultFileFullPath);
-                    logFileWriter.AutoFlush = true;
-                }
-                catch
-                {
-                    logFileWriter = null;
-                }
-            }
-            else
-            {
-                string prefix = DateTime.Now.ToString("yyyyMMdd@HH-mm-ss");
-                string path = logConfig.LogDirectoryPath + prefix + logConfig.LogFileName;
-                try
-                {
-                    if (!Directory.Exists(logConfig.LogDirectoryPath))
-                    {
-                        Directory.CreateDirectory(logConfig.LogDirectoryPath);
-                    }
-                    logFileWriter = File.AppendText(path);
-                    logFileWriter.AutoFlush = true;
-                }
-                catch
-                {
-                    logFileWriter = null;
-                }
-            }
         }
     }
     #endregion
@@ -76,21 +37,6 @@ namespace YConsole
             }
             sb.AppendFormat(" {0} {1}", logConfig.Separator, message);
             return sb.ToString();
-        }
-        private static void WriteToFile(string msg)
-        {
-            if (logConfig.IsEnableSave && logFileWriter != null)
-            {
-                try
-                {
-                    logFileWriter.WriteLine(msg);
-                }
-                catch
-                {
-                    logFileWriter = null;
-                    return;
-                }
-            }
         }
     }
     #endregion
@@ -141,56 +87,48 @@ namespace YConsole
             if (!logConfig.IsEnable) { return; }
             message = DecorateLog(string.Format(message, args));
             PrintLog(message, LogColor.None);
-            WriteToFile("[Log]" + message);
         }
         public static void Log(object obj)
         {
             if (!logConfig.IsEnable) { return; }
             string message = DecorateLog(obj.ToString());
             PrintLog(message, LogColor.None);
-            WriteToFile("[Log]" + message);
         }
         public static void ColorLog(LogColor color, string message, params object[] args)
         {
             if (!logConfig.IsEnable) { return; }
             message = DecorateLog(string.Format(message, args));
             PrintLog(message, color);
-            WriteToFile("[ColorLog]" + message);
         }
         public static void ColorLog(LogColor color, object obj)
         {
             if (!logConfig.IsEnable) { return; }
             string message = DecorateLog(obj.ToString());
             PrintLog(message, color);
-            WriteToFile("[ColorLog]" + message);
         }
         public static void Warning(string message, params object[] args)
         {
             if (!logConfig.IsEnable) { return; }
             message = DecorateLog(string.Format(message, args));
             PrintLog(message, LogColor.Yellow);
-            WriteToFile("[Warning]" + message);
         }
         public static void Warning(object obj)
         {
             if (!logConfig.IsEnable) { return; }
             string message = DecorateLog(obj.ToString());
             PrintLog(message, LogColor.Yellow);
-            WriteToFile("[Warning]" + message);
         }
         public static void Error(string message, params object[] args)
         {
             if (!logConfig.IsEnable) { return; }
             message = DecorateLog(string.Format(message, args));
             PrintLog(message, LogColor.Red);
-            WriteToFile("[Error]" + message);
         }
         public static void Error(object obj)
         {
             if (!logConfig.IsEnable) { return; }
             string message = DecorateLog(obj.ToString());
             PrintLog(message, LogColor.Red);
-            WriteToFile("[Error]" + message);
         }
     }
 }
