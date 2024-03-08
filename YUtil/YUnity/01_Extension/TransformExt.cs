@@ -6,24 +6,29 @@ namespace YUnity
     public static class TransformExt
     {
         #region 重置
-        /// <summary>
-        /// 重置
-        /// </summary>
-        /// <param name="tf"></param>
-        /// <param name="isLocal">是否是local，默认为true</param>
-        public static void Reset(this Transform tf, bool isLocal = true)
+        public static void ResetLocal(this Transform tf)
         {
+            tf.localPosition = Vector3.zero;
+            tf.localEulerAngles = Vector3.zero;
+            tf.localScale = Vector3.one; ;
+        }
+        public static void ResetLocal(this Transform tf, Vector3 localPosition, Vector3 localEulerAngles, Vector3 localScale)
+        {
+            tf.localPosition = localPosition;
+            tf.localEulerAngles = localEulerAngles;
+            tf.localScale = localScale;
+        }
+        public static void ResetWorld(this Transform tf)
+        {
+            tf.position = Vector3.zero;
+            tf.eulerAngles = Vector3.zero;
             tf.localScale = Vector3.one;
-            if (isLocal)
-            {
-                tf.localPosition = Vector3.zero;
-                tf.localEulerAngles = Vector3.zero;
-            }
-            else
-            {
-                tf.position = Vector3.zero;
-                tf.eulerAngles = Vector3.zero;
-            }
+        }
+        public static void ResetWorld(this Transform tf, Vector3 position, Vector3 eulerAngles, Vector3 scale)
+        {
+            tf.position = position;
+            tf.eulerAngles = eulerAngles;
+            tf.localScale = scale;
         }
         #endregion
 

@@ -18,9 +18,9 @@ namespace YUnity
             }
             if (parentT != null)
             {
-                go.transform.parent = parentT;
+                go.transform.SetParent(parentT, false);
             }
-            go.transform.Reset(true);
+            go.transform.ResetLocal();
             return go;
         }
 

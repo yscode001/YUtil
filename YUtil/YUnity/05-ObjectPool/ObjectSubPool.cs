@@ -91,7 +91,7 @@ namespace YUnity
             {
                 return null;
             }
-            if (transformReset) { go.transform.Reset(true); }
+            if (transformReset) { go.transform.ResetLocal(); }
 
             ReusableGameObject reusable = go.GetComponent<ReusableGameObject>();
             if (reusable != null)

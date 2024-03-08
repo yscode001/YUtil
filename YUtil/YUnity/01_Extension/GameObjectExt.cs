@@ -1,12 +1,12 @@
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace YUnity
 {
     public static class GameObjectExt
     {
         /// <summary>
-        /// 获取GameObject的组件，如果没有此组件，先添加组件后再获取
+        /// 获取组件(如果没有，先添加后再获取)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="go"></param>
@@ -19,21 +19,7 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 移除游戏物体的某个组件(如果存在)
-        /// </summary>
-        /// <typeparam name="T">即将移除的组件类型</typeparam>
-        /// <param name="go"></param>
-        public static void RemoveComponent<T>(this GameObject go) where T : Component
-        {
-            T com = go.GetComponent<T>();
-            if (com != null)
-            {
-                UnityEngine.MonoBehaviour.Destroy(com);
-            }
-        }
-
-        /// <summary>
-        /// 启用或禁用某个Behaviour组件
+        /// 启用或禁用组件
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="go"></param>
@@ -59,87 +45,90 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 设置GameObject是否激活或禁用
+        /// 销毁组件(如果存在)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="go"></param>
+        /// <param name="immediate"></param>
+        public static void DestroyComponent<T>(this GameObject go, bool immediate = false) where T : Component
+        {
+            T com = go.GetComponent<T>();
+            if (com != null)
+            {
+                if (immediate)
+                {
+                    Object.DestroyImmediate(com);
+                }
+                else
+                {
+                    Object.Destroy(com);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 设置激活状态
         /// </summary>
         /// <param name="go"></param>
         /// <param name="active"></param>
         public static void SetAct(this GameObject go, bool active)
         {
-            if (go.activeSelf != active) { go.SetActive(active); }
-        }
-
-        /// <summary>
-        /// 设置父物体
-        /// </summary>
-        /// <param name="go"></param>
-        /// <param name="parentGO"></param>
-        /// <returns>返回自己</returns>
-        public static GameObject SetParent(this GameObject go, GameObject parentGO)
-        {
-            go.transform.SetParent(parentGO.transform, false);
-            return go;
-        }
-
-        /// <summary>
-        /// 添加子物体
-        /// </summary>
-        /// <param name="go"></param>
-        /// <param name="children"></param>
-        public static void AddChildren(this GameObject go, List<GameObject> children)
-        {
-            foreach (GameObject child in children)
+            if (go.activeSelf != active)
             {
-                if (child == null) { continue; }
-                child.transform.SetParent(go.transform, false);
+                go.SetActive(active);
             }
         }
 
         /// <summary>
-        /// 设置名称和标签，空值不设置
+        /// 所在场景
         /// </summary>
         /// <param name="go"></param>
-        /// <param name="name"></param>
-        /// <param name="tag"></param>
-        public static void SetupNameAndTag(this GameObject go, string name, string tag)
+        /// <returns></returns>
+        public static Scene? CurrentScene(this GameObject go)
         {
-            if (!string.IsNullOrWhiteSpace(name)) { go.name = name; }
-            if (!string.IsNullOrWhiteSpace(tag)) { go.tag = tag; }
+            return go.scene;
         }
 
         /// <summary>
-        /// 销毁所有的子物体
+        /// 销毁自己
         /// </summary>
         /// <param name="go"></param>
-        /// <param name="immediate">是否立即销毁</param>
+        /// <param name="immediate"></param>
+        public static void DestroySelf(this GameObject go, bool immediate = false)
+        {
+            if (immediate)
+            {
+                Object.DestroyImmediate(go);
+            }
+            else
+            {
+                Object.Destroy(go);
+            }
+        }
+
+        /// <summary>
+        /// 销毁所有子物体
+        /// </summary>
+        /// <param name="go"></param>
+        /// <param name="immediate"></param>
         public static void DestroyAllChild(this GameObject go, bool immediate = false)
         {
             Transform goT = go.transform;
-            for (int i = goT.childCount - 1; i >= 0; i--)
+            if (goT.childCount > 0)
             {
-                if (immediate)
+                int totalCount = goT.childCount;
+                for (int i = totalCount - 1; i >= 0; i--)
                 {
-                    GameObject.DestroyImmediate(goT.GetChild(i).gameObject);
-                }
-                else
-                {
-                    GameObject.Destroy(goT.GetChild(i).gameObject);
+                    if (immediate)
+                    {
+                        Object.DestroyImmediate(goT.GetChild(i).gameObject);
+                    }
+                    else
+                    {
+                        Object.Destroy(goT.GetChild(i).gameObject);
+                    }
                 }
             }
-        }
-
-        /// <summary>
-        /// 获取子物体的组件(childPath为空，获取自身组件)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="go"></param>
-        /// <param name="childPath">子物体路径</param>
-        /// <returns></returns>
-        public static T GetChildOrSelfComponent<T>(this GameObject go, string childPath = null) where T : Component
-        {
-            if (string.IsNullOrWhiteSpace(childPath)) { return go.GetComponent<T>(); }
-            Transform childT = go.transform.Find(childPath);
-            if (childT != null) { return childT.GetComponent<T>(); }
-            return null;
         }
     }
 }
