@@ -24,26 +24,11 @@ namespace YUnity
             tf.eulerAngles = Vector3.zero;
             tf.localScale = Vector3.one;
         }
-        public static void ResetWorld(this Transform tf, Vector3 position, Vector3 eulerAngles, Vector3 scale)
+        public static void ResetWorld(this Transform tf, Vector3 position, Vector3 eulerAngles, Vector3 localScale)
         {
             tf.position = position;
             tf.eulerAngles = eulerAngles;
-            tf.localScale = scale;
-        }
-        #endregion
-
-        #region 当前位置前后间隔距离的点
-        /// <summary>
-        /// 当前位置前后间隔距离(大于0才有意义)的点
-        /// </summary>
-        /// <param name="tf"></param>
-        /// <param name="isForward">前方true，后方false</param>
-        /// <param name="distance">间隔距离，大于0才有意义</param>
-        /// <returns>当前位置前后间隔距离(大于0才有意义)的点</returns>
-        public static Vector3 DistancePosition(this Transform tf, bool isForward, float distance)
-        {
-            if (distance <= 0) { return tf.position; }
-            return tf.position + (isForward ? 1 : -1) * tf.forward.normalized * Mathf.Abs(distance);
+            tf.localScale = localScale;
         }
         #endregion
 
@@ -68,14 +53,6 @@ namespace YUnity
             }
             return child;
         }
-
-        public static T FindChildRecursively<T>(this Transform parent, string name) where T : Component
-        {
-            Transform child = parent.FindChildRecursively(name);
-            if (child == null) { return null; }
-            return child.GetComponent<T>();
-        }
-
         public static Transform FindChildByPath(this Transform parent, string path)
         {
             if (parent == null || string.IsNullOrWhiteSpace(path))
@@ -84,232 +61,21 @@ namespace YUnity
             }
             return parent.Find(path);
         }
-
-        public static T FindChildByPath<T>(this Transform parent, string path) where T : Component
-        {
-            Transform child = parent.FindChildByPath(path);
-            if (child == null) { return null; }
-            return child.GetComponent<T>();
-        }
         #endregion
 
-        #region 查找子物体索引
+        #region 当前位置前后间隔距离的点
         /// <summary>
-        /// 查找子物体索引，错误返回-1
-        /// </summary>
-        /// <param name="childTransform"></param>
-        public static int GetChildIndex(this Transform tf, Transform childTransform)
-        {
-            if (tf != null && childTransform != null)
-            {
-                for (int i = 0; i < tf.childCount; i++)
-                {
-                    if (tf.GetChild(i) == childTransform)
-                    {
-                        return i;
-                    }
-                }
-            }
-            return -1;
-        }
-        /// <summary>
-        /// 查找自己在父物体中的索引，错误返回-1
+        /// 当前位置前后间隔距离(大于0才有意义)的点
         /// </summary>
         /// <param name="tf"></param>
-        /// <returns></returns>
-        public static int GetSelfIndexInParent(this Transform tf)
+        /// <param name="isForward">前方true，后方false</param>
+        /// <param name="distance">间隔距离，大于0才有意义</param>
+        /// <returns>当前位置前后间隔距离(大于0才有意义)的点</returns>
+        public static Vector3 DistancePosition(this Transform tf, bool isForward, float distance)
         {
-            if (tf.parent == null) { return -1; }
-            return tf.parent.GetChildIndex(tf);
+            if (distance <= 0) { return tf.position; }
+            return tf.position + (isForward ? 1 : -1) * tf.forward.normalized * Mathf.Abs(distance);
         }
-        #endregion
-
-        #region SetPosition
-
-        public static void SetPositionX(this Transform tf, float x, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localPosition : tf.position;
-            v3.x = x;
-            if (isLocal) { tf.localPosition = v3; }
-            else { tf.position = v3; }
-        }
-
-        public static void SetPositionY(this Transform tf, float y, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localPosition : tf.position;
-            v3.y = y;
-            if (isLocal) { tf.localPosition = v3; }
-            else { tf.position = v3; }
-        }
-
-        public static void SetPositionZ(this Transform tf, float z, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localPosition : tf.position;
-            v3.z = z;
-            if (isLocal) { tf.localPosition = v3; }
-            else { tf.position = v3; }
-        }
-
-        public static void SetPositionXY(this Transform tf, float x, float y, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localPosition : tf.position;
-            v3.x = x;
-            v3.y = y;
-            if (isLocal) { tf.localPosition = v3; }
-            else { tf.position = v3; }
-        }
-
-        public static void SetPositionXZ(this Transform tf, float x, float z, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localPosition : tf.position;
-            v3.x = x;
-            v3.z = z;
-            if (isLocal) { tf.localPosition = v3; }
-            else { tf.position = v3; }
-        }
-
-        public static void SetPositionYZ(this Transform tf, float y, float z, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localPosition : tf.position;
-            v3.y = y;
-            v3.z = z;
-            if (isLocal) { tf.localPosition = v3; }
-            else { tf.position = v3; }
-        }
-
-        public static void SetPositionXYZ(this Transform tf, float x, float y, float z, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localPosition : tf.position;
-            v3.x = x;
-            v3.y = y;
-            v3.z = z;
-            if (isLocal) { tf.localPosition = v3; }
-            else { tf.position = v3; }
-        }
-
-        #endregion
-
-        #region SetLocalScale
-
-        public static void SetLocalScaleX(this Transform tf, float x)
-        {
-            Vector3 v3 = tf.localScale;
-            v3.x = x;
-            tf.localScale = v3;
-        }
-
-        public static void SetLocalScaleY(this Transform tf, float y)
-        {
-            Vector3 v3 = tf.localScale;
-            v3.y = y;
-            tf.localScale = v3;
-        }
-
-        public static void SetLocalScaleZ(this Transform tf, float z)
-        {
-            Vector3 v3 = tf.localScale;
-            v3.z = z;
-            tf.localScale = v3;
-        }
-
-        public static void SetLocalScaleXY(this Transform tf, float x, float y)
-        {
-            Vector3 v3 = tf.localScale;
-            v3.x = x;
-            v3.y = y;
-            tf.localScale = v3;
-        }
-
-        public static void SetLocalScaleXZ(this Transform tf, float x, float z)
-        {
-            Vector3 v3 = tf.localScale;
-            v3.x = x;
-            v3.z = z;
-            tf.localScale = v3;
-        }
-
-        public static void SetLocalScaleYZ(this Transform tf, float y, float z)
-        {
-            Vector3 v3 = tf.localScale;
-            v3.y = y;
-            v3.z = z;
-            tf.localScale = v3;
-        }
-
-        public static void SetLocalScaleXYZ(this Transform tf, float x, float y, float z)
-        {
-            Vector3 v3 = tf.localScale;
-            v3.x = x;
-            v3.y = y;
-            v3.z = z;
-            tf.localScale = v3;
-        }
-
-        #endregion
-
-        #region SetEulerAngles
-
-        public static void SetEulerAnglesX(this Transform tf, float x, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
-            v3.x = x;
-            if (isLocal) { tf.localEulerAngles = v3; }
-            else { tf.eulerAngles = v3; }
-        }
-
-        public static void SetEulerAnglesY(this Transform tf, float y, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
-            v3.y = y;
-            if (isLocal) { tf.localEulerAngles = v3; }
-            else { tf.eulerAngles = v3; }
-        }
-
-        public static void SetEulerAnglesZ(this Transform tf, float z, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
-            v3.z = z;
-            if (isLocal) { tf.localEulerAngles = v3; }
-            else { tf.eulerAngles = v3; }
-        }
-
-        public static void SetEulerAnglesXY(this Transform tf, float x, float y, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
-            v3.x = x;
-            v3.y = y;
-            if (isLocal) { tf.localEulerAngles = v3; }
-            else { tf.eulerAngles = v3; }
-        }
-
-        public static void SetEulerAnglesXZ(this Transform tf, float x, float z, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
-            v3.x = x;
-            v3.z = z;
-            if (isLocal) { tf.localEulerAngles = v3; }
-            else { tf.eulerAngles = v3; }
-        }
-
-        public static void SetEulerAnglesYZ(this Transform tf, float y, float z, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
-            v3.y = y;
-            v3.z = z;
-            if (isLocal) { tf.localEulerAngles = v3; }
-            else { tf.eulerAngles = v3; }
-        }
-
-        public static void SetEulerAnglesXYZ(this Transform tf, float x, float y, float z, bool isLocal)
-        {
-            Vector3 v3 = isLocal ? tf.localEulerAngles : tf.eulerAngles;
-            v3.x = x;
-            v3.y = y;
-            v3.z = z;
-            if (isLocal) { tf.localEulerAngles = v3; }
-            else { tf.eulerAngles = v3; }
-        }
-
         #endregion
 
         /// <summary>
