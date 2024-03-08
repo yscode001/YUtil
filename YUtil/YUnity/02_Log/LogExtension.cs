@@ -18,16 +18,6 @@ public static class YLogExtension
         YUnity.LogTool.Log(log);
     }
     #endregion
-    #region 打印堆栈
-    public static void Trace(this object obj, string log, params object[] args)
-    {
-        YUnity.LogTool.Trace(log, args);
-    }
-    public static void Trace(this object obj, object log)
-    {
-        YUnity.LogTool.Trace(log);
-    }
-    #endregion
     #region 彩色打印
     public static void ColorLog(this object obj, LogColor color, string log, params object[] args)
     {

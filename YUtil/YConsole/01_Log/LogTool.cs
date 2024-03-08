@@ -4,10 +4,8 @@
 // ------------------------------
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Threading;
 
 namespace YConsole
 {
@@ -69,34 +67,15 @@ namespace YConsole
     #region 日志修饰
     public partial class LogTool
     {
-        private static string DecorateLog(string message, bool isTrace = false)
+        private static string DecorateLog(string message)
         {
             StringBuilder sb = new StringBuilder(logConfig.Prefix, 100);
             if (logConfig.IsEnableTime)
             {
                 sb.AppendFormat(" {0}", DateTime.Now.ToString("HH:mm:ss--fff"));
             }
-            if (logConfig.IsEnableTreadID)
-            {
-                sb.AppendFormat(" {0}", Thread.CurrentThread.ManagedThreadId);
-            }
             sb.AppendFormat(" {0} {1}", logConfig.Separator, message);
-            if (isTrace)
-            {
-                sb.AppendFormat(" \n    StackTrace：{0}", GetLogTrace());
-            }
             return sb.ToString();
-        }
-        private static string GetLogTrace()
-        {
-            StackTrace st = new StackTrace(3, true);
-            StringBuilder traceinfo = new StringBuilder();
-            for (int i = 0; i < st.FrameCount; i++)
-            {
-                StackFrame sf = st.GetFrame(i);
-                traceinfo.AppendFormat("\n      {0}::{1} line:{2}", sf.GetFileName(), sf.GetMethod(), sf.GetFileLineNumber());
-            }
-            return traceinfo.ToString();
         }
         private static void WriteToFile(string msg)
         {
@@ -170,20 +149,6 @@ namespace YConsole
             string message = DecorateLog(obj.ToString());
             PrintLog(message, LogColor.None);
             WriteToFile("[Log]" + message);
-        }
-        public static void Trace(string message, params object[] args)
-        {
-            if (!logConfig.IsEnable) { return; }
-            message = DecorateLog(string.Format(message, args), true);
-            PrintLog(message, LogColor.Yellow);
-            WriteToFile("[Trace]" + message);
-        }
-        public static void Trace(object obj)
-        {
-            if (!logConfig.IsEnable) { return; }
-            string message = DecorateLog(obj.ToString(), true);
-            PrintLog(message, LogColor.Yellow);
-            WriteToFile("[Trace]" + message);
         }
         public static void ColorLog(LogColor color, string message, params object[] args)
         {

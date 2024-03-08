@@ -37,11 +37,6 @@ namespace YConsole
         /// </summary>
         public string Separator = ">>";
 
-        /// <summary>
-        /// 是否显示线程ID
-        /// </summary>
-        public bool IsEnableTreadID = true;
-
         #region 保存日志
         /// <summary>
         /// 是否允许保存日志
