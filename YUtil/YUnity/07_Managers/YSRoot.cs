@@ -12,15 +12,14 @@ namespace YUnity
     }
     public partial class YSRoot
     {
-        public static void Init(LogConfig logConfig = null)
+        public static void Init(bool enableLog)
         {
-            if (Instance != null) { return; }
-            // 日志必须最先初始化
-            if (logConfig == null)
+            if (Instance != null)
             {
-                logConfig = new LogConfig();
+                return;
             }
-            LogTool.InitSettings(logConfig);
+            // 日志必须最先初始化
+            LogTool.Init(enableLog);
             // 初始化YSRoot
             GameObject rootGO = GOUtil.CreateEmptyGO(null, "YSRoot");
             DontDestroyOnLoad(rootGO);
@@ -31,10 +30,6 @@ namespace YUnity
             rootGO.AddComponent<AudioMag>().Init();
             rootGO.AddComponent<QueueMag>().Init();
             rootGO.AddComponent<TimeTaskMag>().Init();
-        }
-        private void OnDestroy()
-        {
-            Instance = null;
         }
     }
     public partial class YSRoot

@@ -36,11 +36,6 @@ namespace YUnity
         {
             Instance = this;
         }
-
-        private void OnDestroy()
-        {
-            Instance = null;
-        }
     }
     #region push
     public partial class UIStackMag

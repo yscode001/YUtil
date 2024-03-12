@@ -23,10 +23,6 @@ namespace YUnity
             Instance = this;
         }
 
-        private void OnDestroy()
-        {
-            Instance = null;
-        }
         internal void LogicTick()
         {
             timeTask.LogicTick();

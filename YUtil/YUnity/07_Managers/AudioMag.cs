@@ -47,11 +47,6 @@ namespace YUnity
             normalAudio = normal.AddComponent<AudioSource>();
             normalAudio.volume = 0.2f;
         }
-
-        private void OnDestroy()
-        {
-            Instance = null;
-        }
     }
 
     #region 背景音效

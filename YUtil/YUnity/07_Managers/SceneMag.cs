@@ -16,11 +16,6 @@ namespace YUnity
         {
             Instance = this;
         }
-
-        private void OnDestroy()
-        {
-            Instance = null;
-        }
     }
     public partial class SceneMag
     {
