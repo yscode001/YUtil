@@ -62,20 +62,6 @@ namespace YUnity
         /// <summary>
         /// 播放背景音效
         /// </summary>
-        /// <param name="fullFilePath">音效完整路径</param>
-        /// <param name="isLoop">是否循环</param>
-        public void PlayBGMusic(string fullFilePath, bool isLoop)
-        {
-            if (bgAudio == null || string.IsNullOrWhiteSpace(fullFilePath))
-            {
-                return;
-            }
-            PlayBGMusic(ResourceMag.Instance.LoadAudio(fullFilePath, false), isLoop);
-        }
-
-        /// <summary>
-        /// 播放背景音效
-        /// </summary>
         /// <param name="bgMusic">背景音效</param>
         /// <param name="isLoop">是否循环</param>
         public void PlayBGMusic(AudioClip bgMusic, bool isLoop)
@@ -130,19 +116,6 @@ namespace YUnity
             {
                 StopAudioClip();
             }
-        }
-
-        /// <summary>
-        /// 播放音效
-        /// </summary>
-        /// <param name="fullFilePath">音效完整路径</param>
-        public void PlayAudioClip(string fullFilePath)
-        {
-            if (!EnableNormalAudioClip || normalAudio == null || string.IsNullOrWhiteSpace(fullFilePath))
-            {
-                return;
-            }
-            PlayAudioClip(ResourceMag.Instance.LoadAudio(fullFilePath, true));
         }
 
         /// <summary>
@@ -206,39 +179,6 @@ namespace YUnity
         {
             float vle = Mathf.Clamp(volume, 0, 1);
             normalAudio.volume = vle;
-        }
-    }
-    #endregion
-
-    #region 播放传入的AudioSource
-    public partial class AudioMag
-    {
-        private IEnumerator DelayPlayAudio(float seconds, Action playAction)
-        {
-            yield return new WaitForSeconds(seconds);
-            playAction?.Invoke();
-        }
-
-        public void PlayEntityAudio(AudioSource audioSrc, string fullFilePath, bool loop = false, int delayMilliseconds = 0)
-        {
-            if (string.IsNullOrWhiteSpace(fullFilePath) || audioSrc == null || !EnableNormalAudioClip) { return; }
-            AudioClip ac = ResourceMag.Instance.LoadAudio(fullFilePath, true);
-            if (ac == null) { return; }
-            void PlayAudio()
-            {
-                if (audioSrc.clip != null && audioSrc.clip.name == ac.name && audioSrc.isPlaying) { return; }
-                audioSrc.clip = ac;
-                audioSrc.loop = loop;
-                audioSrc.Play();
-            }
-            if (delayMilliseconds <= 0)
-            {
-                PlayAudio();
-            }
-            else
-            {
-                StartCoroutine(DelayPlayAudio(delayMilliseconds * 1.0f / 1000, PlayAudio));
-            }
         }
     }
     #endregion

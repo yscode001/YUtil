@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace YUnity
 {
@@ -13,7 +12,7 @@ namespace YUnity
     }
     public partial class YSRoot
     {
-        public static void Init(Scene scene, LogConfig logConfig = null)
+        public static void Init(LogConfig logConfig = null)
         {
             if (Instance != null) { return; }
             // 日志必须最先初始化
@@ -27,7 +26,6 @@ namespace YUnity
             DontDestroyOnLoad(rootGO);
             Instance = rootGO.AddComponent<YSRoot>();
             // 初始化其他管理者
-            rootGO.AddComponent<ResourceMag>().Init();
             rootGO.AddComponent<UIStackMag>().Init();
             rootGO.AddComponent<SceneMag>().Init();
             rootGO.AddComponent<AudioMag>().Init();
