@@ -61,9 +61,9 @@ namespace YUnity
         private List<Transform> AllEnemyList;
 
         /// <summary>
-        /// 对路径上的敌人造成伤害，参数是否是第一个敌人造成伤害
+        /// 对路径上的敌人造成伤害，参数是伤害到第几个敌人了(从1开始)
         /// </summary>
-        private Action<Transform, bool> Damage;
+        private Action<Transform, int> Damage;
 
         /// <summary>
         /// 完成回调
@@ -101,9 +101,9 @@ namespace YUnity
         /// <param name="moveSpeed">飞行速度</param>
         /// <param name="maxErrorDistance">最大误差距离</param>
         /// <param name="allEnemyList">路径上的敌人集合</param>
-        /// <param name="damage">对路径上的敌人造成伤害，参数是否是第一个敌人造成伤害</param>
+        /// <param name="damage">对路径上的敌人造成伤害，参数是伤害到第几个敌人了(从1开始)</param>
         /// <param name="complete">完成回调</param>
-        public void BeginFly(BulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, float maxErrorDistance, List<Transform> allEnemyList, Action<Transform, bool> damage, Action complete)
+        public void BeginFly(BulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, float maxErrorDistance, List<Transform> allEnemyList, Action<Transform, int> damage, Action complete)
         {
             Clear();
             if (direction == Vector3.zero || moveSpeed <= 0 || maxValue <= 0 || maxErrorDistance < 0)
@@ -136,9 +136,9 @@ namespace YUnity
                 Transform enemyTransform = AllEnemyList[i];
                 if (enemyTransform != null && MathfUtil.GetPointToStraightLineDistance(enemyTransform.position, bulletStartPosition, bulletEndPosition) <= MaxErrorDistance)
                 {
-                    Damage?.Invoke(enemyTransform, DamageCount == 0);
-                    AllEnemyList.RemoveAt(i);
                     DamageCount += 1;
+                    Damage?.Invoke(enemyTransform, DamageCount);
+                    AllEnemyList.RemoveAt(i);
                 }
             }
         }
