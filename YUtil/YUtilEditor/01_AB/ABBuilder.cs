@@ -3,12 +3,6 @@
 // Date：2023-3-16
 // ------------------------------
 
-/*
-规则：
-1、根目录下如果有文件，打成一个bundle包
-2、根目录下的一级目录，每个一级目录打成一个bundle包
- */
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,11 +10,12 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using YUnityAndEditorCommon;
 
 namespace YUtilEditor
 {
     #region Init
-    public static partial class ABBuildUtil
+    public static partial class ABBuilder
     {
         // 资源所在的根目录
         private static string ResSourceDirectory;
@@ -30,12 +25,6 @@ namespace YUtilEditor
 
         // 忽略文件的扩展名集合
         private static List<string> IgnoreExts;
-
-        // ab包后缀名
-        private const string BundleExt = ".unity3d";
-
-        // 清单文件名
-        private const string BundleListFileName = "manifest.unity3d";
 
         // 打包选项
         private static BuildAssetBundleOptions BundleOptions = BuildAssetBundleOptions.None;
@@ -129,7 +118,7 @@ namespace YUtilEditor
     #endregion
 
     #region Build
-    public static partial class ABBuildUtil
+    public static partial class ABBuilder
     {
         public static void BuildAssetBundles(BuildTarget buildTarget)
         {
@@ -261,7 +250,7 @@ namespace YUtilEditor
         private static AssetBundleBuild GetBuildInfo(DirectoryInfo directoryInfo)
         {
             AssetBundleBuild build = new AssetBundleBuild();
-            build.assetBundleName = GetBundleName(directoryInfo.Name);
+            build.assetBundleName = ABHelper.GetAssetBundleName(directoryInfo.Name);
 
             List<FileInfo> fileInfolist = GetFilesWillBeBuiled(directoryInfo);
             List<string> fileNames = new List<string>();
@@ -318,7 +307,7 @@ namespace YUtilEditor
                 else if (fileInfo.Name == $"Version{Version}")
                 {
                     // 先改名字
-                    string newName = fileInfo.Directory + "/" + GetBundleName(BundleListFileName);
+                    string newName = fileInfo.Directory + "/" + ABHelper.ManifestBundleName;
                     fileInfo.MoveTo(newName);
                     // 再添加至清单列表
                     filelist.Add(fileInfo);
@@ -339,7 +328,7 @@ namespace YUtilEditor
             for (int i = 0; i < filelist.Count; i++)
             {
                 FileInfo fileInfo = filelist[i];
-                bundleList.Add(new ABBuiledBundle(fileInfo.Name, fileInfo.Length, GetMD5HashFromFile(fileInfo.FullName)));
+                bundleList.Add(new ABInfo(fileInfo.Name, fileInfo.Length, GetMD5HashFromFile(fileInfo.FullName)));
             }
 
             byte[] bytes = System.Text.Encoding.Default.GetBytes(bundleList.Serialize());
@@ -348,7 +337,7 @@ namespace YUtilEditor
                 BuildEnd(false);
                 return;
             }
-            File.WriteAllBytes(ResOutputDirectory + "ABBundleFiles.txt", bytes);
+            File.WriteAllBytes(ResOutputDirectory + ABHelper.ABBundleFilesName, bytes);
             BuildEnd(true);
         }
 
@@ -362,7 +351,7 @@ namespace YUtilEditor
     #endregion
 
     #region Clear
-    public static partial class ABBuildUtil
+    public static partial class ABBuilder
     {
         /// <summary>
         /// 清理某一版本或所有版本的bundle资源
@@ -411,25 +400,12 @@ namespace YUtilEditor
             {
                 throw new Exception("ABBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
             }
-            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + GetBundleName(bundleName);
+            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + ABHelper.GetAssetBundleName(bundleName);
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
             AssetDatabase.Refresh();
-        }
-
-        private static string GetBundleName(string bundleName)
-        {
-            if (string.IsNullOrWhiteSpace(bundleName))
-            {
-                throw new Exception("ABBuildUtil-GetBundleName：bundleName不能为空");
-            }
-            if (bundleName.EndsWith(BundleExt))
-            {
-                return bundleName.ToLower();
-            }
-            return bundleName.ToLower() + BundleExt;
         }
     }
     #endregion

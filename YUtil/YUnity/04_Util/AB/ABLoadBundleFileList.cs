@@ -5,13 +5,14 @@
 
 using System;
 using System.Collections.Generic;
+using YUnityAndEditorCommon;
 
 namespace YUnity
 {
     [Serializable]
     public partial class ABLoadBundleFileList
     {
-        public List<ABLoadBundle> BundleList = new List<ABLoadBundle>();
+        public List<ABInfo> ABList = new List<ABInfo>();
         public ABLoadBundleFileList() { }
 
         /// <summary>
@@ -22,11 +23,11 @@ namespace YUnity
             get
             {
                 long size = 0;
-                if (BundleList != null && BundleList.Count > 0)
+                if (ABList != null && ABList.Count > 0)
                 {
-                    foreach (var item in BundleList)
+                    foreach (var item in ABList)
                     {
-                        if (item != null && !string.IsNullOrWhiteSpace(item.BundleName) && item.FileSize > 0 && !string.IsNullOrWhiteSpace(item.FileMD5))
+                        if (item != null && item.IsNotEmpty)
                         {
                             size += item.FileSize;
                         }
@@ -45,22 +46,22 @@ namespace YUnity
         /// <param name="local">本地的bundle清单文件</param>
         /// <param name="remote">远端的bundle清单文件</param>
         /// <returns></returns>
-        public static List<ABLoadBundle> CompareAndGetCanDownloadFiles(ABLoadBundleFileList local, ABLoadBundleFileList remote)
+        public static List<ABInfo> CompareAndGetCanDownloadFiles(ABLoadBundleFileList local, ABLoadBundleFileList remote)
         {
-            if (remote == null || remote.BundleList == null || remote.BundleList.Count <= 0)
+            if (remote == null || remote.ABList == null || remote.ABList.Count <= 0)
             {
                 // 远端没有资源，直接返回null
                 return null;
             }
-            if (local == null || local.BundleList == null || local.BundleList.Count <= 0)
+            if (local == null || local.ABList == null || local.ABList.Count <= 0)
             {
                 // 本地没有资源，直接返回远端的所有资源
-                return remote.BundleList;
+                return remote.ABList;
             }
-            List<ABLoadBundle> result = new List<ABLoadBundle>();
-            foreach (var remoteItem in remote.BundleList)
+            List<ABInfo> result = new List<ABInfo>();
+            foreach (var remoteItem in remote.ABList)
             {
-                if (result.Contains(remoteItem) || Contains(local.BundleList, remoteItem))
+                if (remoteItem.IsEmpty || result.Contains(remoteItem) || Contains(local.ABList, remoteItem))
                 {
                     continue;
                 }
@@ -68,7 +69,7 @@ namespace YUnity
             }
             return result;
         }
-        private static bool Contains(List<ABLoadBundle> list, ABLoadBundle item)
+        private static bool Contains(List<ABInfo> list, ABInfo item)
         {
             if (list == null || list.Count <= 0 || item == null)
             {

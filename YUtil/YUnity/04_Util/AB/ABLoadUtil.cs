@@ -5,11 +5,10 @@
 
 using System;
 using System.IO;
-using System.Numerics;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Networking;
+using YUnityAndEditorCommon;
 
 namespace YUnity
 {
@@ -21,12 +20,6 @@ namespace YUnity
         /// </summary>
         public static string BundlePath { get; private set; }
 
-        /// <summary>
-        /// bundle包的扩展名
-        /// </summary>
-        public const string BundleExt = ".unity3d";
-
-        private const string ManifestBundleName = "manifest.unity3d";
         private static AssetBundleManifest Manifest;
 
         /// <summary>
@@ -55,70 +48,30 @@ namespace YUnity
         /// <summary>
         /// 热更后初始化，主要是初始化依赖文件
         /// </summary>
+        /// <param name="complete"></param>
+        /// <exception cref="System.Exception"></exception>
         public static void InitAfterHotUpdate(Action complete)
         {
-            YSRoot.Instance.Load(BundlePath + GetBundleName(ManifestBundleName), (bytes) =>
+            YSRoot.Instance.Load(BundlePath + ABHelper.ManifestBundleName, (bytes) =>
             {
                 AssetBundle manifestBundle = AssetBundle.LoadFromMemory(bytes);
                 if (manifestBundle == null)
                 {
-                    throw new System.Exception($"ABLoadUtil-Init：{ManifestBundleName}，这个bundle包不存在");
+                    throw new System.Exception($"ABLoadUtil-Init：{ABHelper.ManifestBundleName}，这个bundle包不存在");
                 }
                 Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                 if (Manifest == null)
                 {
-                    throw new System.Exception($"ABLoadUtil-Init：{ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
+                    throw new System.Exception($"ABLoadUtil-Init：{ABHelper.ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
                 }
                 manifestBundle.Unload(false);
                 complete?.Invoke();
             });
-
-            /*
-            AssetBundle manifestBundle = AssetBundle.LoadFromFile(BundlePath + GetBundleName(ManifestBundleName));
-            if (manifestBundle == null)
-            {
-                throw new System.Exception($"ABLoadUtil-Init：{ManifestBundleName}，这个bundle包不存在");
-            }
-            Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
-            if (Manifest == null)
-            {
-                throw new System.Exception($"ABLoadUtil-Init：{ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
-            }
-            manifestBundle.Unload(false);
-            */
-        }
-
-        public static string GetBundleName(string bundleName)
-        {
-            if (string.IsNullOrWhiteSpace(bundleName))
-            {
-                throw new Exception("ABLoadUtil-GetBundleName：bundleName不能为空");
-            }
-            if (bundleName.EndsWith(BundleExt))
-            {
-                return bundleName.ToLower();
-            }
-            return bundleName.ToLower() + BundleExt;
-        }
-
-        /// <summary>
-        /// 从新加载依赖文件
-        /// </summary>
-        public static void ReloadManifest(Action complete)
-        {
-            if (Manifest == null)
-            {
-                InitAfterHotUpdate(complete);
-            }
-            else
-            {
-                complete?.Invoke();
-            }
         }
     }
     #endregion
 
-    #region LoadAsset
+    #region Load
     public static partial class ABLoadUtil
     {
         /// <summary>
@@ -128,11 +81,7 @@ namespace YUnity
         /// <returns></returns>
         public static string[] GetAllDependencies(string bundleName)
         {
-            if (string.IsNullOrWhiteSpace(bundleName))
-            {
-                throw new System.Exception("ABLoadUtil-GetAllDependencies：bundleName不能为空");
-            }
-            return Manifest.GetAllDependencies(GetBundleName(bundleName));
+            return Manifest.GetAllDependencies(ABHelper.GetAssetBundleName(bundleName));
         }
 
         /// <summary>
@@ -143,12 +92,8 @@ namespace YUnity
         /// <returns></returns>
         public static AssetBundle LoadAssetBundle(string bundleName, Action<string[]> handleDependencieBeforeLoad)
         {
-            if (string.IsNullOrWhiteSpace(bundleName))
-            {
-                throw new System.Exception("ABLoadUtil-LoadAssetBundle：bundleName不能为空");
-            }
             handleDependencieBeforeLoad?.Invoke(GetAllDependencies(bundleName));
-            return AssetBundle.LoadFromFile(BundlePath + GetBundleName(bundleName));
+            return AssetBundle.LoadFromFile(BundlePath + ABHelper.GetAssetBundleName(bundleName));
         }
     }
     #endregion
@@ -193,16 +138,16 @@ namespace YUnity
         /// <param name="version">指定的版本号</param>
         public static void ClearBundle(string bundleName, UInt32 version)
         {
-            if (string.IsNullOrWhiteSpace(bundleName) || version < 1)
+            if (version < 1)
             {
-                Debug.Log("ABLoadUtil-ClearBundle：bundleName不能为空，version必须大于0");
+                Debug.Log("ABLoadUtil-ClearBundle：version必须大于0");
             }
             DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
             if (directoryInfo == null)
             {
                 Debug.Log("ABLoadUtil-ClearBundle：BundlePath对应的目录不存在");
             }
-            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + GetBundleName(bundleName);
+            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + ABHelper.GetAssetBundleName(bundleName);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -217,7 +162,7 @@ namespace YUnity
         /// <summary>
         /// 生成的资源包清单
         /// </summary>
-        public static string ABBundleFileListFullPath => BundlePath + "ABBundleFiles.txt";
+        public static string ABBundleFileListFullPath => BundlePath + ABHelper.ABBundleFilesName;
 
         /// <summary>
         /// 保存资源包清单文件

@@ -40,4 +40,7 @@
     <Folder Include="09_Effect\" />
     <Folder Include="10_Bullet\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YUnityAndEditorCommon\YUnityAndEditorCommon.csproj" />
+  </ItemGroup>
 </Project>

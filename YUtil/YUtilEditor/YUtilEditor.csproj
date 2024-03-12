@@ -26,4 +26,7 @@
       <HintPath>00_UnityDlls\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YUnityAndEditorCommon\YUnityAndEditorCommon.csproj" />
+  </ItemGroup>
 </Project>

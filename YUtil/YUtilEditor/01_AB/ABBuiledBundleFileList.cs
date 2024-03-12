@@ -10,26 +10,27 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using YUnityAndEditorCommon;
 
 namespace YUtilEditor
 {
     [Serializable]
     public class ABBuiledBundleFileList
     {
-        public List<ABBuiledBundle> BundleList { get; private set; } = new List<ABBuiledBundle>();
+        public List<ABInfo> ABList { get; private set; } = new List<ABInfo>();
         public ABBuiledBundleFileList() { }
 
-        public void Add(ABBuiledBundle builedBundle)
+        public void Add(ABInfo abInfo)
         {
-            if (string.IsNullOrWhiteSpace(builedBundle.BundleName) || builedBundle.FileSize <= 0 || string.IsNullOrWhiteSpace(builedBundle.FileMD5) || BundleList.Contains(builedBundle))
+            if (abInfo.IsEmpty || ABList.Contains(abInfo))
             {
                 return;
             }
-            BundleList.Add(builedBundle);
+            ABList.Add(abInfo);
         }
         public string Serialize()
         {
-            if (BundleList == null || BundleList.Count == 0)
+            if (ABList == null || ABList.Count == 0)
             {
                 throw new Exception("ABBuiledBundleFileList-Serialize：没有要保存的bundle清单，无法序列化");
             }
