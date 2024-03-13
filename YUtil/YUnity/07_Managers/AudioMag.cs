@@ -1,107 +1,89 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 namespace YUnity
 {
-    /// <summary>
-    /// 音频管理器
-    /// </summary>
     public partial class AudioMag : MonoBehaviourBaseY
     {
         private AudioMag() { }
         public static AudioMag Instance { get; private set; } = null;
 
-        /// <summary>
-        /// 背景音效
-        /// </summary>
-        private AudioSource bgAudio;
-
-        /// <summary>
-        /// 普通音效
-        /// </summary>
-        private AudioSource normalAudio;
+        private AudioSource bgmAudioSource;
+        private AudioSource normalAudioSource;
 
         internal void Init()
         {
             Instance = this;
+            EnableBGMAudioClip = true;
             EnableNormalAudioClip = true;
-            CreateObjectAfterInit();
-        }
 
-        private void CreateObjectAfterInit()
-        {
             GameObject bg = new GameObject
             {
-                name = "BGAudioGO"
+                name = "BGMAudioSource"
             };
-            bg.transform.parent = transform;
-            bgAudio = bg.AddComponent<AudioSource>();
-            bgAudio.volume = 0.1f;
+            bg.transform.SetParent(transform, false);
+            bgmAudioSource = bg.AddComponent<AudioSource>();
+            bgmAudioSource.volume = 0.1f;
 
             GameObject normal = new GameObject
             {
-                name = "NormalAudioGO"
+                name = "NormalAudioSource"
             };
-            normal.transform.parent = transform;
-            normalAudio = normal.AddComponent<AudioSource>();
-            normalAudio.volume = 0.2f;
+            normal.transform.SetParent(transform, false);
+            normalAudioSource = normal.AddComponent<AudioSource>();
+            normalAudioSource.volume = 0.2f;
         }
     }
 
-    #region 背景音效
+    #region 背景音乐
     public partial class AudioMag
     {
-        private AudioClip preBGClip;
+        public bool EnableBGMAudioClip { get; private set; }
 
-        /// <summary>
-        /// 播放背景音效
-        /// </summary>
-        /// <param name="bgMusic">背景音效</param>
-        /// <param name="isLoop">是否循环</param>
-        public void PlayBGMusic(AudioClip bgMusic, bool isLoop)
+        public void SetupEnableBGMAudioClip(bool enable)
+        {
+            EnableBGMAudioClip = enable;
+            if (!enable)
+            {
+                StopBGM();
+            }
+        }
+
+        public void PlayBGM(AudioClip bgMusic, bool isLoop)
         {
             if (bgMusic == null)
             {
                 return;
             }
-            if (bgAudio.clip == null || bgAudio.clip.name != bgMusic.name || !bgAudio.isPlaying)
+            if (bgmAudioSource.clip == null || bgmAudioSource.clip.name != bgMusic.name || !bgmAudioSource.isPlaying)
             {
-                bgAudio.clip = bgMusic;
-                bgAudio.loop = isLoop;
-                bgAudio.Play();
-                if (preBGClip == null)
-                {
-                    preBGClip = bgMusic;
-                }
-                else if (preBGClip != bgMusic)
-                {
-                    Resources.UnloadAsset(preBGClip);
-                    preBGClip = bgMusic;
-                }
+                bgmAudioSource.clip = bgMusic;
+                bgmAudioSource.loop = isLoop;
+                bgmAudioSource.Play();
             }
         }
 
-        public void PauseBGMusic()
+        public void PauseBGM()
         {
-            bgAudio.Pause();
+            bgmAudioSource.Pause();
         }
 
-        public void StopBGMusic()
+        public void StopBGM()
         {
-            bgAudio.Stop();
+            bgmAudioSource.Stop();
         }
 
-        public bool IsPlayingBGMusic => bgAudio.isPlaying;
+        public void Play()
+        {
+            bgmAudioSource.Play();
+        }
+
+        public bool IsPlayingBGMusic => bgmAudioSource.isPlaying;
     }
     #endregion
 
     #region 普通音效
     public partial class AudioMag
     {
-        /// <summary>
-        /// 普通音效是否可用(方便与业务系统进行解耦)
-        /// </summary>
         public bool EnableNormalAudioClip { get; private set; }
 
         public void SetupEnableNormalAudioClip(bool enable)
@@ -113,23 +95,19 @@ namespace YUnity
             }
         }
 
-        /// <summary>
-        /// 播放音效
-        /// </summary>
-        /// <param name="audioClip">音效</param>
         public void PlayAudioClip(AudioClip audioClip)
         {
             if (audioClip == null)
             {
                 return;
             }
-            if (normalAudio.clip != null && normalAudio.clip.name == audioClip.name && normalAudio.isPlaying)
+            if (normalAudioSource.clip != null && normalAudioSource.clip.name == audioClip.name && normalAudioSource.isPlaying)
             {
                 return;
             }
-            normalAudio.clip = audioClip;
-            normalAudio.loop = false;
-            normalAudio.Play();
+            normalAudioSource.clip = audioClip;
+            normalAudioSource.loop = false;
+            normalAudioSource.Play();
         }
 
         public void PlayAudioClipOneShoot(AudioClip audioClip)
@@ -138,17 +116,17 @@ namespace YUnity
             {
                 return;
             }
-            normalAudio.PlayOneShot(audioClip);
+            normalAudioSource.PlayOneShot(audioClip);
         }
 
         public void PauseAudioClip()
         {
-            normalAudio.Pause();
+            normalAudioSource.Pause();
         }
 
         public void StopAudioClip()
         {
-            normalAudio.Stop();
+            normalAudioSource.Stop();
         }
     }
     #endregion
@@ -157,13 +135,12 @@ namespace YUnity
     public partial class AudioMag
     {
         /// <summary>
-        /// 设置背景音效音量
+        /// 设置背景音乐音量
         /// </summary>
         /// <param name="volume">音量范围：0-1</param>
-        public void SetBGAudioSourceVolume(float volume)
+        public void SetBGMAudioSourceVolume(float volume)
         {
-            float vle = Mathf.Clamp(volume, 0, 1);
-            bgAudio.volume = vle;
+            bgmAudioSource.volume = Mathf.Clamp(volume, 0, 1);
         }
 
         /// <summary>
@@ -172,8 +149,7 @@ namespace YUnity
         /// <param name="volume">音量范围：0-1</param>
         public void SetNormalAudioSourceVolume(float volume)
         {
-            float vle = Mathf.Clamp(volume, 0, 1);
-            normalAudio.volume = vle;
+            normalAudioSource.volume = Mathf.Clamp(volume, 0, 1);
         }
     }
     #endregion

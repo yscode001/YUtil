@@ -20,6 +20,7 @@
     <None Remove="Newtonsoft.Json" />
     <None Remove="10_Effect\EffectBullet\" />
     <None Remove="10_Bullet\" />
+    <None Remove="07_Managers\AB\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -39,6 +40,7 @@
   <ItemGroup>
     <Folder Include="09_Effect\" />
     <Folder Include="10_Bullet\" />
+    <Folder Include="07_Managers\AB\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YUnityAndEditorCommon\YUnityAndEditorCommon.csproj" />
