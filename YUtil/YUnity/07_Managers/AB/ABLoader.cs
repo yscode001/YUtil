@@ -391,6 +391,58 @@ namespace YUnity
         {
             return ABLoadUtil.Instance.GetLoadedAssetBundleList();
         }
+
+        public static AssetBundle GetLoadedAssetBundle(string loadedBundleName)
+        {
+            if (string.IsNullOrWhiteSpace(loadedBundleName))
+            {
+                return null;
+            }
+            return ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == loadedBundleName);
+        }
+    }
+    #endregion
+    #region 卸载已加载的Bundle包
+    public static partial class ABLoader
+    {
+        /// <summary>
+        /// 同步卸载AssetBundle
+        /// </summary>
+        /// <param name="loadedBundleName"></param>
+        /// <param name="unloadAllLoadedObjects"></param>
+        public static void UnloadAssetBundle(string loadedBundleName, bool unloadAllLoadedObjects)
+        {
+            if (string.IsNullOrWhiteSpace(loadedBundleName))
+            {
+                return;
+            }
+            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == loadedBundleName);
+            if (ab == null)
+            {
+                return;
+            }
+            ab.Unload(unloadAllLoadedObjects);
+        }
+
+        /// <summary>
+        /// 异步卸载AssetBundle，返回值可能为空
+        /// </summary>
+        /// <param name="loadedBundleName"></param>
+        /// <param name="unloadAllLoadedObjects"></param>
+        /// <returns></returns>
+        public static AsyncOperation UnloadAsyncAssetBundle(string loadedBundleName, bool unloadAllLoadedObjects)
+        {
+            if (string.IsNullOrWhiteSpace(loadedBundleName))
+            {
+                return null;
+            }
+            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == loadedBundleName);
+            if (ab == null)
+            {
+                return null;
+            }
+            return ab.UnloadAsync(unloadAllLoadedObjects);
+        }
     }
     #endregion
 }
