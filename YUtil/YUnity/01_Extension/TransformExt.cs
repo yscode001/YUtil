@@ -18,18 +18,6 @@ namespace YUnity
             tf.localEulerAngles = localEulerAngles;
             tf.localScale = localScale;
         }
-        public static void ResetWorld(this Transform tf)
-        {
-            tf.position = Vector3.zero;
-            tf.eulerAngles = Vector3.zero;
-            tf.localScale = Vector3.one;
-        }
-        public static void ResetWorld(this Transform tf, Vector3 position, Vector3 eulerAngles, Vector3 localScale)
-        {
-            tf.position = position;
-            tf.eulerAngles = eulerAngles;
-            tf.localScale = localScale;
-        }
         #endregion
 
         #region 查找子物体

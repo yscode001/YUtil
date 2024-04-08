@@ -19,9 +19,9 @@ namespace YUnity
         private float MoveSpeed = 0;
 
         /// <summary>
-        /// 最大误差距离
+        /// 误差距离
         /// </summary>
-        private float MaxErrorDistance = 0;
+        private float ErrorDistance = 0;
 
         /// <summary>
         /// 飞行过程中目标死亡了(如被其他玩家干掉了，不会再执行ReachedComplete)
@@ -41,7 +41,7 @@ namespace YUnity
             IsFlying = false;
 
             TargetTransform = null;
-            MoveSpeed = MaxErrorDistance = 0;
+            MoveSpeed = ErrorDistance = 0;
             TargetDeathWhenFlying = ReachedComplete = null;
         }
     }
@@ -52,19 +52,19 @@ namespace YUnity
         /// </summary>
         /// <param name="targetTransform">移动目标</param>
         /// <param name="moveSpeed">飞行速度</param>
-        /// <param name="maxErrorDistance">最大误差距离</param>
+        /// <param name="errorDistance">最大误差距离</param>
         /// <param name="targetDeathWhenFlying">飞行过程中目标死亡了(如被其他玩家干掉了，不会再执行ReachedComplete)</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void BeginFly(Transform targetTransform, float moveSpeed, float maxErrorDistance, Action targetDeathWhenFlying, Action reachedComplete)
+        public void BeginFly(Transform targetTransform, float moveSpeed, float errorDistance, Action targetDeathWhenFlying, Action reachedComplete)
         {
             Clear();
-            if (targetTransform == null || !targetTransform.gameObject.activeInHierarchy || moveSpeed <= 0 || maxErrorDistance < 0)
+            if (targetTransform == null || !targetTransform.gameObject.activeInHierarchy || moveSpeed <= 0 || errorDistance < 0)
             {
                 return;
             }
             TargetTransform = targetTransform;
             MoveSpeed = moveSpeed;
-            MaxErrorDistance = maxErrorDistance;
+            ErrorDistance = errorDistance;
             TargetDeathWhenFlying = targetDeathWhenFlying;
             ReachedComplete = reachedComplete;
 
@@ -85,7 +85,7 @@ namespace YUnity
                 Clear();
                 return;
             }
-            if (Vector3.Distance(TargetTransform.position, TransformY.position) <= MaxErrorDistance)
+            if (Vector3.Distance(TargetTransform.position, TransformY.position) <= ErrorDistance)
             {
                 // 抵达终点
                 ReachedComplete?.Invoke();

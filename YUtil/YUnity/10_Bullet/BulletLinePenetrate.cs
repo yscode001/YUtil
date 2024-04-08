@@ -82,9 +82,9 @@ namespace YUnity
         private ErrorDistanceType ErrorDistanceType = ErrorDistanceType.Distance;
 
         /// <summary>
-        /// 最大误差距离
+        /// 误差距离
         /// </summary>
-        private float MaxErrorDistance = 0;
+        private float ErrorDistance = 0;
 
         /// <summary>
         /// 路径上的敌人集合
@@ -115,7 +115,7 @@ namespace YUnity
             DamageCount = 0;
 
             Direction = Vector3.zero;
-            MaxSeconds = MaxDistance = MoveSpeed = MaxErrorDistance = 0;
+            MaxSeconds = MaxDistance = MoveSpeed = ErrorDistance = 0;
             ErrorDistanceType = ErrorDistanceType.Distance;
             AllEnemyList = null;
             Damage = null;
@@ -132,14 +132,14 @@ namespace YUnity
         /// <param name="maxValue">最长飞行秒数或最远飞行距离</param>
         /// <param name="moveSpeed">飞行速度</param>
         /// <param name="errorDistanceType">误差距离类型</param>
-        /// <param name="maxErrorDistance">最大误差距离</param>
+        /// <param name="errorDistance">误差距离</param>
         /// <param name="allEnemyList">路径上的敌人集合</param>
         /// <param name="damage">对路径上的敌人造成伤害，参数是伤害到第几个敌人了(从1开始)</param>
         /// <param name="complete">完成回调</param>
-        public void BeginFly(BulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, ErrorDistanceType errorDistanceType, float maxErrorDistance, List<Transform> allEnemyList, Action<Transform, int> damage, Action complete)
+        public void BeginFly(BulletLinePenetrateType type, Vector3 direction, float maxValue, float moveSpeed, ErrorDistanceType errorDistanceType, float errorDistance, List<Transform> allEnemyList, Action<Transform, int> damage, Action complete)
         {
             Clear();
-            if (direction == Vector3.zero || moveSpeed <= 0 || maxValue <= 0 || maxErrorDistance < 0)
+            if (direction == Vector3.zero || moveSpeed <= 0 || maxValue <= 0 || errorDistance < 0)
             {
                 return;
             }
@@ -149,7 +149,7 @@ namespace YUnity
             else { MaxSeconds = maxValue; }
             MoveSpeed = moveSpeed;
             ErrorDistanceType = errorDistanceType;
-            MaxErrorDistance = maxErrorDistance;
+            ErrorDistance = errorDistance;
             AllEnemyList = allEnemyList;
             Damage = damage;
             Complete = complete;
@@ -170,28 +170,28 @@ namespace YUnity
                 Transform enemyTransform = AllEnemyList[i];
                 if (enemyTransform != null)
                 {
-                    if (ErrorDistanceType == ErrorDistanceType.Distance && MathfUtil.GetPointToStraightLineDistance(enemyTransform.position, bulletStartPosition, bulletEndPosition) <= MaxErrorDistance)
+                    if (ErrorDistanceType == ErrorDistanceType.Distance && MathfUtil.GetPointToStraightLineDistance(enemyTransform.position, bulletStartPosition, bulletEndPosition) <= ErrorDistance)
                     {
                         // 距离误差
                         DamageCount += 1;
                         Damage?.Invoke(enemyTransform, DamageCount);
                         AllEnemyList.RemoveAt(i);
                     }
-                    else if (ErrorDistanceType == ErrorDistanceType.X && Mathf.Abs(TransformY.position.x - enemyTransform.position.x) <= MaxErrorDistance)
+                    else if (ErrorDistanceType == ErrorDistanceType.X && Mathf.Abs(TransformY.position.x - enemyTransform.position.x) <= ErrorDistance)
                     {
                         // X轴误差
                         DamageCount += 1;
                         Damage?.Invoke(enemyTransform, DamageCount);
                         AllEnemyList.RemoveAt(i);
                     }
-                    else if (ErrorDistanceType == ErrorDistanceType.Y && Mathf.Abs(TransformY.position.y - enemyTransform.position.y) <= MaxErrorDistance)
+                    else if (ErrorDistanceType == ErrorDistanceType.Y && Mathf.Abs(TransformY.position.y - enemyTransform.position.y) <= ErrorDistance)
                     {
                         // Y轴误差
                         DamageCount += 1;
                         Damage?.Invoke(enemyTransform, DamageCount);
                         AllEnemyList.RemoveAt(i);
                     }
-                    else if (ErrorDistanceType == ErrorDistanceType.Z && Mathf.Abs(TransformY.position.z - enemyTransform.position.z) <= MaxErrorDistance)
+                    else if (ErrorDistanceType == ErrorDistanceType.Z && Mathf.Abs(TransformY.position.z - enemyTransform.position.z) <= ErrorDistance)
                     {
                         // Z轴误差
                         DamageCount += 1;

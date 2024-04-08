@@ -19,9 +19,9 @@ namespace YUnity
         private float MoveSpeed = 0;
 
         /// <summary>
-        /// 最大误差距离
+        /// 误差距离
         /// </summary>
-        private float MaxErrorDistance = 0;
+        private float ErrorDistance = 0;
 
         /// <summary>
         /// 达到目标位置后的回调
@@ -38,7 +38,7 @@ namespace YUnity
             CurveDir = Vector3.zero;
 
             TargetPos = Vector3.zero;
-            MoveSpeed = MaxErrorDistance = 0;
+            MoveSpeed = ErrorDistance = 0;
             ReachedComplete = null;
         }
     }
@@ -52,18 +52,18 @@ namespace YUnity
         /// <param name="curveWeight">曲线权重(0-1)</param>
         /// <param name="targetPos">目标位置</param>
         /// <param name="moveSpeed">飞行速度</param>
-        /// <param name="maxErrorDistance">最大误差距离</param>
+        /// <param name="errorDistance">误差距离</param>
         /// <param name="reachedComplete">达到目标位置后的回调</param>
-        public void BeginFly(Vector3 curveDir, int curveRandomSeed, float curveWeight, Vector3 targetPos, float moveSpeed, float maxErrorDistance, Action reachedComplete)
+        public void BeginFly(Vector3 curveDir, int curveRandomSeed, float curveWeight, Vector3 targetPos, float moveSpeed, float errorDistance, Action reachedComplete)
         {
             Clear();
-            if (moveSpeed <= 0 || maxErrorDistance < 0 || (curveDir == Vector3.zero && curveRandomSeed <= 0))
+            if (moveSpeed <= 0 || errorDistance < 0 || (curveDir == Vector3.zero && curveRandomSeed <= 0))
             {
                 return;
             }
             TargetPos = targetPos;
             MoveSpeed = moveSpeed;
-            MaxErrorDistance = maxErrorDistance;
+            ErrorDistance = errorDistance;
             ReachedComplete = reachedComplete;
             if (curveDir == Vector3.zero)
             {
@@ -90,7 +90,7 @@ namespace YUnity
             {
                 return;
             }
-            if (Vector3.Distance(TargetPos, TransformY.position) <= MaxErrorDistance)
+            if (Vector3.Distance(TargetPos, TransformY.position) <= ErrorDistance)
             {
                 // 抵达终点
                 ReachedComplete?.Invoke();
