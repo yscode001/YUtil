@@ -60,13 +60,16 @@ namespace YUnity
         /// </summary>
         /// <param name="rect">需要获取位置的rect</param>
         /// <param name="selfReferencePoint">自己的参考点位置</param>
-        /// <param name="rectBoxRT">rectBox</param>
+        /// <param name="rectBox">rectBox</param>
         /// <param name="rectBoxReferencePoint">rect以rectBox的那个参考点位置做为参考</param>
         /// <param name="cam"></param>
         /// <returns></returns>
-        public static Vector2 GetPosInRectBox(this RectTransform rect, RectTransformPosEnum selfReferencePoint, RectTransform rectBoxRT, RectTransformPosEnum rectBoxReferencePoint, Camera cam)
+        public static Vector2 GetPosInRectBox(this RectTransform rect, RectTransformPosEnum selfReferencePoint, RectTransform rectBox, RectTransformPosEnum rectBoxReferencePoint, Camera cam)
         {
-            if (rect == null || rectBoxRT == null) { return Vector2.zero; }
+            if (rect == null || rectBox == null)
+            {
+                throw new System.Exception($"rect和rectBox不能为空");
+            }
             Vector3[] _corners = new Vector3[4];
             rect.GetWorldCorners(_corners); //获得对象的四个角坐标
 
@@ -116,9 +119,9 @@ namespace YUnity
             Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(cam, selfWorldPos);
             Vector2 pos;
             // 默认以rectBoxRT的中心点为参考点
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(rectBoxRT, screenPos, cam, out pos);
-            float boxWHalf = rectBoxRT.rect.width * 0.5f;
-            float boxHHalf = rectBoxRT.rect.height * 0.5f;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(rectBox, screenPos, cam, out pos);
+            float boxWHalf = rectBox.rect.width * 0.5f;
+            float boxHHalf = rectBox.rect.height * 0.5f;
             switch (rectBoxReferencePoint)
             {
                 case RectTransformPosEnum.LeftBottom:
