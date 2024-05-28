@@ -20,6 +20,15 @@ namespace YGame.BlockPuzzle
     }
     public partial class Block
     {
+        public void Init()
+        {
+            IsEnable = true;
+            FillType = FillType.Empty;
+            FillState = FillState.Normal;
+        }
+    }
+    public partial class Block
+    {
         public void SetupEnableState(bool enable)
         {
             IsEnable = enable;
