@@ -8,9 +8,11 @@ namespace YGame.BlockPuzzle
 {
     public partial class Block
     {
+        public bool IsEnable { get; private set; } = true;
         public FillType FillType { get; private set; } = FillType.Empty;
         public FillState FillState { get; private set; } = FillState.Normal;
 
+        public bool IsDisable => !IsEnable;
         public bool IsEmpty => FillType == FillType.Empty;
         public bool IsFilled => FillType != FillType.Empty;
 
@@ -18,6 +20,10 @@ namespace YGame.BlockPuzzle
     }
     public partial class Block
     {
+        public void SetupEnableState(bool enable)
+        {
+            IsEnable = enable;
+        }
         public void SetupFillType(FillType fillType)
         {
             if (FillType != fillType)
