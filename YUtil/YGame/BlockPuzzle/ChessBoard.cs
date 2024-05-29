@@ -125,12 +125,12 @@ namespace YGame.BlockPuzzle
             }
             return data;
         }
-        public static List<Block> GetRow(int rowIdx, List<int> exceptColIdx)
+        public static List<Block> GetRow(int rowIdx, ShapePreview except)
         {
             List<Block> data = new List<Block>();
             foreach (var colIdx in ColIdxArray)
             {
-                if (exceptColIdx == null || exceptColIdx.Count == 0 || !exceptColIdx.Contains(colIdx))
+                if (except == null || !except.BlockContainsRowCol(rowIdx, colIdx))
                 {
                     data.Add(Panel[rowIdx, colIdx]);
                 }
@@ -146,12 +146,12 @@ namespace YGame.BlockPuzzle
             }
             return data;
         }
-        public static List<Block> GetCol(int colIdx, List<int> exceptRowIdx)
+        public static List<Block> GetCol(int colIdx, ShapePreview except)
         {
             List<Block> data = new List<Block>();
             foreach (var rowIdx in RowIdxArray)
             {
-                if (exceptRowIdx == null || exceptRowIdx.Count == 0 || !exceptRowIdx.Contains(rowIdx))
+                if (except == null || !except.BlockContainsRowCol(rowIdx, colIdx))
                 {
                     data.Add(Panel[rowIdx, colIdx]);
                 }
@@ -218,9 +218,9 @@ namespace YGame.BlockPuzzle
         {
             return GetFillProgressType(GetRow(rowIdx));
         }
-        public static FillProgressType GetRowFillProgressType(int rowIdx, List<int> exceptColIdx)
+        public static FillProgressType GetRowFillProgressType(int rowIdx, ShapePreview except)
         {
-            List<Block> blocks = GetRow(rowIdx, exceptColIdx);
+            List<Block> blocks = GetRow(rowIdx, except);
             if (blocks == null || blocks.Count == 0)
             {
                 return FillProgressType.Empty;
@@ -234,9 +234,9 @@ namespace YGame.BlockPuzzle
         {
             return GetFillProgressType(GetCol(colIdx));
         }
-        public static FillProgressType GetColFillProgressType(int colIdx, List<int> exceptRowIdx)
+        public static FillProgressType GetColFillProgressType(int colIdx, ShapePreview except)
         {
-            List<Block> blocks = GetCol(colIdx, exceptRowIdx);
+            List<Block> blocks = GetCol(colIdx, except);
             if (blocks == null || blocks.Count == 0)
             {
                 return FillProgressType.Empty;
@@ -247,7 +247,7 @@ namespace YGame.BlockPuzzle
             }
         }
 
-        public List<int> GetRowIdx(FillProgressType fillProgressType)
+        public List<int> GetRowIdxList(FillProgressType fillProgressType)
         {
             List<int> list = new List<int>();
             foreach (var rowIdx in RowIdxArray)
@@ -259,12 +259,36 @@ namespace YGame.BlockPuzzle
             }
             return list;
         }
-        public List<int> GetColIdx(FillProgressType fillProgressType)
+        public List<int> GetRowIdxList(FillProgressType fillProgressType, ShapePreview except)
+        {
+            List<int> list = new List<int>();
+            foreach (var rowIdx in RowIdxArray)
+            {
+                if (GetRowFillProgressType(rowIdx, except) == fillProgressType && !list.Contains(rowIdx))
+                {
+                    list.Add(rowIdx);
+                }
+            }
+            return list;
+        }
+        public List<int> GetColIdxList(FillProgressType fillProgressType)
         {
             List<int> list = new List<int>();
             foreach (var colIdx in ColIdxArray)
             {
                 if (GetColFillProgressType(colIdx) == fillProgressType && !list.Contains(colIdx))
+                {
+                    list.Add(colIdx);
+                }
+            }
+            return list;
+        }
+        public List<int> GetColIdxList(FillProgressType fillProgressType, ShapePreview except)
+        {
+            List<int> list = new List<int>();
+            foreach (var colIdx in ColIdxArray)
+            {
+                if (GetColFillProgressType(colIdx, except) == fillProgressType && !list.Contains(colIdx))
                 {
                     list.Add(colIdx);
                 }
