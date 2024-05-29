@@ -8,6 +8,7 @@ namespace YGame.BlockPuzzle
     {
         public int BlockCount { get; private set; }
         public Coordinate[] BlockArray { get; private set; }
+        public FillType[] FillTypes { get; private set; }
 
         public int RowCount { get; private set; }
         public int RowMinIdx { get; private set; }
@@ -30,6 +31,7 @@ namespace YGame.BlockPuzzle
             }
             BlockCount = shape.BlockCount;
             BlockArray = new Coordinate[BlockCount];
+            FillTypes = new FillType[BlockCount];
 
             RowCount = shape.RowCount;
             RowMinIdx = startRowIdx;
@@ -42,6 +44,7 @@ namespace YGame.BlockPuzzle
             for (int i = 0; i < BlockCount; i++)
             {
                 BlockArray[i] = new Coordinate(startColIdx + shape.BlockArray[i].X, startRowIdx + shape.BlockArray[i].Y);
+                FillTypes[i] = shape.FillTypes[i];
             }
         }
     }

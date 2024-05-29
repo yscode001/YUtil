@@ -13,6 +13,7 @@ namespace YGame.BlockPuzzle
         public int ColCount { get; private set; }
         public int BlockCount { get; private set; }
         public Coordinate[] BlockArray { get; private set; }
+        public FillType[] FillTypes { get; private set; }
 
         public int PutonRowMaxIdx { get; private set; }
         public int PutonYMax { get; private set; }
@@ -21,12 +22,13 @@ namespace YGame.BlockPuzzle
 
         private readonly ShapePreview ShapePreview = new ShapePreview();
 
-        public Shape(Coordinate[] blockArray)
+        public Shape(Coordinate[] blockArray, FillType[] fillTypes)
         {
             RowCount = ColCount = BlockCount = 0;
             BlockArray = null;
             PutonRowMaxIdx = PutonYMax = PutonColMaxIdx = PutonXMax = 0;
             Init(blockArray);
+            SetupFillTypes(fillTypes);
         }
         public Shape(Coordinate[] blockArray, List<Coordinate> excepts)
         {
@@ -93,6 +95,15 @@ namespace YGame.BlockPuzzle
             ColCount = maxX - minX + 1;
             PutonYMax = PutonRowMaxIdx = ChessBoard.RowCount - RowCount;
             PutonXMax = PutonColMaxIdx = ChessBoard.ColCount - ColCount;
+        }
+
+        public void SetupFillTypes(FillType[] fillTypes)
+        {
+            if (fillTypes == null || fillTypes.Length != BlockArray.Length)
+            {
+                throw new Exception("error");
+            }
+            FillTypes = fillTypes;
         }
     }
     public partial class Shape
