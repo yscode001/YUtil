@@ -4,9 +4,16 @@
 // ------------------------------
 namespace YGame.BlockPuzzle
 {
+    /// <summary>
+    /// 填充类型
+    /// </summary>
     public enum FillType
     {
+        /// <summary>
+        /// 空
+        /// </summary>
         Empty,
+
         Blue,
         Yellow,
         Green,

@@ -4,6 +4,9 @@
 // ------------------------------
 namespace YGame.BlockPuzzle
 {
+    /// <summary>
+    /// 坐标
+    /// </summary>
     public struct Coordinate
     {
         public int X { get; private set; }

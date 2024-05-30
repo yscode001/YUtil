@@ -23,6 +23,7 @@ namespace YGame.BlockPuzzle
         private readonly ShapePreview ShapePreview = new ShapePreview();
 
         public Shape(Coordinate[] blockArray, FillType[] fillTypes)
+
         {
             RowCount = ColCount = BlockCount = 0;
             BlockArray = null;
