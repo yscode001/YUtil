@@ -1,14 +1,9 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2024-5-28
-// ------------------------------
-
-namespace YGame.BlockPuzzle
+﻿namespace YGame.BlockPuzzle
 {
     /// <summary>
     /// 填充进度
     /// </summary>
-    public enum FillProgressType
+    public enum FillProgress
     {
         /// <summary>
         /// 未填充，全部为空
@@ -21,7 +16,7 @@ namespace YGame.BlockPuzzle
         Part,
 
         /// <summary>
-        /// 全部填充，填充满了
+        /// 填充满了
         /// </summary>
         Full,
     }

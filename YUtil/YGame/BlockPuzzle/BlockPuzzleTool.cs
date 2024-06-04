@@ -45,17 +45,17 @@ namespace YGame.BlockPuzzle
         {
             return ValidatedX(x) && ValidatedY(y);
         }
-        public static bool ValidatedRow(int rowIdx)
+        public static bool ValidatedRowIdx(int rowIdx)
         {
             return rowIdx >= 0 || rowIdx <= RowMaxIdx;
         }
-        public static bool ValidatedCol(int colIdx)
+        public static bool ValidatedColIdx(int colIdx)
         {
             return colIdx >= 0 || colIdx <= ColMaxIdx;
         }
-        public static bool ValidatedRowCol(int rowIdx, int colIdx)
+        public static bool ValidatedRowColIdx(int rowIdx, int colIdx)
         {
-            return ValidatedRow(rowIdx) && ValidatedCol(colIdx);
+            return ValidatedRowIdx(rowIdx) && ValidatedColIdx(colIdx);
         }
     }
 }

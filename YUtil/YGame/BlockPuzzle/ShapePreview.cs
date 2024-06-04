@@ -1,14 +1,10 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2024-5-29
-// ------------------------------
-namespace YGame.BlockPuzzle
+﻿namespace YGame.BlockPuzzle
 {
     public partial class ShapePreview
     {
         public int BlockCount { get; private set; }
         public Coordinate[] BlockArray { get; private set; }
-        public FillType[] FillTypes { get; private set; }
+        public FillType[] FillTypeArray { get; private set; }
 
         public int RowCount { get; private set; }
         public int RowMinIdx { get; private set; }
@@ -19,38 +15,42 @@ namespace YGame.BlockPuzzle
         public int ColMaxIdx { get; private set; }
 
         internal ShapePreview() { }
+
+        private int StartRowIdx = -1;
+        private int StartColIdx = -1;
+        private Shape Shape = null;
         internal void SetupData(int startRowIdx, int startColIdx, Shape shape)
         {
-            if (!BlockPuzzleTool.ValidatedRowCol(startRowIdx, startColIdx) || shape == null || shape.BlockArray == null || shape.BlockCount == 0)
+            if (StartRowIdx != startRowIdx || StartColIdx != startColIdx || Shape != shape)
             {
-                throw new System.Exception("error");
-            }
-            if (!BlockPuzzleTool.ValidatedRowCol(startRowIdx + shape.RowCount - 1, startColIdx + shape.ColCount - 1))
-            {
-                throw new System.Exception("error");
-            }
-            BlockCount = shape.BlockCount;
-            BlockArray = new Coordinate[BlockCount];
-            FillTypes = new FillType[BlockCount];
+                // 判断一下，避免重复，提升效率
+                StartRowIdx = startRowIdx;
+                StartColIdx = startColIdx;
+                Shape = shape;
 
-            RowCount = shape.RowCount;
-            RowMinIdx = startRowIdx;
-            RowMaxIdx = startRowIdx + RowCount - 1;
+                BlockCount = shape.BlockCount;
+                BlockArray = new Coordinate[BlockCount];
+                FillTypeArray = new FillType[BlockCount];
 
-            ColCount = shape.ColCount;
-            ColMinIdx = startColIdx;
-            ColMaxIdx = startColIdx + ColCount - 1;
+                RowCount = shape.RowCount;
+                RowMinIdx = startRowIdx;
+                RowMaxIdx = startRowIdx + RowCount - 1;
 
-            for (int i = 0; i < BlockCount; i++)
-            {
-                BlockArray[i] = new Coordinate(startColIdx + shape.BlockArray[i].X, startRowIdx + shape.BlockArray[i].Y);
-                FillTypes[i] = shape.FillTypes[i];
+                ColCount = shape.ColCount;
+                ColMinIdx = startColIdx;
+                ColMaxIdx = startColIdx + ColCount - 1;
+
+                for (int i = 0; i < BlockCount; i++)
+                {
+                    BlockArray[i] = new Coordinate(startColIdx + shape.BlockArray[i].X, startRowIdx + shape.BlockArray[i].Y);
+                    FillTypeArray[i] = shape.FillTypeArray[i];
+                }
             }
         }
     }
     public partial class ShapePreview
     {
-        public bool BlockContainsXY(int x, int y)
+        public bool BlockContainXY(int x, int y)
         {
             foreach (var coordinate in BlockArray)
             {
@@ -61,20 +61,20 @@ namespace YGame.BlockPuzzle
             }
             return false;
         }
-        public bool BlockContainsRowCol(int rowIndex, int colIndex)
+        public bool BlockContainRowCol(int rowIdx, int colIdx)
         {
             foreach (var coordinate in BlockArray)
             {
-                if (coordinate.EqualRowCol(rowIndex, colIndex))
+                if (coordinate.EqualRowCol(rowIdx, colIdx))
                 {
                     return true;
                 }
             }
             return false;
         }
-        public bool BlockContainsCoordinate(Coordinate block)
+        public bool BlockContainCoordinate(Coordinate coordinate)
         {
-            foreach (var coordinate in BlockArray)
+            foreach (var block in BlockArray)
             {
                 if (coordinate.EqualCoordinate(block))
                 {

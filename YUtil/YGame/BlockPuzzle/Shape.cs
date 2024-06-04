@@ -1,9 +1,4 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2024-5-29
-// ------------------------------
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace YGame.BlockPuzzle
 {
@@ -13,7 +8,7 @@ namespace YGame.BlockPuzzle
         public int ColCount { get; private set; }
         public int BlockCount { get; private set; }
         public Coordinate[] BlockArray { get; private set; }
-        public FillType[] FillTypes { get; private set; }
+        public FillType[] FillTypeArray { get; private set; }
 
         public int PutonRowMaxIdx { get; private set; }
         public int PutonYMax { get; private set; }
@@ -22,58 +17,22 @@ namespace YGame.BlockPuzzle
 
         private readonly ShapePreview ShapePreview = new ShapePreview();
 
-        public Shape(Coordinate[] blockArray, FillType[] fillTypes)
-
+        public Shape(Coordinate[] blockArray, FillType[] fillTypeArray)
         {
+            if (blockArray == null || fillTypeArray == null || blockArray.Length == 0 || fillTypeArray.Length == 0 || blockArray.Length != fillTypeArray.Length)
+            {
+                throw new Exception("error");
+            }
             RowCount = ColCount = BlockCount = 0;
             BlockArray = null;
+            FillTypeArray = null;
             PutonRowMaxIdx = PutonYMax = PutonColMaxIdx = PutonXMax = 0;
             Init(blockArray);
-            SetupFillTypes(fillTypes);
-        }
-        public Shape(Coordinate[] blockArray, List<Coordinate> excepts)
-        {
-            RowCount = ColCount = BlockCount = 0;
-            BlockArray = null;
-            PutonRowMaxIdx = PutonYMax = PutonColMaxIdx = PutonXMax = 0;
-            if (excepts == null || excepts.Count == 0)
-            {
-                Init(blockArray);
-            }
-            else
-            {
-                if (blockArray == null || blockArray.Length == 0)
-                {
-                    throw new Exception("error");
-                }
-                List<Coordinate> list = new List<Coordinate>();
-                foreach (var block in blockArray)
-                {
-                    bool exceptContains = false;
-                    foreach (var exceptBlock in excepts)
-                    {
-                        if (exceptBlock.EqualCoordinate(block))
-                        {
-                            exceptContains = true;
-                            break;
-                        }
-                    }
-                    if (!exceptContains)
-                    {
-                        list.Add(block);
-                    }
-                }
-                Init(list.ToArray());
-            }
+            SetupFillTypes(fillTypeArray);
         }
 
         private void Init(Coordinate[] blockArray)
         {
-            if (blockArray == null || blockArray.Length == 0)
-            {
-                throw new Exception("error");
-            }
-
             BlockCount = blockArray.Length;
             BlockArray = new Coordinate[BlockCount];
             int minX = int.MaxValue;
@@ -98,13 +57,13 @@ namespace YGame.BlockPuzzle
             PutonXMax = PutonColMaxIdx = ChessBoard.ColCount - ColCount;
         }
 
-        public void SetupFillTypes(FillType[] fillTypes)
+        public void SetupFillTypes(FillType[] fillTypeArray)
         {
-            if (fillTypes == null || fillTypes.Length != BlockArray.Length)
+            if (fillTypeArray == null || fillTypeArray.Length != BlockArray.Length)
             {
                 throw new Exception("error");
             }
-            FillTypes = fillTypes;
+            FillTypeArray = fillTypeArray;
         }
     }
     public partial class Shape
@@ -122,7 +81,7 @@ namespace YGame.BlockPuzzle
     }
     public partial class Shape
     {
-        public bool BlockContainsXY(int x, int y)
+        public bool BlockContainXY(int x, int y)
         {
             foreach (var coordinate in BlockArray)
             {
@@ -133,20 +92,20 @@ namespace YGame.BlockPuzzle
             }
             return false;
         }
-        public bool BlockContainsRowCol(int rowIndex, int colIndex)
+        public bool BlockContainRowCol(int rowIdx, int colIdx)
         {
             foreach (var coordinate in BlockArray)
             {
-                if (coordinate.EqualRowCol(rowIndex, colIndex))
+                if (coordinate.EqualRowCol(rowIdx, colIdx))
                 {
                     return true;
                 }
             }
             return false;
         }
-        public bool BlockContainsCoordinate(Coordinate block)
+        public bool BlockContainCoordinate(Coordinate coordinate)
         {
-            foreach (var coordinate in BlockArray)
+            foreach (var block in BlockArray)
             {
                 if (coordinate.EqualCoordinate(block))
                 {

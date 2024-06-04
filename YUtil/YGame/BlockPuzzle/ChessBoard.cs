@@ -130,7 +130,7 @@ namespace YGame.BlockPuzzle
             List<Block> data = new List<Block>();
             foreach (var colIdx in ColIdxArray)
             {
-                if (except == null || !except.BlockContainsRowCol(rowIdx, colIdx))
+                if (except == null || !except.BlockContainRowCol(rowIdx, colIdx))
                 {
                     data.Add(Panel[rowIdx, colIdx]);
                 }
@@ -151,7 +151,7 @@ namespace YGame.BlockPuzzle
             List<Block> data = new List<Block>();
             foreach (var rowIdx in RowIdxArray)
             {
-                if (except == null || !except.BlockContainsRowCol(rowIdx, colIdx))
+                if (except == null || !except.BlockContainRowCol(rowIdx, colIdx))
                 {
                     data.Add(Panel[rowIdx, colIdx]);
                 }
@@ -165,6 +165,10 @@ namespace YGame.BlockPuzzle
         {
             Panel[rowIdx, colIdx].SetupEnableState(enable);
         }
+        public static void SetupHP(int rowIdx, int colIdx, uint hp)
+        {
+            Panel[rowIdx, colIdx].SetupHP(hp);
+        }
         public static void SetupFillType(int rowIdx, int colIdx, FillType fillType)
         {
             Panel[rowIdx, colIdx].SetupFillType(fillType);
@@ -173,20 +177,20 @@ namespace YGame.BlockPuzzle
         {
             Panel[rowIdx, colIdx].SetupFillState(fillState);
         }
-        public static void SetupFillData(int rowIdx, int colIdx, FillType fillType, FillState fillState)
+        public static void SetupFillData(int rowIdx, int colIdx, uint hp, FillType fillType, FillState fillState)
         {
-            Panel[rowIdx, colIdx].SetupFillData(fillType, fillState);
+            Panel[rowIdx, colIdx].SetupFillData(hp, fillType, fillState);
         }
     }
     #endregion
     #region 填充进度
     public partial class ChessBoard
     {
-        private static FillProgressType GetFillProgressType(Block[] blocks)
+        private static FillProgress GetFillProgressType(Block[] blocks)
         {
             if (blocks == null || blocks.Length == 0)
             {
-                return FillProgressType.Empty;
+                return FillProgress.Empty;
             }
             else
             {
@@ -205,41 +209,41 @@ namespace YGame.BlockPuzzle
                 }
                 if (totalCount == 0 || emptyCount >= totalCount)
                 {
-                    return FillProgressType.Empty;
+                    return FillProgress.Empty;
                 }
                 if (emptyCount <= 0)
                 {
-                    return FillProgressType.Full;
+                    return FillProgress.Full;
                 }
-                return FillProgressType.Part;
+                return FillProgress.Part;
             }
         }
-        public static FillProgressType GetRowFillProgressType(int rowIdx)
+        public static FillProgress GetRowFillProgressType(int rowIdx)
         {
             return GetFillProgressType(GetRow(rowIdx));
         }
-        public static FillProgressType GetRowFillProgressType(int rowIdx, ShapePreview except)
+        public static FillProgress GetRowFillProgressType(int rowIdx, ShapePreview except)
         {
             List<Block> blocks = GetRow(rowIdx, except);
             if (blocks == null || blocks.Count == 0)
             {
-                return FillProgressType.Empty;
+                return FillProgress.Empty;
             }
             else
             {
                 return GetFillProgressType(blocks.ToArray());
             }
         }
-        public static FillProgressType GetColFillProgressType(int colIdx)
+        public static FillProgress GetColFillProgressType(int colIdx)
         {
             return GetFillProgressType(GetCol(colIdx));
         }
-        public static FillProgressType GetColFillProgressType(int colIdx, ShapePreview except)
+        public static FillProgress GetColFillProgressType(int colIdx, ShapePreview except)
         {
             List<Block> blocks = GetCol(colIdx, except);
             if (blocks == null || blocks.Count == 0)
             {
-                return FillProgressType.Empty;
+                return FillProgress.Empty;
             }
             else
             {
@@ -247,7 +251,7 @@ namespace YGame.BlockPuzzle
             }
         }
 
-        public static List<int> GetRowIdxList(FillProgressType fillProgressType)
+        public static List<int> GetRowIdxList(FillProgress fillProgressType)
         {
             List<int> list = new List<int>();
             foreach (var rowIdx in RowIdxArray)
@@ -259,7 +263,7 @@ namespace YGame.BlockPuzzle
             }
             return list;
         }
-        public static List<int> GetRowIdxList(FillProgressType fillProgressType, ShapePreview except)
+        public static List<int> GetRowIdxList(FillProgress fillProgressType, ShapePreview except)
         {
             List<int> list = new List<int>();
             foreach (var rowIdx in RowIdxArray)
@@ -271,7 +275,7 @@ namespace YGame.BlockPuzzle
             }
             return list;
         }
-        public static List<int> GetColIdxList(FillProgressType fillProgressType)
+        public static List<int> GetColIdxList(FillProgress fillProgressType)
         {
             List<int> list = new List<int>();
             foreach (var colIdx in ColIdxArray)
@@ -283,7 +287,7 @@ namespace YGame.BlockPuzzle
             }
             return list;
         }
-        public static List<int> GetColIdxList(FillProgressType fillProgressType, ShapePreview except)
+        public static List<int> GetColIdxList(FillProgress fillProgressType, ShapePreview except)
         {
             List<int> list = new List<int>();
             foreach (var colIdx in ColIdxArray)
@@ -295,7 +299,7 @@ namespace YGame.BlockPuzzle
             }
             return list;
         }
-        public static (List<int> rowIdxList, List<int> colIdxList) GetRowColIdxList(FillProgressType fillProgressType)
+        public static (List<int> rowIdxList, List<int> colIdxList) GetRowColIdxList(FillProgress fillProgressType)
         {
             List<int> rowList = new List<int>();
             foreach (var rowIdx in RowIdxArray)
@@ -315,7 +319,7 @@ namespace YGame.BlockPuzzle
             }
             return (rowList, colList);
         }
-        public static (List<int> rowIdxList, List<int> colIdxList) GetRowColIdxList(FillProgressType fillProgressType, ShapePreview except)
+        public static (List<int> rowIdxList, List<int> colIdxList) GetRowColIdxList(FillProgress fillProgressType, ShapePreview except)
         {
             List<int> rowList = new List<int>();
             foreach (var rowIdx in RowIdxArray)
@@ -340,19 +344,20 @@ namespace YGame.BlockPuzzle
     #region 消除
     public partial class ChessBoard
     {
-        public static bool IsCanEliminate => GetRowIdxList(FillProgressType.Full).Count > 0 || GetColIdxList(FillProgressType.Full).Count > 0;
+        public static bool IsCanEliminate => GetRowIdxList(FillProgress.Full).Count > 0 || GetColIdxList(FillProgress.Full).Count > 0;
 
         public static (List<int> rowIdxList, List<int> colIdxList, List<(int rowIdx, int colIdx, FillType)> blocks) Eliminate()
         {
-            List<int> rows = GetRowIdxList(FillProgressType.Full);
-            List<int> cols = GetColIdxList(FillProgressType.Full);
+            List<int> rows = GetRowIdxList(FillProgress.Full);
+            List<int> cols = GetColIdxList(FillProgress.Full);
             List<(int rowIdx, int colIdx, FillType)> blocks = new List<(int rowIdx, int colIdx, FillType)>();
             foreach (var (rowIdx, colIdx) in SubScriptRowCol)
             {
                 if (rows.Contains(rowIdx) || cols.Contains(colIdx))
                 {
-                    blocks.Add((rowIdx, colIdx, GetBlock(rowIdx, colIdx).FillType));
-                    SetupFillData(rowIdx, colIdx, FillType.Empty, FillState.Normal);
+                    var block = GetBlock(rowIdx, colIdx);
+                    blocks.Add((rowIdx, colIdx, block.FillType));
+                    block.Eliminate();
                 }
             }
             return (rows, cols, blocks);
