@@ -247,7 +247,7 @@ namespace YGame.BlockPuzzle
             }
         }
 
-        public List<int> GetRowIdxList(FillProgressType fillProgressType)
+        public static List<int> GetRowIdxList(FillProgressType fillProgressType)
         {
             List<int> list = new List<int>();
             foreach (var rowIdx in RowIdxArray)
@@ -259,7 +259,7 @@ namespace YGame.BlockPuzzle
             }
             return list;
         }
-        public List<int> GetRowIdxList(FillProgressType fillProgressType, ShapePreview except)
+        public static List<int> GetRowIdxList(FillProgressType fillProgressType, ShapePreview except)
         {
             List<int> list = new List<int>();
             foreach (var rowIdx in RowIdxArray)
@@ -271,7 +271,7 @@ namespace YGame.BlockPuzzle
             }
             return list;
         }
-        public List<int> GetColIdxList(FillProgressType fillProgressType)
+        public static List<int> GetColIdxList(FillProgressType fillProgressType)
         {
             List<int> list = new List<int>();
             foreach (var colIdx in ColIdxArray)
@@ -283,7 +283,7 @@ namespace YGame.BlockPuzzle
             }
             return list;
         }
-        public List<int> GetColIdxList(FillProgressType fillProgressType, ShapePreview except)
+        public static List<int> GetColIdxList(FillProgressType fillProgressType, ShapePreview except)
         {
             List<int> list = new List<int>();
             foreach (var colIdx in ColIdxArray)
@@ -294,6 +294,68 @@ namespace YGame.BlockPuzzle
                 }
             }
             return list;
+        }
+        public static (List<int> rowIdxList, List<int> colIdxList) GetRowColIdxList(FillProgressType fillProgressType)
+        {
+            List<int> rowList = new List<int>();
+            foreach (var rowIdx in RowIdxArray)
+            {
+                if (GetRowFillProgressType(rowIdx) == fillProgressType && !rowList.Contains(rowIdx))
+                {
+                    rowList.Add(rowIdx);
+                }
+            }
+            List<int> colList = new List<int>();
+            foreach (var colIdx in ColIdxArray)
+            {
+                if (GetColFillProgressType(colIdx) == fillProgressType && !colList.Contains(colIdx))
+                {
+                    colList.Add(colIdx);
+                }
+            }
+            return (rowList, colList);
+        }
+        public static (List<int> rowIdxList, List<int> colIdxList) GetRowColIdxList(FillProgressType fillProgressType, ShapePreview except)
+        {
+            List<int> rowList = new List<int>();
+            foreach (var rowIdx in RowIdxArray)
+            {
+                if (GetRowFillProgressType(rowIdx, except) == fillProgressType && !rowList.Contains(rowIdx))
+                {
+                    rowList.Add(rowIdx);
+                }
+            }
+            List<int> colList = new List<int>();
+            foreach (var colIdx in ColIdxArray)
+            {
+                if (GetColFillProgressType(colIdx, except) == fillProgressType && !colList.Contains(colIdx))
+                {
+                    colList.Add(colIdx);
+                }
+            }
+            return (rowList, colList);
+        }
+    }
+    #endregion
+    #region 消除
+    public partial class ChessBoard
+    {
+        public static bool IsCanEliminate => GetRowIdxList(FillProgressType.Full).Count > 0 || GetColIdxList(FillProgressType.Full).Count > 0;
+
+        public static (List<int> rowIdxList, List<int> colIdxList, List<(int rowIdx, int colIdx, FillType)> blocks) Eliminate()
+        {
+            List<int> rows = GetRowIdxList(FillProgressType.Full);
+            List<int> cols = GetColIdxList(FillProgressType.Full);
+            List<(int rowIdx, int colIdx, FillType)> blocks = new List<(int rowIdx, int colIdx, FillType)>();
+            foreach (var (rowIdx, colIdx) in SubScriptRowCol)
+            {
+                if (rows.Contains(rowIdx) || cols.Contains(colIdx))
+                {
+                    blocks.Add((rowIdx, colIdx, GetBlock(rowIdx, colIdx).FillType));
+                    SetupFillData(rowIdx, colIdx, FillType.Empty, FillState.Normal);
+                }
+            }
+            return (rows, cols, blocks);
         }
     }
     #endregion
