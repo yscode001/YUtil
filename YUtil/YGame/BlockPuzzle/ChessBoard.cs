@@ -91,7 +91,7 @@ namespace YGame.BlockPuzzle
             {
                 for (int colIdx = 0; colIdx <= ColMaxIdx; colIdx++)
                 {
-                    Panel[rowIdx, colIdx].Init();
+                    Panel[rowIdx, colIdx].Init(rowIdx, colIdx);
                 }
             }
         }
@@ -115,6 +115,18 @@ namespace YGame.BlockPuzzle
                 }
             }
             return data;
+        }
+        public static List<Block> GetBlocks(bool isFilled)
+        {
+            List<Block> blocks = new List<Block>();
+            foreach (var block in Panel)
+            {
+                if (block.IsFilled == isFilled && !blocks.Contains(block))
+                {
+                    blocks.Add(block);
+                }
+            }
+            return blocks;
         }
         public static Block[] GetRow(int rowIdx)
         {

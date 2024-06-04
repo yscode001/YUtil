@@ -8,6 +8,11 @@ namespace YGame.BlockPuzzle
 {
     public partial class Block
     {
+        public int X { get; private set; } = 0;
+        public int ColIdx { get; private set; } = 0;
+        public int Y { get; private set; } = 0;
+        public int RowIdx { get; private set; } = 0;
+
         public bool IsEnable { get; private set; } = true;
         public uint HP { get; private set; } = 0;
         public FillType FillType { get; private set; } = FillType.Blue;
@@ -21,8 +26,10 @@ namespace YGame.BlockPuzzle
     }
     public partial class Block
     {
-        public void Init()
+        public void Init(int rowIdx, int colIdx)
         {
+            X = ColIdx = colIdx;
+            Y = RowIdx = rowIdx;
             IsEnable = true;
             HP = 0;
             FillType = FillType.Blue;
