@@ -173,6 +173,25 @@ namespace YGame.BlockPuzzle
     }
     public partial class ChessBoard
     {
+        public static bool IsEnable(int rowIdx, int colIdx)
+        {
+            return Panel[rowIdx, colIdx].IsEnable;
+        }
+        public static bool IsDisable(int rowIdx, int colIdx)
+        {
+            return Panel[rowIdx, colIdx].IsDisable;
+        }
+        public static bool IsEmpty(int rowIdx, int colIdx)
+        {
+            return Panel[rowIdx, colIdx].IsEmpty;
+        }
+        public static bool IsFilled(int rowIdx, int colIdx)
+        {
+            return Panel[rowIdx, colIdx].IsFilled;
+        }
+    }
+    public partial class ChessBoard
+    {
         public static void SetupEnableState(int rowIdx, int colIdx, bool enable)
         {
             Panel[rowIdx, colIdx].SetupEnableState(enable);
