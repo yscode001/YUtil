@@ -11,6 +11,8 @@ namespace YGame
         public bool IsAlive => Max > 0 && Cur > 0;
         public bool IsDeath => Max <= 0 || Cur <= 0;
 
+        public event Action Event_ValueChanged;
+
         /// <summary>
         /// 当前血量百分比(0-1)
         /// </summary>
@@ -41,6 +43,7 @@ namespace YGame
             else
             {
                 Raw = Max = Cur = initHP;
+                Event_ValueChanged?.Invoke();
             }
         }
 
@@ -56,12 +59,14 @@ namespace YGame
                 {
                     // 提升最大血量
                     Max = maxHP;
+                    Event_ValueChanged?.Invoke();
                 }
                 else if (maxHP < Max)
                 {
                     // 降低最大血量
                     Max = maxHP;
                     Cur = Math.Min(Cur, Max);
+                    Event_ValueChanged?.Invoke();
                 }
             }
         }
@@ -75,6 +80,7 @@ namespace YGame
             else
             {
                 Cur = Math.Min(curHP, Max);
+                Event_ValueChanged?.Invoke();
             }
         }
 
@@ -88,6 +94,7 @@ namespace YGame
             {
                 Max = maxHP;
                 Cur = Math.Min(curHP, maxHP);
+                Event_ValueChanged?.Invoke();
             }
         }
     }
@@ -100,7 +107,11 @@ namespace YGame
         /// </summary>
         public void BeSecKilled()
         {
-            Cur = 0;
+            if (Cur > 0)
+            {
+                Cur = 0;
+                Event_ValueChanged?.Invoke();
+            }
         }
 
         /// <summary>
@@ -119,6 +130,7 @@ namespace YGame
                 if (damage > 0 && Cur > 0)
                 {
                     Cur = Math.Max(Cur - damage, 0);
+                    Event_ValueChanged?.Invoke();
                     return (IsAlive, true);
                 }
                 else
@@ -144,6 +156,7 @@ namespace YGame
                 if (blood > 0 && Cur > 0 && Cur < Max)
                 {
                     Cur = Math.Min(Cur + blood, Max);
+                    Event_ValueChanged?.Invoke();
                     return (IsAlive, true);
                 }
                 else
