@@ -4,6 +4,7 @@
 // ------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace YCSharp
@@ -30,6 +31,23 @@ namespace YCSharp
         public static bool HasNoElement<T>(this List<T> list)
         {
             return list == null || list.Count == 0;
+        }
+
+        /// <summary>
+        /// 移除指定元素
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="value"></param>
+        public static void RemoveElement<T>(this List<T> list, T value) where T : IEquatable<T>
+        {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (list[i].Equals(value))
+                {
+                    list.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>
