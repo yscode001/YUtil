@@ -55,6 +55,11 @@ namespace YUnity
 
     public static class RectTransformExt
     {
+        public static (float width, float height) GetSize(this RectTransform rect)
+        {
+            return (rect.rect.width, rect.rect.height);
+        }
+
         /// <summary>
         /// 获取rect在rectBox中的位置
         /// </summary>
@@ -158,36 +163,6 @@ namespace YUnity
                     break;
             }
             return pos;
-        }
-
-        /// <summary>
-        /// 获取尺寸
-        /// </summary>
-        /// <param name="rect"></param>
-        /// <returns></returns>
-        public static Vector2 GetSize(this RectTransform rect)
-        {
-            return rect.rect.size;
-        }
-
-        /// <summary>
-        /// 获取宽度
-        /// </summary>
-        /// <param name="rect"></param>
-        /// <returns></returns>
-        public static float GetWidth(this RectTransform rect)
-        {
-            return rect.rect.width;
-        }
-
-        /// <summary>
-        /// 获取高度
-        /// </summary>
-        /// <param name="rect"></param>
-        /// <returns></returns>
-        public static float GetHeight(this RectTransform rect)
-        {
-            return rect.rect.height;
         }
     }
 }
