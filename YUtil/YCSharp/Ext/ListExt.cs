@@ -38,7 +38,7 @@ namespace YCSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <param name="doAction"></param>
-        public static void Foreach<T>(this List<T> list, Action<(int index, T element)> doAction)
+        public static void For<T>(this List<T> list, Action<(int index, T element)> doAction)
         {
             int totalCount = list.Count;
             for (int i = 0; i < totalCount; i++)
@@ -53,7 +53,7 @@ namespace YCSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <param name="doAction"></param>
-        public static void ForeachReverse<T>(this List<T> list, Action<(int index, T element)> doAction)
+        public static void ForReverse<T>(this List<T> list, Action<(int index, T element)> doAction)
         {
             int totalCount = list.Count;
             for (int i = totalCount - 1; i >= 0; i--)
@@ -92,7 +92,7 @@ namespace YCSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="array"></param>
         /// <param name="doAction"></param>
-        public static void Foreach<T>(this T[] array, Action<(int index, T element)> doAction)
+        public static void For<T>(this T[] array, Action<(int index, T element)> doAction)
         {
             int totalLength = array.Length;
             for (int i = 0; i < totalLength; i++)
@@ -107,7 +107,7 @@ namespace YCSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="array"></param>
         /// <param name="doAction"></param>
-        public static void ForeachReverse<T>(this T[] array, Action<(int index, T element)> doAction)
+        public static void ForReverse<T>(this T[] array, Action<(int index, T element)> doAction)
         {
             int totalLength = array.Length;
             for (int i = totalLength - 1; i >= 0; i--)
