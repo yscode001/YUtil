@@ -60,6 +60,16 @@ namespace YUnity
             return (rect.rect.width, rect.rect.height);
         }
 
+        public static float GetWidth(this RectTransform rect)
+        {
+            return rect.rect.width;
+        }
+
+        public static float GetHeight(this RectTransform rect)
+        {
+            return rect.rect.height;
+        }
+
         /// <summary>
         /// 获取rect在rectBox中的位置
         /// </summary>
