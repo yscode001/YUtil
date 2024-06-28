@@ -4,7 +4,6 @@
 // ------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace YCSharp
@@ -38,14 +37,18 @@ namespace YCSharp
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="value"></param>
-        public static void RemoveElement<T>(this List<T> list, T value) where T : IEquatable<T>
+        /// <param name="condition"></param>
+        public static void RemoveElement<T>(this List<T> list, Func<T, bool> condition)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            if (condition != null)
             {
-                if (list[i].Equals(value))
+                int totalCount = list.Count;
+                for (int i = totalCount - 1; i >= 0; i--)
                 {
-                    list.RemoveAt(i);
+                    if (condition.Invoke(list[i]))
+                    {
+                        list.RemoveAt(i);
+                    }
                 }
             }
         }
@@ -55,13 +58,21 @@ namespace YCSharp
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
+        /// <param name="condition"></param>
         /// <param name="doAction"></param>
-        public static void For<T>(this List<T> list, Action<(int index, T element)> doAction)
+        public static void For<T>(this List<T> list, Func<T, bool> condition, Action<(int index, T element)> doAction)
         {
             int totalCount = list.Count;
             for (int i = 0; i < totalCount; i++)
             {
-                doAction?.Invoke((i, list[i]));
+                if (condition == null)
+                {
+                    doAction?.Invoke((i, list[i]));
+                }
+                else if (condition.Invoke(list[i]))
+                {
+                    doAction?.Invoke((i, list[i]));
+                }
             }
         }
 
@@ -70,13 +81,21 @@ namespace YCSharp
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
+        /// <param name="condition"></param>
         /// <param name="doAction"></param>
-        public static void ForReverse<T>(this List<T> list, Action<(int index, T element)> doAction)
+        public static void ForReverse<T>(this List<T> list, Func<T, bool> condition, Action<(int index, T element)> doAction)
         {
             int totalCount = list.Count;
             for (int i = totalCount - 1; i >= 0; i--)
             {
-                doAction?.Invoke((i, list[i]));
+                if (condition == null)
+                {
+                    doAction?.Invoke((i, list[i]));
+                }
+                else if (condition.Invoke(list[i]))
+                {
+                    doAction?.Invoke((i, list[i]));
+                }
             }
         }
     }
@@ -109,13 +128,21 @@ namespace YCSharp
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="array"></param>
+        /// <param name="condition"></param>
         /// <param name="doAction"></param>
-        public static void For<T>(this T[] array, Action<(int index, T element)> doAction)
+        public static void For<T>(this T[] array, Func<T, bool> condition, Action<(int index, T element)> doAction)
         {
             int totalLength = array.Length;
             for (int i = 0; i < totalLength; i++)
             {
-                doAction?.Invoke((i, array[i]));
+                if (condition == null)
+                {
+                    doAction?.Invoke((i, array[i]));
+                }
+                else if (condition.Invoke(array[i]))
+                {
+                    doAction?.Invoke((i, array[i]));
+                }
             }
         }
 
@@ -124,13 +151,21 @@ namespace YCSharp
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="array"></param>
+        /// <param name="condition"></param>
         /// <param name="doAction"></param>
-        public static void ForReverse<T>(this T[] array, Action<(int index, T element)> doAction)
+        public static void ForReverse<T>(this T[] array, Func<T, bool> condition, Action<(int index, T element)> doAction)
         {
             int totalLength = array.Length;
             for (int i = totalLength - 1; i >= 0; i--)
             {
-                doAction?.Invoke((i, array[i]));
+                if (condition == null)
+                {
+                    doAction?.Invoke((i, array[i]));
+                }
+                else if (condition.Invoke(array[i]))
+                {
+                    doAction?.Invoke((i, array[i]));
+                }
             }
         }
     }
