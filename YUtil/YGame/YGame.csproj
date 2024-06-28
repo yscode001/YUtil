@@ -6,8 +6,10 @@
 
   <ItemGroup>
     <None Remove="BlockPuzzle\" />
+    <None Remove="HP\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BlockPuzzle\" />
+    <Folder Include="HP\" />
   </ItemGroup>
 </Project>

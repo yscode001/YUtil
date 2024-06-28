@@ -2,9 +2,9 @@
 
 namespace YGame
 {
-    public partial class HP
+    public partial class HPFloat
     {
-        public float Init { get; private set; }
+        public float Raw { get; private set; }
         public float Max { get; private set; }
         public float Cur { get; private set; }
 
@@ -25,7 +25,7 @@ namespace YGame
         }
     }
     #region 直接设置血量
-    public partial class HP
+    public partial class HPFloat
     {
         /// <summary>
         /// 初始血量、最大血量、当前血量
@@ -40,7 +40,7 @@ namespace YGame
             }
             else
             {
-                Init = Max = Cur = initHP;
+                Raw = Max = Cur = initHP;
             }
         }
 
@@ -93,7 +93,7 @@ namespace YGame
     }
     #endregion
     #region 秒杀、受伤、回血
-    public partial class HP
+    public partial class HPFloat
     {
         /// <summary>
         /// 秒杀(当前血量直接重置为0)
