@@ -5,19 +5,22 @@ public class Program
     static void Main(string[] args)
     {
         List<string> list = new List<string>();
-        list.Add("a");
-        list.Add("b");
-        list.Add("c");
-        list.Add(null);
-        list.Add("d");
-        list.Add("e");
-        list.Add("f");
+        list.Add("1");
+        list.Add("2");
+        list.Add("3");
+        list.Add("4");
+        list.Add("5");
+        list.Add("1");
+        list.Add("2");
+        list.Add("3");
+        list.Add("4");
 
-        list.RemoveElements((element) =>
+
+        List<int> newlist = list.Convert(false, element =>
         {
-            return element == "a";
-        });
-        list.For(null, (data) =>
+            return element != "1";
+        }, int.Parse);
+        newlist.For(null, (data) =>
         {
             Console.WriteLine(data);
         });

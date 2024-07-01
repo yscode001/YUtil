@@ -18,7 +18,7 @@ namespace YCSharp
         {
             return list == null || list.Count == 0;
         }
-        public static void For<T>(this List<T> list, Func<T, bool> condition, Action<(int index, T element)> doAction)
+        public static void For<T>(this List<T> list, Predicate<T> condition, Action<(int index, T element)> doAction)
         {
             int totalCount = list.Count;
             for (int i = 0; i < totalCount; i++)
@@ -30,7 +30,7 @@ namespace YCSharp
                 }
             }
         }
-        public static void ForReverse<T>(this List<T> list, Func<T, bool> condition, Action<(int index, T element)> doAction)
+        public static void ForReverse<T>(this List<T> list, Predicate<T> condition, Action<(int index, T element)> doAction)
         {
             int totalCount = list.Count;
             for (int i = totalCount - 1; i >= 0; i--)
@@ -42,7 +42,7 @@ namespace YCSharp
                 }
             }
         }
-        public static void RemoveElements<T>(this List<T> list, Func<T, bool> condition)
+        public static void RemoveElements<T>(this List<T> list, Predicate<T> condition)
         {
             if (condition != null)
             {
@@ -56,12 +56,49 @@ namespace YCSharp
                 }
             }
         }
-        public static List<T> DeepCopy<T>(this List<T> list, Func<T, bool> condition)
+        public static List<T> DeepCopy<T>(this List<T> list, bool allowDuplicate, Predicate<T> condition)
         {
             List<T> newList = new List<T>();
             list.For(condition, data =>
             {
-                newList.Add(data.element);
+                if (allowDuplicate)
+                {
+                    newList.Add(data.element);
+                }
+                else if (!allowDuplicate && !newList.Contains(data.element))
+                {
+                    newList.Add(data.element);
+                }
+            });
+            return newList;
+        }
+        public static void RemoveDuplicate<T>(this List<T> list)
+        {
+            List<T> newList = new List<T>();
+            list.For(null, data =>
+            {
+                if (!newList.Contains(data.element))
+                {
+                    newList.Add(data.element);
+                }
+            });
+            list.Clear();
+            list.AddRange(newList);
+        }
+        public static List<T2> Convert<T1, T2>(this List<T1> list, bool allowDuplicate, Predicate<T1> filterCondition, Func<T1, T2> convertCondition)
+        {
+            List<T2> newList = new List<T2>();
+            list.For(filterCondition, data =>
+            {
+                T2 t2 = convertCondition.Invoke(data.element);
+                if (allowDuplicate)
+                {
+                    newList.Add(t2);
+                }
+                else if (!allowDuplicate && !newList.Contains(t2))
+                {
+                    newList.Add(t2);
+                }
             });
             return newList;
         }
@@ -76,7 +113,7 @@ namespace YCSharp
         {
             return array == null || array.Length == 0;
         }
-        public static void For<T>(this T[] array, Func<T, bool> condition, Action<(int index, T element)> doAction)
+        public static void For<T>(this T[] array, Predicate<T> condition, Action<(int index, T element)> doAction)
         {
             int totalLength = array.Length;
             for (int i = 0; i < totalLength; i++)
@@ -88,7 +125,7 @@ namespace YCSharp
                 }
             }
         }
-        public static void ForReverse<T>(this T[] array, Func<T, bool> condition, Action<(int index, T element)> doAction)
+        public static void ForReverse<T>(this T[] array, Predicate<T> condition, Action<(int index, T element)> doAction)
         {
             int totalLength = array.Length;
             for (int i = totalLength - 1; i >= 0; i--)
@@ -99,15 +136,6 @@ namespace YCSharp
                     doAction?.Invoke((i, array[i]));
                 }
             }
-        }
-        public static List<T> DeepCopy<T>(this T[] array, Func<T, bool> condition)
-        {
-            List<T> list = new List<T>();
-            array.For(condition, data =>
-            {
-                list.Add(data.element);
-            });
-            return list;
         }
     }
 }
