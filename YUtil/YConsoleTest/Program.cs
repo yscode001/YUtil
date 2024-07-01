@@ -13,7 +13,7 @@ public class Program
         list.Add("e");
         list.Add("f");
 
-        list.RemoveElement((element) =>
+        list.RemoveElements((element) =>
         {
             return element == "a";
         });

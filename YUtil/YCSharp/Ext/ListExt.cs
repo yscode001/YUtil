@@ -10,35 +10,39 @@ namespace YCSharp
 {
     public static class ListExt
     {
-        /// <summary>
-        /// 有元素(不为空且数量大于0)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <returns></returns>
         public static bool HasElements<T>(this List<T> list)
         {
             return list != null && list.Count > 0;
         }
-
-        /// <summary>
-        /// 没有元素(为空或数量等于0)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        public static bool HasNoElement<T>(this List<T> list)
+        public static bool IsNullOrEmpty<T>(this List<T> list)
         {
             return list == null || list.Count == 0;
         }
-
-        /// <summary>
-        /// 移除指定元素
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="condition"></param>
-        public static void RemoveElement<T>(this List<T> list, Func<T, bool> condition)
+        public static void For<T>(this List<T> list, Func<T, bool> condition, Action<(int index, T element)> doAction)
+        {
+            int totalCount = list.Count;
+            for (int i = 0; i < totalCount; i++)
+            {
+                if (condition == null || condition.Invoke(list[i]))
+                {
+                    // 没有条件，或有条件并满足
+                    doAction?.Invoke((i, list[i]));
+                }
+            }
+        }
+        public static void ForReverse<T>(this List<T> list, Func<T, bool> condition, Action<(int index, T element)> doAction)
+        {
+            int totalCount = list.Count;
+            for (int i = totalCount - 1; i >= 0; i--)
+            {
+                if (condition == null || condition.Invoke(list[i]))
+                {
+                    // 没有条件，或有条件并满足
+                    doAction?.Invoke((i, list[i]));
+                }
+            }
+        }
+        public static void RemoveElements<T>(this List<T> list, Func<T, bool> condition)
         {
             if (condition != null)
             {
@@ -52,121 +56,58 @@ namespace YCSharp
                 }
             }
         }
-
-        /// <summary>
-        /// 正向遍历
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="condition"></param>
-        /// <param name="doAction"></param>
-        public static void For<T>(this List<T> list, Func<T, bool> condition, Action<(int index, T element)> doAction)
+        public static List<T> DeepCopy<T>(this List<T> list, Func<T, bool> condition)
         {
-            int totalCount = list.Count;
-            for (int i = 0; i < totalCount; i++)
+            List<T> newList = new List<T>();
+            list.For(condition, data =>
             {
-                if (condition == null)
-                {
-                    doAction?.Invoke((i, list[i]));
-                }
-                else if (condition.Invoke(list[i]))
-                {
-                    doAction?.Invoke((i, list[i]));
-                }
-            }
-        }
-
-        /// <summary>
-        /// 反向遍历
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="condition"></param>
-        /// <param name="doAction"></param>
-        public static void ForReverse<T>(this List<T> list, Func<T, bool> condition, Action<(int index, T element)> doAction)
-        {
-            int totalCount = list.Count;
-            for (int i = totalCount - 1; i >= 0; i--)
-            {
-                if (condition == null)
-                {
-                    doAction?.Invoke((i, list[i]));
-                }
-                else if (condition.Invoke(list[i]))
-                {
-                    doAction?.Invoke((i, list[i]));
-                }
-            }
+                newList.Add(data.element);
+            });
+            return newList;
         }
     }
     public static class ArrayExt
     {
-        /// <summary>
-        /// 有元素(不为空且数量大于0)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <returns></returns>
         public static bool HasElements<T>(this T[] array)
         {
             return array != null && array.Length > 0;
         }
-
-        /// <summary>
-        /// 没有元素(为空或数量等于0)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <returns></returns>
-        public static bool HasNoElement<T>(this T[] array)
+        public static bool IsNullOrEmpty<T>(this T[] array)
         {
             return array == null || array.Length == 0;
         }
-
-        /// <summary>
-        /// 正向遍历
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="condition"></param>
-        /// <param name="doAction"></param>
         public static void For<T>(this T[] array, Func<T, bool> condition, Action<(int index, T element)> doAction)
         {
             int totalLength = array.Length;
             for (int i = 0; i < totalLength; i++)
             {
-                if (condition == null)
+                if (condition == null || condition.Invoke(array[i]))
                 {
-                    doAction?.Invoke((i, array[i]));
-                }
-                else if (condition.Invoke(array[i]))
-                {
+                    // 没有条件，或有条件并满足
                     doAction?.Invoke((i, array[i]));
                 }
             }
         }
-
-        /// <summary>
-        /// 反向遍历
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="condition"></param>
-        /// <param name="doAction"></param>
         public static void ForReverse<T>(this T[] array, Func<T, bool> condition, Action<(int index, T element)> doAction)
         {
             int totalLength = array.Length;
             for (int i = totalLength - 1; i >= 0; i--)
             {
-                if (condition == null)
+                if (condition == null || condition.Invoke(array[i]))
                 {
-                    doAction?.Invoke((i, array[i]));
-                }
-                else if (condition.Invoke(array[i]))
-                {
+                    // 没有条件，或有条件并满足
                     doAction?.Invoke((i, array[i]));
                 }
             }
+        }
+        public static List<T> DeepCopy<T>(this T[] array, Func<T, bool> condition)
+        {
+            List<T> list = new List<T>();
+            array.For(condition, data =>
+            {
+                list.Add(data.element);
+            });
+            return list;
         }
     }
 }
