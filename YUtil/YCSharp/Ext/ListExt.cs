@@ -56,6 +56,19 @@ namespace YCSharp
                 }
             }
         }
+        public static void RemoveDuplicate<T>(this List<T> list)
+        {
+            List<T> newList = new List<T>();
+            list.For(null, data =>
+            {
+                if (!newList.Contains(data.element))
+                {
+                    newList.Add(data.element);
+                }
+            });
+            list.Clear();
+            list.AddRange(newList);
+        }
         public static List<T> DeepCopy<T>(this List<T> list, bool allowDuplicate, Predicate<T> condition)
         {
             List<T> newList = new List<T>();
@@ -71,19 +84,6 @@ namespace YCSharp
                 }
             });
             return newList;
-        }
-        public static void RemoveDuplicate<T>(this List<T> list)
-        {
-            List<T> newList = new List<T>();
-            list.For(null, data =>
-            {
-                if (!newList.Contains(data.element))
-                {
-                    newList.Add(data.element);
-                }
-            });
-            list.Clear();
-            list.AddRange(newList);
         }
         public static List<T2> Convert<T1, T2>(this List<T1> list, bool allowDuplicate, Predicate<T1> filterCondition, Func<T1, T2> convertCondition)
         {
@@ -136,6 +136,39 @@ namespace YCSharp
                     doAction?.Invoke((i, array[i]));
                 }
             }
+        }
+        public static List<T> DeepCopy<T>(this T[] array, bool allowDuplicate, Predicate<T> condition)
+        {
+            List<T> newList = new List<T>();
+            array.For(condition, data =>
+            {
+                if (allowDuplicate)
+                {
+                    newList.Add(data.element);
+                }
+                else if (!allowDuplicate && !newList.Contains(data.element))
+                {
+                    newList.Add(data.element);
+                }
+            });
+            return newList;
+        }
+        public static List<T2> Convert<T1, T2>(this T1[] array, bool allowDuplicate, Predicate<T1> filterCondition, Func<T1, T2> convertCondition)
+        {
+            List<T2> newList = new List<T2>();
+            array.For(filterCondition, data =>
+            {
+                T2 t2 = convertCondition.Invoke(data.element);
+                if (allowDuplicate)
+                {
+                    newList.Add(t2);
+                }
+                else if (!allowDuplicate && !newList.Contains(t2))
+                {
+                    newList.Add(t2);
+                }
+            });
+            return newList;
         }
     }
 }
