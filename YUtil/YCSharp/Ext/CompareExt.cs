@@ -1,54 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace YCSharp
 {
+    public enum CollectionValue
+    {
+        Max,
+        Min,
+    }
     public static class CompareExt
     {
-        public static T MaxValue<T>(this List<T> list) where T : IComparable
+        public static T GetValue<T>(this List<T> list, CollectionValue valueType) where T : IComparable
         {
             T max = list[0];
             foreach (var item in list)
             {
-                if (max.CompareTo(item) < 0)
+                if (valueType == CollectionValue.Max && max.CompareTo(item) < 0)
+                {
+                    max = item;
+                }
+                else if (valueType == CollectionValue.Min && max.CompareTo(item) > 0)
                 {
                     max = item;
                 }
             }
             return max;
         }
-        public static T MaxValue<T>(this T[] array) where T : IComparable
+        public static T GetValue<T>(this T[] array, CollectionValue valueType) where T : IComparable
         {
             T max = array[0];
             foreach (var item in array)
             {
-                if (max.CompareTo(item) < 0)
+                if (valueType == CollectionValue.Max && max.CompareTo(item) < 0)
+                {
+                    max = item;
+                }
+                else if (valueType == CollectionValue.Min && max.CompareTo(item) > 0)
                 {
                     max = item;
                 }
             }
             return max;
         }
-        public static T MinValue<T>(this List<T> list) where T : IComparable
+        public static T2 GetValue<T1, T2>(this Dictionary<T1, T2> dict, CollectionValue valueType) where T2 : IComparable
         {
-            T max = list[0];
-            foreach (var item in list)
+            T2 max = dict.Values.First();
+            foreach (var item in dict)
             {
-                if (max.CompareTo(item) > 0)
+                if (valueType == CollectionValue.Max && max.CompareTo(item.Value) < 0)
                 {
-                    max = item;
+                    max = item.Value;
                 }
-            }
-            return max;
-        }
-        public static T MinValue<T>(this T[] array) where T : IComparable
-        {
-            T max = array[0];
-            foreach (var item in array)
-            {
-                if (max.CompareTo(item) > 0)
+                else if (valueType == CollectionValue.Min && max.CompareTo(item.Value) > 0)
                 {
-                    max = item;
+                    max = item.Value;
                 }
             }
             return max;
