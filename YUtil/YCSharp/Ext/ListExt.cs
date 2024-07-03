@@ -81,6 +81,13 @@ namespace YCSharp
             list.Clear();
             list.AddRange(newList);
         }
+        public static void AddIfNotContain<T>(this List<T> list, T element)
+        {
+            if (!list.Contains(element))
+            {
+                list.Add(element);
+            }
+        }
         public static List<T> DeepCopy<T>(this List<T> list, bool allowDuplicate, Predicate<T> filterCondition)
         {
             List<T> newList = new List<T>();
