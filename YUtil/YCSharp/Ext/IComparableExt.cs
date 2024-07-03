@@ -9,7 +9,7 @@ namespace YCSharp
         Max,
         Min,
     }
-    public static class CompareExt
+    public static class IComparableExt
     {
         public static T GetValue<T>(this List<T> list, CollectionValue valueType) where T : IComparable
         {
