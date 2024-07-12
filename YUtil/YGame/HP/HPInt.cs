@@ -47,6 +47,19 @@ namespace YGame
             }
         }
 
+        public void SetupRawHP(int rawHP)
+        {
+            if (rawHP <= 0)
+            {
+                throw new Exception("error");
+            }
+            else if (Raw != rawHP)
+            {
+                Raw = rawHP;
+                Event_ValueChanged?.Invoke();
+            }
+        }
+
         public void SetupMaxHP(int maxHP)
         {
             if (maxHP <= 0)
