@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace YUnity
 {
@@ -45,16 +44,6 @@ namespace YUnity
         public static void SetAct(this Component component, bool active)
         {
             component.gameObject.SetAct(active);
-        }
-
-        /// <summary>
-        /// 所在场景
-        /// </summary>
-        /// <param name="component"></param>
-        /// <returns></returns>
-        public static Scene? CurrentScene(this Component component)
-        {
-            return component.gameObject.CurrentScene();
         }
 
         /// <summary>

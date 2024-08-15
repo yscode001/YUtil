@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace YUnity
 {
@@ -77,16 +76,6 @@ namespace YUnity
             {
                 go.SetActive(active);
             }
-        }
-
-        /// <summary>
-        /// 所在场景
-        /// </summary>
-        /// <param name="go"></param>
-        /// <returns></returns>
-        public static Scene? CurrentScene(this GameObject go)
-        {
-            return go.scene;
         }
 
         /// <summary>
