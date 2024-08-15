@@ -28,6 +28,7 @@ namespace YUnity
         private CharacterController _characterController;
         private Rigidbody _rigidbody;
         private Rigidbody2D _rigidbod2Dy;
+        private Canvas _canvas;
         private CanvasGroup _canvasGroup;
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
@@ -253,6 +254,21 @@ namespace YUnity
                 if (_rigidbod2Dy != null) { return _rigidbod2Dy; }
                 _rigidbod2Dy = gameObject.AddComponent<Rigidbody2D>();
                 return _rigidbod2Dy;
+            }
+        }
+
+        /// <summary>
+        /// 获取Canvas(UI专用)，如果没有则添加
+        /// </summary>
+        public Canvas CanvasY
+        {
+            get
+            {
+                if (_canvas != null) { return _canvas; }
+                _canvas = gameObject.GetComponent<Canvas>();
+                if (_canvas != null) { return _canvas; }
+                _canvas = gameObject.AddComponent<Canvas>();
+                return _canvas;
             }
         }
 
