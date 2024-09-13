@@ -38,6 +38,12 @@ namespace YUnityAndEditorCommon
             FileMD5 = fileMD5;
         }
 
+        public void Edit(long fileSize, string fileMD5)
+        {
+            FileSize = fileSize;
+            FileMD5 = fileMD5;
+        }
+
         public static bool operator ==(ABInfo lhs, ABInfo rhs)
         {
             return lhs.AssetBundleName == rhs.AssetBundleName &&

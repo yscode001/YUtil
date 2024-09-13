@@ -5,6 +5,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using YUnityAndEditorCommon;
 
 namespace YUnity
@@ -34,6 +36,47 @@ namespace YUnity
                     }
                 }
                 return size;
+            }
+        }
+
+        public byte[] Serialize()
+        {
+            if (ABList == null || ABList.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bf.Serialize(ms, this);
+                    return ms.ToArray();
+                }
+            }
+        }
+
+        public void AddOrUpdateABInfo(ABInfo abInfo)
+        {
+            foreach (var item in ABList)
+            {
+                if (ABHelper.GetAssetBundleName(item.AssetBundleName) == ABHelper.GetAssetBundleName(abInfo.AssetBundleName))
+                {
+                    item.Edit(abInfo.FileSize, abInfo.FileMD5);
+                    return;
+                }
+            }
+            ABList.Add(abInfo);
+        }
+        public void DeleteABInfo(string assetBundleName)
+        {
+            for (int i = ABList.Count - 1; i >= 0; i--)
+            {
+                ABInfo info = ABList[i];
+                if (ABHelper.GetAssetBundleName(info.AssetBundleName) == ABHelper.GetAssetBundleName(assetBundleName))
+                {
+                    ABList.RemoveAt(i);
+                }
             }
         }
     }
