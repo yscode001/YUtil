@@ -38,7 +38,7 @@ namespace YUnityAndEditorCommon
             FileMD5 = fileMD5;
         }
 
-        public void Edit(long fileSize, string fileMD5)
+        public void EditFileInfo(long fileSize, string fileMD5)
         {
             FileSize = fileSize;
             FileMD5 = fileMD5;
@@ -69,6 +69,6 @@ namespace YUnityAndEditorCommon
 
         public bool IsEmpty => string.IsNullOrWhiteSpace(AssetBundleName) || FileSize <= 0 || string.IsNullOrWhiteSpace(FileMD5);
 
-        public bool IsNotEmpty => !string.IsNullOrWhiteSpace(AssetBundleName) && FileSize > 0 && !string.IsNullOrWhiteSpace(FileMD5);
+        public bool IsNotEmpty => !IsEmpty;
     }
 }

@@ -357,6 +357,15 @@ namespace YUnity
         }
 
         /// <summary>
+        /// 保存资源包清单文件
+        /// </summary>
+        /// <param name="bundleFileList"></param>
+        public static void SaveBundleFileList(ABLoadBundleFileList bundleFileList)
+        {
+            SaveBundleFileList(bundleFileList.Serialize());
+        }
+
+        /// <summary>
         /// 加载bundle清单文件
         /// </summary>
         /// <returns></returns>

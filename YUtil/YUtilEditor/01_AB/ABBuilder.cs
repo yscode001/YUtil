@@ -331,7 +331,7 @@ namespace YUtilEditor
                 bundleList.Add(new ABInfo(fileInfo.Name, fileInfo.Length, GetMD5HashFromFile(fileInfo.FullName)));
             }
 
-            byte[] bytes = System.Text.Encoding.Default.GetBytes(bundleList.Serialize());
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(bundleList.Serialize());
             if (bytes == null || bytes.Length <= 0)
             {
                 BuildEnd(false);

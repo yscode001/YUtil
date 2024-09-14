@@ -5,8 +5,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 using YUnityAndEditorCommon;
 
 namespace YUnity
@@ -20,6 +19,7 @@ namespace YUnity
         /// <summary>
         /// 所有的bundle包的大小总和(单位字节)
         /// </summary>
+        [JsonIgnore]
         public long FileSizeSum
         {
             get
@@ -47,13 +47,16 @@ namespace YUnity
             }
             else
             {
-                BinaryFormatter bf = new BinaryFormatter();
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    bf.Serialize(ms, this);
-                    return ms.ToArray();
-                }
+                return System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(this));
             }
+        }
+
+        /// <summary>
+        /// 资源包清单文件保存在硬盘上
+        /// </summary>
+        public void SaveToHardDisk()
+        {
+            ABLoader.SaveBundleFileList(this);
         }
 
         public void AddOrUpdateABInfo(ABInfo abInfo)
@@ -62,7 +65,7 @@ namespace YUnity
             {
                 if (ABHelper.GetAssetBundleName(item.AssetBundleName) == ABHelper.GetAssetBundleName(abInfo.AssetBundleName))
                 {
-                    item.Edit(abInfo.FileSize, abInfo.FileMD5);
+                    item.EditFileInfo(abInfo.FileSize, abInfo.FileMD5);
                     return;
                 }
             }
