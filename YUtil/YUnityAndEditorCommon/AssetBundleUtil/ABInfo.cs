@@ -13,17 +13,21 @@ namespace YUnityAndEditorCommon
         /// <summary>
         /// bundle包的名字(带扩展名)
         /// </summary>
-        public string AssetBundleName;
+        public string AssetBundleName { get; private set; }
 
         /// <summary>
         /// 文件大小(单位字节)
         /// </summary>
-        public long FileSize;
+        public long FileSize { get; private set; }
 
         /// <summary>
         /// 文件的md5值
         /// </summary>
-        public string FileMD5;
+        public string FileMD5 { get; private set; }
+
+        public bool IsEmpty => string.IsNullOrWhiteSpace(AssetBundleName) || FileSize <= 0 || string.IsNullOrWhiteSpace(FileMD5);
+
+        public bool IsNotEmpty => !IsEmpty;
 
         /// <summary>
         /// 初始化
@@ -66,9 +70,5 @@ namespace YUnityAndEditorCommon
         {
             return base.GetHashCode();
         }
-
-        public bool IsEmpty => string.IsNullOrWhiteSpace(AssetBundleName) || FileSize <= 0 || string.IsNullOrWhiteSpace(FileMD5);
-
-        public bool IsNotEmpty => !IsEmpty;
     }
 }
