@@ -13,17 +13,17 @@ namespace YUnityAndEditorCommon
         /// <summary>
         /// bundle包的名字(带扩展名)
         /// </summary>
-        public string AssetBundleName { get; private set; }
+        public string AssetBundleName;
 
         /// <summary>
         /// 文件大小(单位字节)
         /// </summary>
-        public long FileSize { get; private set; }
+        public long FileSize;
 
         /// <summary>
         /// 文件的md5值
         /// </summary>
-        public string FileMD5 { get; private set; }
+        public string FileMD5;
 
         public bool IsEmpty => string.IsNullOrWhiteSpace(AssetBundleName) || FileSize <= 0 || string.IsNullOrWhiteSpace(FileMD5);
 

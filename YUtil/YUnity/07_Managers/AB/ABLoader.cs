@@ -128,7 +128,7 @@ namespace YUnity
             }
         }
 
-        private static void LoadAssetBundle(string bundleName, Action<AssetBundle> complete)
+        public static void LoadAssetBundle(string bundleName, Action<AssetBundle> complete)
         {
             if (string.IsNullOrWhiteSpace(bundleName) || complete == null)
             {
