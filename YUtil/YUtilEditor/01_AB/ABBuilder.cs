@@ -35,17 +35,16 @@ namespace YUtilEditor
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="platformName"平台名称(示例：iOS、android...)</param>
         /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Res)</param>
-        /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/PlatformName/)</param>
+        /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/)</param>
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
         /// <param name="bundleOptions">可选参数：打包选项(默认：None)</param>
         /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void Init(string platformName, string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
+        public static void Init(string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
         {
-            if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(resSourceDirectory))
+            if (string.IsNullOrWhiteSpace(resSourceDirectory))
             {
-                throw new System.Exception("ABBuildUtil-Init：platformName和resSourceDirectory不能为空");
+                throw new System.Exception("ABBuildUtil-Init：resSourceDirectory不能为空");
             }
             if (!Directory.Exists(resSourceDirectory))
             {
@@ -56,12 +55,8 @@ namespace YUtilEditor
             SetIgnoreExts(ignoreExts);
             BundleOptions = bundleOptions;
 
-            ResOutputDirectory = string.IsNullOrWhiteSpace(resOutputDirectory) ? $"./AssetBundleFiles/{platformName}/" : resOutputDirectory;
+            ResOutputDirectory = string.IsNullOrWhiteSpace(resOutputDirectory) ? $"./AssetBundleFiles/" : resOutputDirectory;
             ResOutputDirectory = ResOutputDirectory.EndsWith("/") ? ResOutputDirectory : ResOutputDirectory + "/";
-            if (!ResOutputDirectory.EndsWith($"/{platformName}/"))
-            {
-                ResOutputDirectory += (platformName + "/");
-            }
             if (!ResOutputDirectory.EndsWith($"/Version{Version}/"))
             {
                 ResOutputDirectory += $"Version{Version}/";
@@ -354,32 +349,20 @@ namespace YUtilEditor
     public static partial class ABBuilder
     {
         /// <summary>
-        /// 清理某一版本或所有版本的bundle资源
+        /// 清理某一版本的资源
         /// </summary>
-        /// <param name="version">相应的版本号(< 1表示清理所有版本的bundle资源)</param>
-        public static void ClearVersion(UInt32 version = 0)
+        /// <param name="version">相应的版本号</param>
+        public static void ClearVersion(UInt32 version)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (directoryInfo == null)
             {
                 throw new Exception("ABBuildUtil-ClearVersion：ResOutputDirectory对应的目录不存在");
             }
-            if (version < 1)
+            string path = directoryInfo.Parent.FullName + $"/Version{version}/";
+            if (Directory.Exists(path))
             {
-                // 清理所有版本的bundle资源(直接删除platformName对应的文件夹)
-                if (Directory.Exists(directoryInfo.Parent.FullName))
-                {
-                    Directory.Delete(directoryInfo.Parent.FullName, true);
-                }
-            }
-            else
-            {
-                // 清理指定版本的bundle资源(只删除Version对应的文件夹)
-                string path = directoryInfo.Parent.FullName + $"/Version{version}/";
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path, true);
-                }
+                Directory.Delete(path, true);
             }
             AssetDatabase.Refresh();
         }

@@ -27,17 +27,16 @@ namespace YUnity
         /// <summary>
         /// 热更前初始化，主要是初始化路径
         /// </summary>
-        /// <param name="platformName">平台名称</param>
         /// <param name="bundlePath">bundle包所在路径</param>
         /// <param name="createBundleDirectory">是否需要强制创建bundle包所在的目录</param>
         /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void InitBeforeHotUpdate(string platformName, string bundlePath, bool createBundleDirectory = true, UInt32 version = 1)
+        public static void InitBeforeHotUpdate(string bundlePath, bool createBundleDirectory = true, UInt32 version = 1)
         {
-            if (string.IsNullOrWhiteSpace(platformName) || string.IsNullOrWhiteSpace(bundlePath))
+            if (string.IsNullOrWhiteSpace(bundlePath))
             {
-                throw new System.Exception("ABLoadUtil-InitBeforeHotUpdate：platformName和bundlePath不能为空");
+                throw new System.Exception("ABLoader-InitBeforeHotUpdate：bundlePath不能为空");
             }
-            BundlePath = (bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/") + platformName + "/" + $"Version{version}/";
+            BundlePath = (bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/") + $"Version{version}/";
             if (createBundleDirectory)
             {
                 if (!Directory.Exists(BundlePath))
@@ -61,17 +60,34 @@ namespace YUnity
                     AssetBundle manifestBundle = AssetBundle.LoadFromMemory(bytes);
                     if (manifestBundle == null)
                     {
-                        throw new System.Exception($"ABLoadUtil-Init：{ABHelper.ManifestBundleName}，这个bundle包不存在");
+                        throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包不存在");
                     }
                     Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                     if (Manifest == null)
                     {
-                        throw new System.Exception($"ABLoadUtil-Init：{ABHelper.ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
+                        throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
                     }
                     manifestBundle.Unload(false);
                 }
                 complete?.Invoke();
             });
+        }
+    }
+    #endregion
+
+    #region 获取依赖项
+    public static partial class ABLoader
+    {
+        public static string[] GetAllDependencies(string bundleName)
+        {
+            if (Manifest == null)
+            {
+                throw new System.Exception($"ABLoader-GetAllDependencies：Manifest未初始化，请先调用InitAfterHotUpdate进行初始化");
+            }
+            else
+            {
+                return Manifest.GetAllDependencies(ABHelper.GetAssetBundleName(bundleName));
+            }
         }
     }
     #endregion
@@ -277,32 +293,20 @@ namespace YUnity
     public static partial class ABLoader
     {
         /// <summary>
-        /// 清理某一版本或所有版本的bundle资源
+        /// 清理某一版本的bundle资源
         /// </summary>
-        /// <param name="version">相应的版本号(< 1表示清理所有版本的bundle资源)</param>
-        public static void ClearVersion(UInt32 version = 0)
+        /// <param name="version">相应的版本号</param>
+        public static void ClearVersion(UInt32 version)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
             if (directoryInfo == null)
             {
-                Debug.Log("ABLoadUtil-ClearVersion：BundlePath对应的目录不存在");
+                Debug.Log("ABLoader-ClearVersion：BundlePath对应的目录不存在");
             }
-            if (version < 1)
+            string path = directoryInfo.Parent.FullName + $"/Version{version}/";
+            if (Directory.Exists(path))
             {
-                // 清理所有版本的bundle资源(直接删除platformName对应的文件夹)
-                if (Directory.Exists(directoryInfo.Parent.FullName))
-                {
-                    Directory.Delete(directoryInfo.Parent.FullName, true);
-                }
-            }
-            else
-            {
-                // 清理指定版本的bundle资源(只删除Version对应的文件夹)
-                string path = directoryInfo.Parent.FullName + $"/Version{version}/";
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path, true);
-                }
+                Directory.Delete(path, true);
             }
         }
 
@@ -315,12 +319,12 @@ namespace YUnity
         {
             if (version < 1)
             {
-                Debug.Log("ABLoadUtil-ClearBundle：version必须大于0");
+                Debug.Log("ABLoader-ClearBundle：version必须大于0");
             }
             DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
             if (directoryInfo == null)
             {
-                Debug.Log("ABLoadUtil-ClearBundle：BundlePath对应的目录不存在");
+                Debug.Log("ABLoader-ClearBundle：BundlePath对应的目录不存在");
             }
             string path = directoryInfo.Parent.FullName + $"/Version{version}/" + ABHelper.GetAssetBundleName(bundleName);
             if (File.Exists(path))
@@ -380,7 +384,7 @@ namespace YUnity
                 }
                 catch (Exception e)
                 {
-                    Debug.Log($"ABLoadUtil-LoadBundleFileList：加载ABLoadBundleFileList时失败：{e}");
+                    Debug.Log($"ABLoader-LoadBundleFileList：加载ABLoadBundleFileList时失败：{e}");
                 }
             }
             return bundleList;
