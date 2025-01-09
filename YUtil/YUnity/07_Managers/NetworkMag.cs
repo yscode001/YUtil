@@ -36,6 +36,10 @@ namespace YUnity
                 {
                     content = System.Text.Encoding.UTF8.GetString(request.downloadHandler.data);
                 }
+                if (content == null)
+                {
+                    content = "";
+                }
                 complete?.Invoke(request.result, content);
             }
         }
