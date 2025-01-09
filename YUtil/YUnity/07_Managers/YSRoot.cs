@@ -28,6 +28,7 @@ namespace YUnity
             rootGO.AddComponent<QueueMag>().Init();
             rootGO.AddComponent<TimeTaskMag>().Init();
             rootGO.AddComponent<ABLoadUtil>().Init();
+            rootGO.AddComponent<NetworkMag>().Init();
         }
     }
     public partial class YSRoot
