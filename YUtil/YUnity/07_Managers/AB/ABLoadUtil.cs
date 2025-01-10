@@ -44,6 +44,7 @@ namespace YUnity
             return assetBundles ?? (new AssetBundle[] { });
         }
 
+        /*
         internal void LoadAssetBundle(string abFullPath, Action<byte[]> complete)
         {
             StartCoroutine(LoadAssetBundleAction(abFullPath, complete));
@@ -59,6 +60,32 @@ namespace YUnity
                 var request = UnityWebRequest.Get(new System.Uri(abFullPath));
                 yield return request.SendWebRequest();
                 complete?.Invoke(request.downloadHandler.data);
+            }
+        }
+        */
+
+        internal void LoadAssetBundle2(string abFullPath, Action<AssetBundle> complete)
+        {
+            StartCoroutine(LoadAssetBundleAction2(abFullPath, complete));
+        }
+        private IEnumerator LoadAssetBundleAction2(string abFullPath, Action<AssetBundle> complete)
+        {
+            if (string.IsNullOrWhiteSpace(abFullPath))
+            {
+                complete?.Invoke(null);
+            }
+            else
+            {
+                UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(abFullPath);
+                yield return request.SendWebRequest();
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    complete?.Invoke(DownloadHandlerAssetBundle.GetContent(request));
+                }
+                else
+                {
+                    complete?.Invoke(null);
+                }
             }
         }
     }

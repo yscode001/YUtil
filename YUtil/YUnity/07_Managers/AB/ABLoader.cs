@@ -53,8 +53,23 @@ namespace YUnity
         /// <exception cref="System.Exception"></exception>
         public static void InitAfterHotUpdate(Action complete)
         {
-            ABLoadUtil.Instance.LoadAssetBundle(BundlePath + ABHelper.ManifestBundleName, (bytes) =>
+            ABLoadUtil.Instance.LoadAssetBundle2(BundlePath + ABHelper.ManifestBundleName, (manifestAB) =>
             {
+                if (manifestAB == null)
+                {
+                    throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包不存在");
+                }
+                else
+                {
+                    Manifest = manifestAB.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+                    if (Manifest == null)
+                    {
+                        throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
+                    }
+                    manifestAB.Unload(false);
+                }
+                complete?.Invoke();
+                /*
                 if (bytes != null && bytes.Length > 0)
                 {
                     AssetBundle manifestBundle = AssetBundle.LoadFromMemory(bytes);
@@ -70,6 +85,7 @@ namespace YUnity
                     manifestBundle.Unload(false);
                 }
                 complete?.Invoke();
+                */
             });
         }
     }
@@ -122,6 +138,17 @@ namespace YUnity
             int loadCount = 0;
             foreach (var dep in depList)
             {
+                ABLoadUtil.Instance.LoadAssetBundle2(BundlePath + dep, (assetbundle) =>
+                {
+                    // 全部加载后完成回调
+                    loadCount += 1;
+                    if (loadCount >= depList.Count)
+                    {
+                        complete?.Invoke();
+                        return;
+                    }
+                });
+                /*
                 ABLoadUtil.Instance.LoadAssetBundle(BundlePath + dep, (bytes) =>
                 {
                     // 为避免重复加载再次判断
@@ -141,6 +168,7 @@ namespace YUnity
                         return;
                     }
                 });
+                */
             }
         }
 
@@ -172,6 +200,18 @@ namespace YUnity
                     return;
                 }
                 // 加载
+                ABLoadUtil.Instance.LoadAssetBundle2(BundlePath + abName, (assetbundle) =>
+                {
+                    if (assetbundle == null)
+                    {
+                        complete?.Invoke(null);
+                    }
+                    else
+                    {
+                        complete?.Invoke(assetbundle);
+                    }
+                });
+                /*
                 ABLoadUtil.Instance.LoadAssetBundle(BundlePath + abName, (bytes) =>
                 {
                     if (bytes != null && bytes.Length > 0)
@@ -186,6 +226,7 @@ namespace YUnity
                         complete?.Invoke(null);
                     }
                 });
+                */
             });
         }
     }
