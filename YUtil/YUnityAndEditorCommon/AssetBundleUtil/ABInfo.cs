@@ -1,9 +1,4 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2024-3-12
-// ------------------------------
-
-using System;
+﻿using System;
 
 namespace YUnityAndEditorCommon
 {
@@ -25,19 +20,15 @@ namespace YUnityAndEditorCommon
         /// </summary>
         public string FileMD5;
 
-        public bool IsEmpty => string.IsNullOrWhiteSpace(AssetBundleName) || FileSize <= 0 || string.IsNullOrWhiteSpace(FileMD5);
-
-        public bool IsNotEmpty => !IsEmpty;
-
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="assetBundleName">bundle包的名字(带扩展名)</param>
+        /// <param name="assetBundleName">bundle包的名字</param>
         /// <param name="fileSize">文件大小(单位字节)</param>
         /// <param name="fileMD5">文件的md5值</param>
         public ABInfo(String assetBundleName, long fileSize, string fileMD5)
         {
-            AssetBundleName = assetBundleName;
+            AssetBundleName = ABHelper.GetAssetBundleName(assetBundleName);
             FileSize = fileSize;
             FileMD5 = fileMD5;
         }
@@ -46,6 +37,11 @@ namespace YUnityAndEditorCommon
         {
             FileSize = fileSize;
             FileMD5 = fileMD5;
+        }
+
+        public bool IsEmpty()
+        {
+            return string.IsNullOrWhiteSpace(AssetBundleName) || FileSize <= 0 || string.IsNullOrWhiteSpace(FileMD5);
         }
 
         public static bool operator ==(ABInfo lhs, ABInfo rhs)

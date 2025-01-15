@@ -18,7 +18,7 @@ namespace YUnity
     public static partial class ABLoader
     {
         /// <summary>
-        /// 真正存放bundle包的路径，由平台和版本号组成
+        /// 真正存放bundle包的路径
         /// </summary>
         public static string BundlePath { get; private set; }
 
@@ -29,14 +29,13 @@ namespace YUnity
         /// </summary>
         /// <param name="bundlePath">bundle包所在路径</param>
         /// <param name="createBundleDirectory">是否需要强制创建bundle包所在的目录</param>
-        /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void InitBeforeHotUpdate(string bundlePath, bool createBundleDirectory = true, UInt32 version = 1)
+        public static void InitBeforeHotUpdate(string bundlePath, bool createBundleDirectory = true)
         {
             if (string.IsNullOrWhiteSpace(bundlePath))
             {
                 throw new System.Exception("ABLoader-InitBeforeHotUpdate：bundlePath不能为空");
             }
-            BundlePath = (bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/") + $"Version{version}/";
+            BundlePath = bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/";
             if (createBundleDirectory)
             {
                 if (!Directory.Exists(BundlePath))
@@ -53,8 +52,9 @@ namespace YUnity
         /// <exception cref="System.Exception"></exception>
         public static void InitAfterHotUpdate(Action complete)
         {
-            ABLoadUtil.Instance.LoadAssetBundle2(BundlePath + ABHelper.ManifestBundleName, (manifestAB) =>
+            ABLoadUtil.Instance.LoadAssetBundle(BundlePath + ABHelper.ManifestBundleName, (bytes) =>
             {
+                /*
                 if (manifestAB == null)
                 {
                     throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包不存在");
@@ -69,7 +69,7 @@ namespace YUnity
                     manifestAB.Unload(false);
                 }
                 complete?.Invoke();
-                /*
+                */
                 if (bytes != null && bytes.Length > 0)
                 {
                     AssetBundle manifestBundle = AssetBundle.LoadFromMemory(bytes);
@@ -85,7 +85,6 @@ namespace YUnity
                     manifestBundle.Unload(false);
                 }
                 complete?.Invoke();
-                */
             });
         }
     }
@@ -138,6 +137,7 @@ namespace YUnity
             int loadCount = 0;
             foreach (var dep in depList)
             {
+                /*
                 ABLoadUtil.Instance.LoadAssetBundle2(BundlePath + dep, (assetbundle) =>
                 {
                     // 全部加载后完成回调
@@ -148,7 +148,7 @@ namespace YUnity
                         return;
                     }
                 });
-                /*
+                */
                 ABLoadUtil.Instance.LoadAssetBundle(BundlePath + dep, (bytes) =>
                 {
                     // 为避免重复加载再次判断
@@ -168,7 +168,6 @@ namespace YUnity
                         return;
                     }
                 });
-                */
             }
         }
 
@@ -200,6 +199,7 @@ namespace YUnity
                     return;
                 }
                 // 加载
+                /*
                 ABLoadUtil.Instance.LoadAssetBundle2(BundlePath + abName, (assetbundle) =>
                 {
                     if (assetbundle == null)
@@ -211,7 +211,7 @@ namespace YUnity
                         complete?.Invoke(assetbundle);
                     }
                 });
-                /*
+                */
                 ABLoadUtil.Instance.LoadAssetBundle(BundlePath + abName, (bytes) =>
                 {
                     if (bytes != null && bytes.Length > 0)
@@ -226,7 +226,6 @@ namespace YUnity
                         complete?.Invoke(null);
                     }
                 });
-                */
             });
         }
     }
@@ -334,40 +333,39 @@ namespace YUnity
     public static partial class ABLoader
     {
         /// <summary>
-        /// 清理某一版本的bundle资源
+        /// 清理所有bundle资源
         /// </summary>
-        /// <param name="version">相应的版本号</param>
-        public static void ClearVersion(UInt32 version)
+        /// <exception cref="Exception"></exception>
+        public static void ClearBundle()
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
-            if (directoryInfo == null)
-            {
-                Debug.Log("ABLoader-ClearVersion：BundlePath对应的目录不存在");
-            }
-            string path = directoryInfo.Parent.FullName + $"/Version{version}/";
-            if (Directory.Exists(path))
-            {
-                Directory.Delete(path, true);
-            }
-        }
-
-        /// <summary>
-        /// 清理指定版本指定名称的bundle资源
-        /// </summary>
-        /// <param name="bundleName">指定的bundle的名称</param>
-        /// <param name="version">指定的版本号</param>
-        public static void ClearBundle(string bundleName, UInt32 version)
-        {
-            if (version < 1)
-            {
-                Debug.Log("ABLoader-ClearBundle：version必须大于0");
-            }
             DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
             if (directoryInfo == null)
             {
                 Debug.Log("ABLoader-ClearBundle：BundlePath对应的目录不存在");
             }
-            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + ABHelper.GetAssetBundleName(bundleName);
+            FileInfo[] fileInfos = directoryInfo.GetFiles();
+            if (fileInfos == null || fileInfos.Length <= 0)
+            {
+                return;
+            }
+            for (int i = fileInfos.Length - 1; i >= 0; i--)
+            {
+                File.Delete(fileInfos[i].FullName);
+            }
+        }
+
+        /// <summary>
+        /// 清理指定名称的bundle资源
+        /// </summary>
+        /// <param name="bundleName">指定的bundle的名称</param>
+        public static void ClearBundle(string bundleName)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(BundlePath);
+            if (directoryInfo == null)
+            {
+                Debug.Log("ABLoader-ClearBundle：BundlePath对应的目录不存在");
+            }
+            string path = Path.Combine(BundlePath, ABHelper.GetAssetBundleName(bundleName));
             if (File.Exists(path))
             {
                 File.Delete(path);

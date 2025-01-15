@@ -44,7 +44,6 @@ namespace YUnity
             return assetBundles ?? (new AssetBundle[] { });
         }
 
-        /*
         internal void LoadAssetBundle(string abFullPath, Action<byte[]> complete)
         {
             StartCoroutine(LoadAssetBundleAction(abFullPath, complete));
@@ -62,8 +61,7 @@ namespace YUnity
                 complete?.Invoke(request.downloadHandler.data);
             }
         }
-        */
-
+        /*
         internal void LoadAssetBundle2(string abFullPath, Action<AssetBundle> complete)
         {
             StartCoroutine(LoadAssetBundleAction2(abFullPath, complete));
@@ -88,6 +86,7 @@ namespace YUnity
                 }
             }
         }
+        */
     }
     #endregion
     #region 加载Asset

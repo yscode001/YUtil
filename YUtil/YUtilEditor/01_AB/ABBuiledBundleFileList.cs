@@ -22,7 +22,7 @@ namespace YUtilEditor
 
         public void Add(ABInfo abInfo)
         {
-            if (abInfo.IsEmpty || ABList.Contains(abInfo))
+            if (abInfo.IsEmpty() || ABList.Contains(abInfo))
             {
                 return;
             }

@@ -12,13 +12,22 @@ namespace YCSharp
     public class FileUtil
     {
         /// <summary>
+        /// 获取文件名字(带扩展名)
+        /// </summary>
+        /// <param name="fileFullPath">文件完整路径</param>
+        /// <returns></returns>
+        public static string GetFileName(string fileFullPath)
+        {
+            return Path.GetFileName(fileFullPath);
+        }
+
+        /// <summary>
         /// 保存bytes至硬盘
         /// </summary>
         /// <param name="fileFullPath">文件完整路径</param>
         /// <param name="bytes"></param>
-        /// <param name="firstDelete">是否先进行删除操作</param>
         /// <returns></returns>
-        public static bool SaveBytes(string fileFullPath, byte[] bytes, bool firstDelete = true)
+        public static bool SaveBytes(string fileFullPath, byte[] bytes)
         {
             if (string.IsNullOrWhiteSpace(fileFullPath) || bytes == null || bytes.Length <= 0)
             {
@@ -26,10 +35,7 @@ namespace YCSharp
             }
             try
             {
-                if (firstDelete)
-                {
-                    DeleteFile(fileFullPath);
-                }
+                DeleteFile(fileFullPath);
                 using (FileStream fs = new FileStream(fileFullPath, FileMode.OpenOrCreate))
                 {
                     using (BinaryWriter bw = new BinaryWriter(fs))

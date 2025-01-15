@@ -29,9 +29,6 @@ namespace YUtilEditor
         // 打包选项
         private static BuildAssetBundleOptions BundleOptions = BuildAssetBundleOptions.None;
 
-        // 资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号)
-        private static UInt32 Version = 1;
-
         /// <summary>
         /// 初始化
         /// </summary>
@@ -39,8 +36,7 @@ namespace YUtilEditor
         /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/)</param>
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
         /// <param name="bundleOptions">可选参数：打包选项(默认：None)</param>
-        /// <param name="version">可选参数：资源版本号(更换版本情况：资源发生重大改变，资源的目录结构都变了。一般情况下无需更换版本号，默认：1)</param>
-        public static void Init(string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None, UInt32 version = 1)
+        public static void Init(string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None)
         {
             if (string.IsNullOrWhiteSpace(resSourceDirectory))
             {
@@ -50,17 +46,12 @@ namespace YUtilEditor
             {
                 throw new System.Exception("ABBuildUtil-Init：resSourceDirectory目录不存在");
             }
-            Version = (UInt32)Mathf.Max(1, version);
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
             SetIgnoreExts(ignoreExts);
             BundleOptions = bundleOptions;
 
             ResOutputDirectory = string.IsNullOrWhiteSpace(resOutputDirectory) ? $"./AssetBundleFiles/" : resOutputDirectory;
             ResOutputDirectory = ResOutputDirectory.EndsWith("/") ? ResOutputDirectory : ResOutputDirectory + "/";
-            if (!ResOutputDirectory.EndsWith($"/Version{Version}/"))
-            {
-                ResOutputDirectory += $"Version{Version}/";
-            }
         }
         private static void SetIgnoreExts(string[] ignoreExts)
         {
@@ -299,7 +290,7 @@ namespace YUtilEditor
                     // 删除manifest
                     File.Delete(fileInfo.FullName);
                 }
-                else if (fileInfo.Name == $"Version{Version}")
+                else if (fileInfo.Name == DirecoryHelper.GetLastDirectoryName(ResOutputDirectory))
                 {
                     // 先改名字
                     string newName = fileInfo.Directory + "/" + ABHelper.ManifestBundleName;
@@ -349,41 +340,44 @@ namespace YUtilEditor
     public static partial class ABBuilder
     {
         /// <summary>
-        /// 清理某一版本的资源
+        /// 清理所有bundle资源
         /// </summary>
-        /// <param name="version">相应的版本号</param>
-        public static void ClearVersion(UInt32 version)
+        public static void ClearBundle()
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (directoryInfo == null)
             {
-                throw new Exception("ABBuildUtil-ClearVersion：ResOutputDirectory对应的目录不存在");
+                throw new Exception("ABBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
             }
-            string path = directoryInfo.Parent.FullName + $"/Version{version}/";
-            if (Directory.Exists(path))
+            FileInfo[] fileInfos = directoryInfo.GetFiles();
+            if (fileInfos == null || fileInfos.Length <= 0)
             {
-                Directory.Delete(path, true);
+                return;
+            }
+            for (int i = fileInfos.Length - 1; i >= 0; i--)
+            {
+                File.Delete(fileInfos[i].FullName);
             }
             AssetDatabase.Refresh();
         }
 
         /// <summary>
-        /// 清理指定版本指定名称的bundle资源
+        /// 清理指定名称的bundle资源
         /// </summary>
-        /// <param name="bundleName">指定的bundle的名称</param>
-        /// <param name="version">指定的版本号</param>
-        public static void ClearBundle(string bundleName, UInt32 version)
+        /// <param name="bundleName"></param>
+        /// <exception cref="Exception"></exception>
+        public static void ClearBundle(string bundleName)
         {
-            if (string.IsNullOrWhiteSpace(bundleName) || version < 1)
+            if (string.IsNullOrWhiteSpace(bundleName))
             {
-                throw new Exception("ABBuildUtil-ClearBundle：bundleName不能为空，version必须大于0");
+                throw new Exception("ABBuildUtil-ClearBundle：bundleName不能为空");
             }
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (directoryInfo == null)
             {
                 throw new Exception("ABBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
             }
-            string path = directoryInfo.Parent.FullName + $"/Version{version}/" + ABHelper.GetAssetBundleName(bundleName);
+            string path = Path.Combine(ResOutputDirectory, ABHelper.GetAssetBundleName(bundleName));
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -393,3 +387,4 @@ namespace YUtilEditor
     }
     #endregion
 }
+

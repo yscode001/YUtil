@@ -16,29 +16,6 @@ namespace YUnity
         public List<ABInfo> ABList = new List<ABInfo>();
         public ABLoadBundleFileList() { }
 
-        /// <summary>
-        /// 所有的bundle包的大小总和(单位字节)
-        /// </summary>
-        [JsonIgnore]
-        public long FileSizeSum
-        {
-            get
-            {
-                long size = 0;
-                if (ABList != null && ABList.Count > 0)
-                {
-                    foreach (var item in ABList)
-                    {
-                        if (item != null && item.IsNotEmpty)
-                        {
-                            size += item.FileSize;
-                        }
-                    }
-                }
-                return size;
-            }
-        }
-
         public byte[] Serialize()
         {
             if (ABList == null || ABList.Count == 0)
@@ -107,7 +84,7 @@ namespace YUnity
             List<ABInfo> result = new List<ABInfo>();
             foreach (var remoteItem in remote.ABList)
             {
-                if (remoteItem.IsEmpty || result.Contains(remoteItem) || Contains(local.ABList, remoteItem))
+                if (remoteItem.IsEmpty() || result.Contains(remoteItem) || Contains(local.ABList, remoteItem))
                 {
                     continue;
                 }

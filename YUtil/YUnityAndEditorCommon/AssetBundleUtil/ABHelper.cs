@@ -2,7 +2,7 @@
 
 namespace YUnityAndEditorCommon
 {
-    public class ABHelper
+    public partial class ABHelper
     {
         /// <summary>
         /// 清单文件名称
