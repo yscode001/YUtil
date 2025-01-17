@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace YGame
+namespace YUnity.Game
 {
-    public partial class HPInt
+    public partial class HPFloat
     {
-        public int Raw { get; private set; }
-        public int Max { get; private set; }
-        public int Cur { get; private set; }
+        public float Raw { get; private set; }
+        public float Max { get; private set; }
+        public float Cur { get; private set; }
 
         public bool IsAlive => Max > 0 && Cur > 0;
         public bool IsDeath => Max <= 0 || Cur <= 0;
@@ -27,14 +27,14 @@ namespace YGame
         }
     }
     #region 直接设置血量
-    public partial class HPInt
+    public partial class HPFloat
     {
         /// <summary>
         /// 初始血量、最大血量、当前血量
         /// </summary>
         /// <param name="initHP"></param>
         /// <exception cref="Exception"></exception>
-        public void SetupInitHP(int initHP)
+        public void SetupInitHP(float initHP)
         {
             if (initHP <= 0)
             {
@@ -47,7 +47,7 @@ namespace YGame
             }
         }
 
-        public void SetupRawHP(int rawHP)
+        public void SetupRawHP(float rawHP)
         {
             if (rawHP <= 0)
             {
@@ -60,7 +60,7 @@ namespace YGame
             }
         }
 
-        public void SetupMaxHP(int maxHP)
+        public void SetupMaxHP(float maxHP)
         {
             if (maxHP <= 0)
             {
@@ -84,7 +84,7 @@ namespace YGame
             }
         }
 
-        public void SetupCurHP(int curHP)
+        public void SetupCurHP(float curHP)
         {
             if (curHP < 0)
             {
@@ -97,7 +97,7 @@ namespace YGame
             }
         }
 
-        public void SetupMaxAndCurHP(int maxHP, int curHP)
+        public void SetupMaxAndCurHP(float maxHP, float curHP)
         {
             if (maxHP <= 0 || curHP < 0)
             {
@@ -113,7 +113,7 @@ namespace YGame
     }
     #endregion
     #region 秒杀、受伤、回血
-    public partial class HPInt
+    public partial class HPFloat
     {
         /// <summary>
         /// 秒杀(当前血量直接重置为0)
@@ -132,7 +132,7 @@ namespace YGame
         /// </summary>
         /// <param name="damage">需大于等于0</param>
         /// <returns></returns>
-        public (bool isAlive, bool isChanged) BeInjured(int damage)
+        public (bool isAlive, bool isChanged) BeInjured(float damage)
         {
             if (damage < 0)
             {
@@ -158,7 +158,7 @@ namespace YGame
         /// </summary>
         /// <param name="blood">需大于等于0</param>
         /// <returns></returns>
-        public (bool isAlive, bool isChanged) BloodReturning(int blood)
+        public (bool isAlive, bool isChanged) BloodReturning(float blood)
         {
             if (blood < 0)
             {

@@ -1,4 +1,4 @@
-﻿namespace YGame.BlockPuzzle
+﻿namespace YUnity.Game.BlockPuzzle
 {
     public partial class ShapePreview
     {

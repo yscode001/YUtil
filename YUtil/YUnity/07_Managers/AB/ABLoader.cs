@@ -495,6 +495,19 @@ namespace YUnity
             }
             return ab.UnloadAsync(unloadAllLoadedObjects);
         }
+
+        /// <summary>
+        /// 同步卸载所有的AssetBundle
+        /// </summary>
+        /// <param name="unloadAllLoadedObjects"></param>
+        public static void UnloadAllAssetBundle(bool unloadAllLoadedObjects)
+        {
+            var ablist = ABLoadUtil.Instance.GetLoadedAssetBundleList();
+            foreach (var ab in ablist)
+            {
+                ab.Unload(unloadAllLoadedObjects);
+            }
+        }
     }
     #endregion
 }

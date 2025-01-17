@@ -1,4 +1,4 @@
-﻿namespace YGame.BlockPuzzle
+﻿namespace YUnity.Game.BlockPuzzle
 {
     /// <summary>
     /// 填充进度

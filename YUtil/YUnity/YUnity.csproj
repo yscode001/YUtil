@@ -21,6 +21,9 @@
     <None Remove="10_Effect\EffectBullet\" />
     <None Remove="10_Bullet\" />
     <None Remove="07_Managers\AB\" />
+    <None Remove="12_Game\" />
+    <None Remove="12_Game\BlockPuzzle\" />
+    <None Remove="12_Game\HP\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -41,6 +44,9 @@
     <Folder Include="09_Effect\" />
     <Folder Include="10_Bullet\" />
     <Folder Include="07_Managers\AB\" />
+    <Folder Include="12_Game\" />
+    <Folder Include="12_Game\BlockPuzzle\" />
+    <Folder Include="12_Game\HP\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YUnityAndEditorCommon\YUnityAndEditorCommon.csproj" />

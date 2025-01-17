@@ -4,7 +4,7 @@
 // ------------------------------
 using System.Collections.Generic;
 
-namespace YGame.BlockPuzzle
+namespace YUnity.Game.BlockPuzzle
 {
     #region 属性定义与初始化
     public partial class ChessBoard

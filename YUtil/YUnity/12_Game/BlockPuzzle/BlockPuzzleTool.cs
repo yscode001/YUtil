@@ -2,7 +2,7 @@
 // Email：yscode@126.com
 // Date：2024-5-24
 // ------------------------------
-namespace YGame.BlockPuzzle
+namespace YUnity.Game.BlockPuzzle
 {
     public partial class BlockPuzzleTool
     {
