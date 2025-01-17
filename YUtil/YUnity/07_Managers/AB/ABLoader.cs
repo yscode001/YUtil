@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
-using YUnityAndEditorCommon;
+using YCSharp;
 
 namespace YUnity
 {

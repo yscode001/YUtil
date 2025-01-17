@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
-using YUnityAndEditorCommon;
+using YCSharp;
 
 namespace YUtilEditor
 {
@@ -251,27 +251,6 @@ namespace YUtilEditor
             return build;
         }
 
-        public static string GetMD5HashFromFile(string filepath)
-        {
-            try
-            {
-                FileStream file = new FileStream(filepath, FileMode.Open);
-                System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-                byte[] retVal = md5.ComputeHash(file);
-                file.Close();
-
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < retVal.Length; i++)
-                {
-                    sb.Append(retVal[i].ToString("x2"));
-                }
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("ABBuildUtil-GetMD5HashFromFile() fail, error:" + ex.Message);
-            }
-        }
         private static void AfterBuild()
         {
             DirectoryInfo outputDir = new DirectoryInfo(ResOutputDirectory);
@@ -290,7 +269,7 @@ namespace YUtilEditor
                     // 删除manifest
                     File.Delete(fileInfo.FullName);
                 }
-                else if (fileInfo.Name == DirecoryHelper.GetLastDirectoryName(ResOutputDirectory))
+                else if (fileInfo.Name == DirecoryUtil.GetLastDirectoryName(ResOutputDirectory))
                 {
                     // 先改名字
                     string newName = fileInfo.Directory + "/" + ABHelper.ManifestBundleName;
@@ -314,7 +293,7 @@ namespace YUtilEditor
             for (int i = 0; i < filelist.Count; i++)
             {
                 FileInfo fileInfo = filelist[i];
-                bundleList.Add(new ABInfo(fileInfo.Name, fileInfo.Length, GetMD5HashFromFile(fileInfo.FullName)));
+                bundleList.Add(new ABInfo(fileInfo.Name, fileInfo.Length, YCSharp.FileUtil.GetMD5HashFromFile(fileInfo.FullName)));
             }
 
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(bundleList.Serialize());
@@ -387,4 +366,3 @@ namespace YUtilEditor
     }
     #endregion
 }
-

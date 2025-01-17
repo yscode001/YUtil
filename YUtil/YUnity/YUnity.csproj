@@ -49,6 +49,6 @@
     <Folder Include="12_Game\HP\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\YUnityAndEditorCommon\YUnityAndEditorCommon.csproj" />
+    <ProjectReference Include="..\YCSharp\YCSharp.csproj" />
   </ItemGroup>
 </Project>

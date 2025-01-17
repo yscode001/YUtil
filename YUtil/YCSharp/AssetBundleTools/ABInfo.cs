@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace YUnityAndEditorCommon
+namespace YCSharp
 {
     [Serializable]
     public struct ABInfo
     {
         /// <summary>
-        /// bundle包的名字(带扩展名)
+        /// bundle包的名字(小写带扩展名，如：audio.unity3d)
         /// </summary>
         public string AssetBundleName;
 

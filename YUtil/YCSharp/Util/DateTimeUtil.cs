@@ -1,8 +1,5 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2022-7-8
-// ------------------------------
-using System;
+﻿using System;
+
 namespace YCSharp
 {
     /// <summary>

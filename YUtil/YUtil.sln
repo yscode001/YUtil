@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YCSharp", "YCSharp\YCSharp.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YUtilEditor", "YUtilEditor\YUtilEditor.csproj", "{BDF31141-D682-4931-96FB-C52BC18AC481}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YUnityAndEditorCommon", "YUnityAndEditorCommon\YUnityAndEditorCommon.csproj", "{5429F2FF-21D8-44A6-A1EC-3431B88AF97A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YConsoleTest", "YConsoleTest\YConsoleTest.csproj", "{E1048299-56CD-4307-A55C-5ACDDEB75D42}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{BDF31141-D682-4931-96FB-C52BC18AC481}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDF31141-D682-4931-96FB-C52BC18AC481}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDF31141-D682-4931-96FB-C52BC18AC481}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5429F2FF-21D8-44A6-A1EC-3431B88AF97A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5429F2FF-21D8-44A6-A1EC-3431B88AF97A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5429F2FF-21D8-44A6-A1EC-3431B88AF97A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5429F2FF-21D8-44A6-A1EC-3431B88AF97A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E1048299-56CD-4307-A55C-5ACDDEB75D42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E1048299-56CD-4307-A55C-5ACDDEB75D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1048299-56CD-4307-A55C-5ACDDEB75D42}.Release|Any CPU.ActiveCfg = Release|Any CPU

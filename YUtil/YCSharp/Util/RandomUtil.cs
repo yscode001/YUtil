@@ -1,8 +1,4 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2023-12-7
-// ------------------------------
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace YCSharp
