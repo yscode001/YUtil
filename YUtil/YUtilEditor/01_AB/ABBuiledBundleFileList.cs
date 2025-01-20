@@ -1,13 +1,4 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2023-3-20
-// ------------------------------
-
-/*
- 打成的bundle清单
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using YCSharp;
@@ -32,9 +23,9 @@ namespace YUtilEditor
         {
             if (ABList == null || ABList.Count == 0)
             {
-                throw new Exception("ABBuiledBundleFileList-Serialize：没有要保存的bundle清单，无法序列化");
+                throw new Exception("没有要保存的bundle清单，无法序列化");
             }
-            return JsonConvert.SerializeObject(this);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

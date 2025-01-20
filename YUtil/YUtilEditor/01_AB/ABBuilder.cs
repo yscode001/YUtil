@@ -1,13 +1,7 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2023-3-16
-// ------------------------------
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 using YCSharp;
@@ -40,11 +34,11 @@ namespace YUtilEditor
         {
             if (string.IsNullOrWhiteSpace(resSourceDirectory))
             {
-                throw new System.Exception("ABBuildUtil-Init：resSourceDirectory不能为空");
+                throw new System.Exception("resSourceDirectory不能为空");
             }
             if (!Directory.Exists(resSourceDirectory))
             {
-                throw new System.Exception("ABBuildUtil-Init：resSourceDirectory目录不存在");
+                throw new System.Exception("resSourceDirectory目录不存在");
             }
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
             SetIgnoreExts(ignoreExts);
@@ -110,15 +104,15 @@ namespace YUtilEditor
         {
             if (string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
             {
-                throw new System.Exception("ABBuildUtil-BuildAssetBundles：ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
             }
             if (!Directory.Exists(ResSourceDirectory))
             {
-                throw new System.Exception("ABBuildUtil-BuildAssetBundles：ResSourceDirectory目录不存在，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("ResSourceDirectory目录不存在，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
             }
             if (!HasFilesWillBeBuiled(new DirectoryInfo(ResSourceDirectory)))
             {
-                throw new System.Exception("ABBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何文件，无法build");
+                throw new System.Exception("ResSourceDirectory不存在任何文件，无法build");
             }
             if (Directory.Exists(ResOutputDirectory))
             {
@@ -154,83 +148,42 @@ namespace YUtilEditor
         // 判断文件夹里面是否有需要build的文件
         private static bool HasFilesWillBeBuiled(DirectoryInfo directoryInfo)
         {
-            if (directoryInfo == null) { return false; }
+            if (directoryInfo == null || !directoryInfo.Exists) { return false; }
+            FileInfo[] fileInfos = directoryInfo.GetFiles("*", SearchOption.AllDirectories);
+            if (fileInfos == null || fileInfos.Length <= 0) { return false; }
 
-            // 先判断是否有文件
-            FileInfo[] childrenFiles = directoryInfo.GetFiles();
-            if (childrenFiles != null && childrenFiles.Length > 0)
+            // 有文件
+            if (IgnoreExts == null || IgnoreExts.Count <= 0) { return true; }
+            foreach (var fileinfo in fileInfos)
             {
-                if (IgnoreExts == null || IgnoreExts.Count <= 0)
-                {
-                    return true;
-                }
-
-                foreach (var fileinfo in childrenFiles)
-                {
-                    string ext = Path.GetExtension(fileinfo.Name).ToLower();
-                    if (!IgnoreExts.Contains(ext))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            // 没有文件，那么判断子文件夹中是否有文件
-            DirectoryInfo[] childrenDirs = directoryInfo.GetDirectories();
-            if (childrenDirs == null || childrenDirs.Length <= 0)
-            {
-                return false;
-            }
-            foreach (var childDir in childrenDirs)
-            {
-                if (HasFilesWillBeBuiled(childDir))
+                string ext = Path.GetExtension(fileinfo.Name).ToLower();
+                if (!IgnoreExts.Contains(ext))
                 {
                     return true;
                 }
             }
-
-            // 没有文件
             return false;
         }
 
-        // 获取文件夹中可以build的文件集合
+        // 获取文件夹中可以build的文件集合(包括子文件夹)
         private static List<FileInfo> GetFilesWillBeBuiled(DirectoryInfo directoryInfo)
         {
-            if (directoryInfo == null) { return null; }
-            List<FileInfo> list = new List<FileInfo>();
-            // 递归遍历文件
-            GetAllFiles(directoryInfo, list);
-            return list;
-        }
+            if (directoryInfo == null || !directoryInfo.Exists) { return null; }
+            FileInfo[] fileInfos = directoryInfo.GetFiles("*", SearchOption.AllDirectories);
+            if (fileInfos == null || fileInfos.Length <= 0) { return null; }
 
-        // 获取文件夹中的所有文件(包括子文件夹)
-        private static void GetAllFiles(DirectoryInfo directoryInfo, List<FileInfo> list)
-        {
-            if (directoryInfo == null || list == null) { return; }
-            // 获取文件
-            var fileinfos = directoryInfo.GetFiles();
-            if (fileinfos != null && fileinfos.Length > 0)
+            // 有文件
+            List<FileInfo> list = new List<FileInfo>();
+            foreach (var fileinfo in fileInfos)
             {
-                foreach (var fileinfo in fileinfos)
+                if (IgnoreExts != null && IgnoreExts.Count > 0 && IgnoreExts.Contains(Path.GetExtension(fileinfo.Name).ToLower()))
                 {
-                    if (IgnoreExts != null && IgnoreExts.Count > 0 && IgnoreExts.Contains(Path.GetExtension(fileinfo.Name).ToLower()))
-                    {
-                        // 被忽略的文件忽略掉
-                        continue;
-                    }
-                    list.Add(fileinfo);
+                    // 被忽略的文件过滤掉
+                    continue;
                 }
+                list.Add(fileinfo);
             }
-            // 递归获取
-            DirectoryInfo[] childrenDirs = directoryInfo.GetDirectories();
-            if (childrenDirs != null && childrenDirs.Length > 0)
-            {
-                foreach (var childDir in childrenDirs)
-                {
-                    if (childDir == null) { continue; }
-                    GetAllFiles(childDir, list);
-                }
-            }
+            return list;
         }
 
         private static AssetBundleBuild GetBuildInfo(DirectoryInfo directoryInfo)
@@ -321,12 +274,13 @@ namespace YUtilEditor
         /// <summary>
         /// 清理所有bundle资源
         /// </summary>
-        public static void ClearBundle()
+        /// <exception cref="Exception"></exception>
+        public static void ClearBundles()
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
-            if (directoryInfo == null)
+            if (!directoryInfo.Exists)
             {
-                throw new Exception("ABBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
+                throw new Exception("ResOutputDirectory对应的目录不存在");
             }
             FileInfo[] fileInfos = directoryInfo.GetFiles();
             if (fileInfos == null || fileInfos.Length <= 0)
@@ -349,12 +303,12 @@ namespace YUtilEditor
         {
             if (string.IsNullOrWhiteSpace(bundleName))
             {
-                throw new Exception("ABBuildUtil-ClearBundle：bundleName不能为空");
+                throw new Exception("bundleName不能为空");
             }
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
-            if (directoryInfo == null)
+            if (!directoryInfo.Exists)
             {
-                throw new Exception("ABBuildUtil-ClearBundle：ResOutputDirectory对应的目录不存在");
+                throw new Exception("ResOutputDirectory对应的目录不存在");
             }
             string path = Path.Combine(ResOutputDirectory, ABHelper.GetAssetBundleName(bundleName));
             if (File.Exists(path))
