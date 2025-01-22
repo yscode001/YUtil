@@ -20,17 +20,13 @@ namespace YUtilEditor
         // 忽略文件的扩展名集合
         private static List<string> IgnoreExts;
 
-        // 打包选项
-        private static BuildAssetBundleOptions BundleOptions = BuildAssetBundleOptions.None;
-
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Res)</param>
         /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/)</param>
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
-        /// <param name="bundleOptions">可选参数：打包选项(默认：None)</param>
-        public static void Init(string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null, BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.None)
+        public static void Init(string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null)
         {
             if (string.IsNullOrWhiteSpace(resSourceDirectory))
             {
@@ -42,7 +38,6 @@ namespace YUtilEditor
             }
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
             SetIgnoreExts(ignoreExts);
-            BundleOptions = bundleOptions;
 
             ResOutputDirectory = string.IsNullOrWhiteSpace(resOutputDirectory) ? $"./AssetBundleFiles/" : resOutputDirectory;
             ResOutputDirectory = ResOutputDirectory.EndsWith("/") ? ResOutputDirectory : ResOutputDirectory + "/";
@@ -100,7 +95,7 @@ namespace YUtilEditor
     #region Build
     public static partial class ABBuilder
     {
-        public static void BuildAssetBundles(BuildTarget buildTarget)
+        public static void BuildAssetBundles(BuildTarget buildTarget, BuildAssetBundleOptions bundleOptions)
         {
             if (string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
             {
@@ -141,7 +136,7 @@ namespace YUtilEditor
             DirectoryInfo outputDirInfo = new DirectoryInfo(ResOutputDirectory);
 
             // EditorUserBuildSettings.activeBuildTarget
-            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BundleOptions, buildTarget);
+            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), bundleOptions, buildTarget);
             AfterBuild();
         }
 

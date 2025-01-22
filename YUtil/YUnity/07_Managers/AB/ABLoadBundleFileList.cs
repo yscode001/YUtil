@@ -1,9 +1,4 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2023-3-20
-// ------------------------------
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using YCSharp;

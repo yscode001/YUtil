@@ -1,9 +1,4 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2023-3-17
-// ------------------------------
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,7 +28,7 @@ namespace YUnity
         {
             if (string.IsNullOrWhiteSpace(bundlePath))
             {
-                throw new System.Exception("ABLoader-InitBeforeHotUpdate：bundlePath不能为空");
+                throw new System.Exception("bundlePath不能为空");
             }
             BundlePath = bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/";
             if (createBundleDirectory)
@@ -52,37 +47,20 @@ namespace YUnity
         /// <exception cref="System.Exception"></exception>
         public static void InitAfterHotUpdate(Action complete)
         {
-            ABLoadUtil.Instance.LoadAssetBundle(BundlePath + ABHelper.ManifestBundleName, (bytes) =>
+            ABLoadUtil.Instance.LoadAssetBundle(BundlePath + ABHelper.ManifestBundleName, (manifestAB) =>
             {
-                /*
                 if (manifestAB == null)
                 {
-                    throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包不存在");
+                    throw new System.Exception($"{ABHelper.ManifestBundleName}，这个bundle包不存在");
                 }
                 else
                 {
                     Manifest = manifestAB.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                     if (Manifest == null)
                     {
-                        throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
+                        throw new System.Exception($"{ABHelper.ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
                     }
                     manifestAB.Unload(false);
-                }
-                complete?.Invoke();
-                */
-                if (bytes != null && bytes.Length > 0)
-                {
-                    AssetBundle manifestBundle = AssetBundle.LoadFromMemory(bytes);
-                    if (manifestBundle == null)
-                    {
-                        throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包不存在");
-                    }
-                    Manifest = manifestBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
-                    if (Manifest == null)
-                    {
-                        throw new System.Exception($"ABLoader-Init：{ABHelper.ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
-                    }
-                    manifestBundle.Unload(false);
                 }
                 complete?.Invoke();
             });
@@ -137,29 +115,8 @@ namespace YUnity
             int loadCount = 0;
             foreach (var dep in depList)
             {
-                /*
-                ABLoadUtil.Instance.LoadAssetBundle2(BundlePath + dep, (assetbundle) =>
+                ABLoadUtil.Instance.LoadAssetBundle(BundlePath + dep, (assetbundle) =>
                 {
-                    // 全部加载后完成回调
-                    loadCount += 1;
-                    if (loadCount >= depList.Count)
-                    {
-                        complete?.Invoke();
-                        return;
-                    }
-                });
-                */
-                ABLoadUtil.Instance.LoadAssetBundle(BundlePath + dep, (bytes) =>
-                {
-                    // 为避免重复加载再次判断
-                    if (bytes != null && bytes.Length > 0)
-                    {
-                        var loadedList2 = ABLoadUtil.Instance.GetLoadedAssetBundleNameList();
-                        if (!loadedList2.Contains(dep))
-                        {
-                            AssetBundle.LoadFromMemory(bytes);
-                        }
-                    }
                     // 全部加载后完成回调
                     loadCount += 1;
                     if (loadCount >= depList.Count)
@@ -199,8 +156,7 @@ namespace YUnity
                     return;
                 }
                 // 加载
-                /*
-                ABLoadUtil.Instance.LoadAssetBundle2(BundlePath + abName, (assetbundle) =>
+                ABLoadUtil.Instance.LoadAssetBundle(BundlePath + abName, (assetbundle) =>
                 {
                     if (assetbundle == null)
                     {
@@ -209,21 +165,6 @@ namespace YUnity
                     else
                     {
                         complete?.Invoke(assetbundle);
-                    }
-                });
-                */
-                ABLoadUtil.Instance.LoadAssetBundle(BundlePath + abName, (bytes) =>
-                {
-                    if (bytes != null && bytes.Length > 0)
-                    {
-                        // 加载完成，再次判断缓存
-                        loadedABList = ABLoadUtil.Instance.GetLoadedAssetBundleList();
-                        loadedBundle = loadedABList.FirstOrDefault(m => m.name == abName);
-                        complete?.Invoke(loadedBundle ?? AssetBundle.LoadFromMemory(bytes));
-                    }
-                    else
-                    {
-                        complete?.Invoke(null);
                     }
                 });
             });

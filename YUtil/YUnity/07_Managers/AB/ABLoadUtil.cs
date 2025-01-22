@@ -1,9 +1,4 @@
-﻿// Author：yaoshuai
-// Email：yscode@126.com
-// Date：2024-3-13
-// ------------------------------
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,8 +15,7 @@ namespace YUnity
             Instance = this;
         }
     }
-
-    #region 加载AssetBundle
+    #region 获取已加载的AssetBundle
     internal partial class ABLoadUtil
     {
         internal List<string> GetLoadedAssetBundleNameList()
@@ -37,36 +31,21 @@ namespace YUnity
             }
             return list;
         }
-
         internal IEnumerable<AssetBundle> GetLoadedAssetBundleList()
         {
             var assetBundles = AssetBundle.GetAllLoadedAssetBundles();
             return assetBundles ?? (new AssetBundle[] { });
         }
-
-        internal void LoadAssetBundle(string abFullPath, Action<byte[]> complete)
+    }
+    #endregion
+    #region 加载AssetBundle
+    internal partial class ABLoadUtil
+    {
+        internal void LoadAssetBundle(string abFullPath, Action<AssetBundle> complete)
         {
             StartCoroutine(LoadAssetBundleAction(abFullPath, complete));
         }
-        private IEnumerator LoadAssetBundleAction(string abFullPath, Action<byte[]> complete)
-        {
-            if (string.IsNullOrWhiteSpace(abFullPath))
-            {
-                complete?.Invoke(null);
-            }
-            else
-            {
-                var request = UnityWebRequest.Get(new System.Uri(abFullPath));
-                yield return request.SendWebRequest();
-                complete?.Invoke(request.downloadHandler.data);
-            }
-        }
-        /*
-        internal void LoadAssetBundle2(string abFullPath, Action<AssetBundle> complete)
-        {
-            StartCoroutine(LoadAssetBundleAction2(abFullPath, complete));
-        }
-        private IEnumerator LoadAssetBundleAction2(string abFullPath, Action<AssetBundle> complete)
+        private IEnumerator LoadAssetBundleAction(string abFullPath, Action<AssetBundle> complete)
         {
             if (string.IsNullOrWhiteSpace(abFullPath))
             {
@@ -78,7 +57,7 @@ namespace YUnity
                 yield return request.SendWebRequest();
                 if (request.result == UnityWebRequest.Result.Success)
                 {
-                    complete?.Invoke(DownloadHandlerAssetBundle.GetContent(request));
+                    complete?.Invoke((request.downloadHandler as DownloadHandlerAssetBundle).assetBundle);
                 }
                 else
                 {
@@ -86,7 +65,6 @@ namespace YUnity
                 }
             }
         }
-        */
     }
     #endregion
     #region 加载Asset
