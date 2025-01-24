@@ -17,7 +17,9 @@ namespace YUnity
         /// </summary>
         public static string BundlePath { get; private set; }
 
-        private static AssetBundleManifest Manifest;
+        public static AssetBundleManifest Manifest { get; private set; }
+        public static string[] AllAssetBundle { get; private set; }
+        public static string[] AllAssetBundleWithVariant { get; private set; }
 
         /// <summary>
         /// 热更前初始化，主要是初始化路径
@@ -61,6 +63,8 @@ namespace YUnity
                         throw new System.Exception($"{ABHelper.ManifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
                     }
                     manifestAB.Unload(false);
+                    AllAssetBundle = Manifest.GetAllAssetBundles();
+                    AllAssetBundleWithVariant = Manifest.GetAllAssetBundlesWithVariant();
                 }
                 complete?.Invoke();
             });
