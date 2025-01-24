@@ -175,53 +175,56 @@ namespace YUnity
     #region LoadAsset
     public static partial class ABLoader
     {
-        public static void LoadAsset<T>(string bundleName, string assetName, Action<T> complete) where T : UnityEngine.Object
+        public static void LoadAsset<T>(string bundleName, string assetName, Action<AssetBundle, T> loaded) where T : UnityEngine.Object
         {
-            if (string.IsNullOrWhiteSpace(bundleName) || string.IsNullOrWhiteSpace(assetName) || complete == null)
+            if (string.IsNullOrWhiteSpace(bundleName) || string.IsNullOrWhiteSpace(assetName) || loaded == null)
             {
-                complete?.Invoke(null);
+                loaded?.Invoke(null, null);
                 return;
             }
             LoadAssetBundle(bundleName, (ab) =>
             {
-                ABLoadUtil.Instance.LoadAsset<T>(ab, assetName, complete);
+                ABLoadUtil.Instance.LoadAsset<T>(ab, assetName, (asset) =>
+                {
+                    loaded?.Invoke(ab, asset);
+                });
             });
         }
-        public static void LoadPrefab(string bundleName, string assetName, Action<GameObject> complete)
+        public static void LoadPrefab(string bundleName, string assetName, Action<AssetBundle, GameObject> loaded)
         {
-            LoadAsset<GameObject>(bundleName, assetName, complete);
+            LoadAsset<GameObject>(bundleName, assetName, loaded);
         }
-        public static void LoadAudioClip(string bundleName, string assetName, Action<AudioClip> complete)
+        public static void LoadAudioClip(string bundleName, string assetName, Action<AssetBundle, AudioClip> loaded)
         {
-            LoadAsset<AudioClip>(bundleName, assetName, complete);
+            LoadAsset<AudioClip>(bundleName, assetName, loaded);
         }
-        public static void LoadMaterial(string bundleName, string assetName, Action<Material> complete)
+        public static void LoadMaterial(string bundleName, string assetName, Action<AssetBundle, Material> loaded)
         {
-            LoadAsset<Material>(bundleName, assetName, complete);
+            LoadAsset<Material>(bundleName, assetName, loaded);
         }
-        public static void LoadSprite(string bundleName, string assetName, Action<Sprite> complete)
+        public static void LoadSprite(string bundleName, string assetName, Action<AssetBundle, Sprite> loaded)
         {
-            LoadAsset<Sprite>(bundleName, assetName, complete);
+            LoadAsset<Sprite>(bundleName, assetName, loaded);
         }
-        public static void LoadTexture(string bundleName, string assetName, Action<Texture> complete)
+        public static void LoadTexture(string bundleName, string assetName, Action<AssetBundle, Texture> loaded)
         {
-            LoadAsset<Texture>(bundleName, assetName, complete);
+            LoadAsset<Texture>(bundleName, assetName, loaded);
         }
-        public static void LoadTextAsset(string bundleName, string assetName, Action<TextAsset> complete)
+        public static void LoadTextAsset(string bundleName, string assetName, Action<AssetBundle, TextAsset> loaded)
         {
-            LoadAsset<TextAsset>(bundleName, assetName, complete);
+            LoadAsset<TextAsset>(bundleName, assetName, loaded);
         }
-        public static void LoadTextAssetContent(string bundleName, string assetName, Action<string> complete)
+        public static void LoadTextAssetContent(string bundleName, string assetName, Action<AssetBundle, string> loaded)
         {
-            LoadAsset<TextAsset>(bundleName, assetName, (textAsset) =>
+            LoadAsset<TextAsset>(bundleName, assetName, (ab, textAsset) =>
             {
                 if (textAsset != null && !string.IsNullOrWhiteSpace(textAsset.text))
                 {
-                    complete?.Invoke(textAsset.text);
+                    loaded?.Invoke(ab, textAsset.text);
                 }
                 else
                 {
-                    complete?.Invoke(null);
+                    loaded?.Invoke(ab, null);
                 }
             });
         }
@@ -231,30 +234,30 @@ namespace YUnity
     #region LoadInstantiate
     public static partial class ABLoader
     {
-        public static void LoadGameObjectInstantiate(string bundleName, string assetName, Transform parent, Action<GameObject> complete)
+        public static void LoadGameObjectInstantiate(string bundleName, string assetName, Transform parent, Action<AssetBundle, GameObject> loaded)
         {
-            LoadPrefab(bundleName, assetName, (prefab) =>
+            LoadPrefab(bundleName, assetName, (ab, prefab) =>
             {
                 if (prefab == null)
                 {
-                    complete?.Invoke(null);
+                    loaded?.Invoke(ab, null);
                 }
                 else
                 {
                     GameObject go = GameObject.Instantiate(prefab, parent, false);
                     go.name = assetName;
                     go.transform.ResetLocal();
-                    complete?.Invoke(go);
+                    loaded?.Invoke(ab, go);
                 }
             });
         }
-        public static void LoadGameObjectInstantiate(string bundleName, string assetName, Transform parent, Vector3 localPosition, Vector3 localEulerAngles, Vector3 localScale, Action<GameObject> complete)
+        public static void LoadGameObjectInstantiate(string bundleName, string assetName, Transform parent, Vector3 localPosition, Vector3 localEulerAngles, Vector3 localScale, Action<AssetBundle, GameObject> loaded)
         {
-            LoadPrefab(bundleName, assetName, (prefab) =>
+            LoadPrefab(bundleName, assetName, (ab, prefab) =>
             {
                 if (prefab == null)
                 {
-                    complete?.Invoke(null);
+                    loaded?.Invoke(ab, null);
                 }
                 else
                 {
@@ -263,7 +266,7 @@ namespace YUnity
                     go.transform.localPosition = localPosition;
                     go.transform.localEulerAngles = localEulerAngles;
                     go.transform.localScale = localScale;
-                    complete?.Invoke(go);
+                    loaded?.Invoke(ab, go);
                 }
             });
         }
