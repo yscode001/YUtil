@@ -32,13 +32,10 @@ namespace YUnity
             {
                 throw new System.Exception("bundlePath不能为空");
             }
-            BundlePath = bundlePath.EndsWith("/") ? bundlePath : bundlePath + "/";
-            if (createBundleDirectory)
+            BundlePath = bundlePath;
+            if (createBundleDirectory && !Directory.Exists(BundlePath))
             {
-                if (!Directory.Exists(BundlePath))
-                {
-                    Directory.CreateDirectory(BundlePath);
-                }
+                Directory.CreateDirectory(BundlePath);
             }
         }
 
@@ -49,7 +46,7 @@ namespace YUnity
         /// <exception cref="System.Exception"></exception>
         public static void InitAfterHotUpdate(Action complete)
         {
-            ABLoadUtil.Instance.LoadAssetBundle(BundlePath + ABHelper.ManifestBundleName, (manifestAB) =>
+            ABLoadUtil.Instance.LoadAssetBundle(Path.Combine(BundlePath, ABHelper.ManifestBundleName), (manifestAB) =>
             {
                 if (manifestAB == null)
                 {
@@ -119,7 +116,7 @@ namespace YUnity
             int loadCount = 0;
             foreach (var dep in depList)
             {
-                ABLoadUtil.Instance.LoadAssetBundle(BundlePath + dep, (assetbundle) =>
+                ABLoadUtil.Instance.LoadAssetBundle(Path.Combine(BundlePath, dep), (assetbundle) =>
                 {
                     // 全部加载后完成回调
                     loadCount += 1;
@@ -160,7 +157,7 @@ namespace YUnity
                     return;
                 }
                 // 加载
-                ABLoadUtil.Instance.LoadAssetBundle(BundlePath + abName, (assetbundle) =>
+                ABLoadUtil.Instance.LoadAssetBundle(Path.Combine(BundlePath, abName), (assetbundle) =>
                 {
                     if (assetbundle == null)
                     {
