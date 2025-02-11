@@ -66,6 +66,12 @@ namespace YUnity
         }
         #endregion
 
+        public static float Distance(this Transform tf, Transform other)
+        {
+            if (tf == null || other == null || tf == other) { return 0; }
+            return Vector3.Distance(tf.position, other.position);
+        }
+
         /// <summary>
         /// Copy基础属性至另一个(位置、角度、旋转)
         /// </summary>
