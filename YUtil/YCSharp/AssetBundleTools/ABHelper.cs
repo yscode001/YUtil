@@ -5,9 +5,9 @@ namespace YCSharp
     public partial class ABHelper
     {
         /// <summary>
-        /// 清单文件名称(ABBundleFiles.txt)
+        /// 清单文件名称(ManifestFile.txt)
         /// </summary>
-        public const string ABBundleFilesName = "ABBundleFiles.txt";
+        public const string ManifestFileName = "ManifestFile.txt";
 
         /// <summary>
         /// ab包后缀名(.unity3d)

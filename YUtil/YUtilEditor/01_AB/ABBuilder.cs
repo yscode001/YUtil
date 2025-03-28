@@ -237,20 +237,20 @@ namespace YUtilEditor
                 return;
             }
             // 生成bundle包的清单
-            ABBuiledBundleFileList bundleList = new ABBuiledBundleFileList();
+            ABBuildManifestFile manifestFile = new ABBuildManifestFile();
             for (int i = 0; i < filelist.Count; i++)
             {
                 FileInfo fileInfo = filelist[i];
-                bundleList.Add(new ABInfo(fileInfo.Name, fileInfo.Length));
+                manifestFile.Add(new ABInfo(fileInfo.Name, fileInfo.Length));
             }
 
-            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(bundleList.Serialize());
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(manifestFile.Serialize());
             if (bytes == null || bytes.Length <= 0)
             {
                 BuildEnd(false);
                 return;
             }
-            File.WriteAllBytes(ResOutputDirectory + ABHelper.ABBundleFilesName, bytes);
+            File.WriteAllBytes(Path.Combine(ResOutputDirectory, ABHelper.ManifestFileName), bytes);
             BuildEnd(true);
         }
 

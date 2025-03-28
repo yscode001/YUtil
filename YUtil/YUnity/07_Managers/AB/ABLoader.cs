@@ -366,53 +366,53 @@ namespace YUnity
         /// <summary>
         /// 生成的资源包清单
         /// </summary>
-        public static string ABBundleFileListFullPath => Path.Combine(BundlePath, ABHelper.ABBundleFilesName);
+        public static string ManifestFileFullPath => Path.Combine(BundlePath, ABHelper.ManifestFileName);
 
         /// <summary>
         /// 保存资源包清单文件
         /// </summary>
         /// <param name="bytes"></param>
-        public static void SaveBundleFileList(byte[] bytes)
+        public static void SaveManifestFile(byte[] bytes)
         {
             if (bytes == null || bytes.Length <= 0)
             {
                 return;
             }
-            if (File.Exists(ABBundleFileListFullPath))
+            if (File.Exists(ManifestFileFullPath))
             {
-                File.Delete(ABBundleFileListFullPath);
+                File.Delete(ManifestFileFullPath);
             }
-            File.WriteAllBytes(ABBundleFileListFullPath, bytes);
+            File.WriteAllBytes(ManifestFileFullPath, bytes);
         }
 
         /// <summary>
         /// 保存资源包清单文件
         /// </summary>
-        /// <param name="bundleFileList"></param>
-        public static void SaveBundleFileList(ABLoadBundleFileList bundleFileList)
+        /// <param name="manifestFile"></param>
+        public static void SaveManifestFile(ABLoadManifestFile manifestFile)
         {
-            SaveBundleFileList(bundleFileList.Serialize());
+            SaveManifestFile(manifestFile.Serialize());
         }
 
         /// <summary>
         /// 加载bundle清单文件
         /// </summary>
         /// <returns></returns>
-        public static ABLoadBundleFileList LoadBundleFileList()
+        public static ABLoadManifestFile LoadManifestFile()
         {
-            ABLoadBundleFileList bundleList = new ABLoadBundleFileList();
-            if (File.Exists(ABBundleFileListFullPath))
+            ABLoadManifestFile manifestFile = new ABLoadManifestFile();
+            if (File.Exists(ManifestFileFullPath))
             {
                 try
                 {
-                    bundleList = JsonConvert.DeserializeObject<ABLoadBundleFileList>(File.ReadAllText(ABBundleFileListFullPath, Encoding.UTF8));
+                    manifestFile = JsonConvert.DeserializeObject<ABLoadManifestFile>(File.ReadAllText(ManifestFileFullPath, Encoding.UTF8));
                 }
                 catch (Exception e)
                 {
-                    Debug.Log($"加载ABLoadBundleFileList时失败：{e}");
+                    Debug.Log($"加载ManifestFile时失败：{e}");
                 }
             }
-            return bundleList;
+            return manifestFile;
         }
     }
     #endregion
