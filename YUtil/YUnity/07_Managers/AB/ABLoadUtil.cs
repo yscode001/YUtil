@@ -43,26 +43,24 @@ namespace YUnity
     {
         internal void LoadAssetBundle(string abFullPath, Action<AssetBundle> complete)
         {
+            if (string.IsNullOrWhiteSpace(abFullPath))
+            {
+                complete?.Invoke(null);
+                return;
+            }
             StartCoroutine(LoadAssetBundleAction(abFullPath, complete));
         }
         private IEnumerator LoadAssetBundleAction(string abFullPath, Action<AssetBundle> complete)
         {
-            if (string.IsNullOrWhiteSpace(abFullPath))
+            UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(abFullPath);
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.Success)
             {
-                complete?.Invoke(null);
+                complete?.Invoke((request.downloadHandler as DownloadHandlerAssetBundle).assetBundle);
             }
             else
             {
-                UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(abFullPath);
-                yield return request.SendWebRequest();
-                if (request.result == UnityWebRequest.Result.Success)
-                {
-                    complete?.Invoke((request.downloadHandler as DownloadHandlerAssetBundle).assetBundle);
-                }
-                else
-                {
-                    complete?.Invoke(null);
-                }
+                complete?.Invoke(null);
             }
         }
     }
@@ -72,26 +70,24 @@ namespace YUnity
     {
         internal void LoadAsset<T>(AssetBundle assetBundle, string assetName, Action<T> complete) where T : UnityEngine.Object
         {
+            if (assetBundle == null || string.IsNullOrWhiteSpace(assetName))
+            {
+                complete?.Invoke(null);
+                return;
+            }
             StartCoroutine(LoadAssetAction(assetBundle, assetName, complete));
         }
         private IEnumerator LoadAssetAction<T>(AssetBundle assetBundle, string assetName, Action<T> complete) where T : UnityEngine.Object
         {
-            if (assetBundle == null || string.IsNullOrWhiteSpace(assetName))
+            AssetBundleRequest request = assetBundle.LoadAssetAsync<T>(assetName);
+            yield return request;
+            if (request.asset != null && request.asset is T)
             {
-                complete?.Invoke(null);
+                complete?.Invoke(request.asset as T);
             }
             else
             {
-                AssetBundleRequest request = assetBundle.LoadAssetAsync<T>(assetName);
-                yield return request;
-                if (request.asset != null && request.asset is T)
-                {
-                    complete?.Invoke(request.asset as T);
-                }
-                else
-                {
-                    complete?.Invoke(null);
-                }
+                complete?.Invoke(null);
             }
         }
     }

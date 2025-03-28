@@ -37,7 +37,7 @@ namespace YUnity
             {
                 if (ABHelper.GetAssetBundleName(item.AssetBundleName) == ABHelper.GetAssetBundleName(abInfo.AssetBundleName))
                 {
-                    item.EditFileInfo(abInfo.FileSize, abInfo.FileMD5);
+                    item.EditFileInfo(abInfo.FileSize);
                     return;
                 }
             }
@@ -47,8 +47,7 @@ namespace YUnity
         {
             for (int i = ABList.Count - 1; i >= 0; i--)
             {
-                ABInfo info = ABList[i];
-                if (ABHelper.GetAssetBundleName(info.AssetBundleName) == ABHelper.GetAssetBundleName(assetBundleName))
+                if (ABHelper.GetAssetBundleName(ABList[i].AssetBundleName) == ABHelper.GetAssetBundleName(assetBundleName))
                 {
                     ABList.RemoveAt(i);
                 }

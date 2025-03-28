@@ -15,15 +15,30 @@ namespace YCSharp
         public const string BundleExt = ".unity3d";
 
         /// <summary>
-        /// ManifestBundleName(manifest.unity3d)
+        /// Manifest(manifest)
         /// </summary>
-        public const string ManifestBundleName = "manifest.unity3d";
+        public const string Manifest = "manifest";
 
         /// <summary>
-        /// 获取AB包名称(小写带扩展名，如：audio.unity3d)
+        /// 获取Manifest所在的AB包的名字
+        /// </summary>
+        /// <param name="manifestABHashCode"></param>
+        /// <returns>{Manifest}_{manifestABHashCode}{BundleExt}</returns>
+        /// <exception cref="Exception"></exception>
+        public static string GetManifestBundleName(string manifestABHashCode)
+        {
+            if (string.IsNullOrWhiteSpace(manifestABHashCode))
+            {
+                throw new Exception("manifestABHashCode不能为空");
+            }
+            return $"{Manifest}_{manifestABHashCode}{BundleExt}";
+        }
+
+        /// <summary>
+        /// 获取AB包名称
         /// </summary>
         /// <param name="assetBundleName"></param>
-        /// <returns></returns>
+        /// <returns>小写带扩展名，如：audio.unity3d</returns>
         /// <exception cref="Exception"></exception>
         public static string GetAssetBundleName(string assetBundleName)
         {

@@ -21,7 +21,7 @@ namespace YUtilEditor
         private static List<string> IgnoreExts;
 
         /// <summary>
-        /// 初始化
+        /// 初始化，注意，资源根目录下面的子目录的名字不要包含"_"，否则可能会有意想不到的错误
         /// </summary>
         /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Res)</param>
         /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/)</param>
@@ -95,15 +95,15 @@ namespace YUtilEditor
     #region Build
     public static partial class ABBuilder
     {
-        public static void BuildAssetBundles(BuildTarget buildTarget, BuildAssetBundleOptions bundleOptions)
+        public static void BuildAssetBundles(BuildTarget buildTarget)
         {
             if (string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
             {
-                throw new System.Exception("ResSourceDirectory或ResOutputDirectory为空，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("ResSourceDirectory或ResOutputDirectory为空");
             }
             if (!Directory.Exists(ResSourceDirectory))
             {
-                throw new System.Exception("ResSourceDirectory目录不存在，请先调用YUtilEditor.AssetBundleUtil.Init方法进行初始化");
+                throw new System.Exception("ResSourceDirectory目录不存在");
             }
             if (!HasFilesWillBeBuiled(new DirectoryInfo(ResSourceDirectory)))
             {
@@ -130,13 +130,13 @@ namespace YUtilEditor
 
             if (list.Count <= 0)
             {
-                throw new System.Exception("ABBuildUtil-BuildAssetBundles：ResSourceDirectory不存在任何符合条件可以打包的文件，无法build");
+                throw new System.Exception("ResSourceDirectory不存在任何符合条件可以打包的文件，无法build");
             }
 
             DirectoryInfo outputDirInfo = new DirectoryInfo(ResOutputDirectory);
 
             // EditorUserBuildSettings.activeBuildTarget
-            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), bundleOptions, buildTarget);
+            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BuildAssetBundleOptions.AppendHashToAssetBundleName | BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.None, buildTarget);
             AfterBuild();
         }
 
@@ -219,8 +219,8 @@ namespace YUtilEditor
                 }
                 else if (fileInfo.Name == DirecoryUtil.GetLastDirectoryName(ResOutputDirectory))
                 {
-                    // 先改名字
-                    string newName = fileInfo.Directory + "/" + ABHelper.ManifestBundleName;
+                    // 修改主清单文件的bundle包的名字：manifest_hashcode.unity3d
+                    string newName = $"{fileInfo.Directory}/{ABHelper.GetManifestBundleName(YCSharp.FileUtil.GetMD5HashFromFile(fileInfo.FullName))}";
                     fileInfo.MoveTo(newName);
                     // 再添加至清单列表
                     filelist.Add(fileInfo);
@@ -241,7 +241,7 @@ namespace YUtilEditor
             for (int i = 0; i < filelist.Count; i++)
             {
                 FileInfo fileInfo = filelist[i];
-                bundleList.Add(new ABInfo(fileInfo.Name, fileInfo.Length, YCSharp.FileUtil.GetMD5HashFromFile(fileInfo.FullName)));
+                bundleList.Add(new ABInfo(fileInfo.Name, fileInfo.Length));
             }
 
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(bundleList.Serialize());
@@ -267,15 +267,15 @@ namespace YUtilEditor
     public static partial class ABBuilder
     {
         /// <summary>
-        /// 清理所有bundle资源
+        /// 清理(删除)所有bundle资源
         /// </summary>
-        /// <exception cref="Exception"></exception>
         public static void ClearBundles()
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (!directoryInfo.Exists)
             {
-                throw new Exception("ResOutputDirectory对应的目录不存在");
+                UnityEngine.Debug.Log($"ResOutputDirectory对应的目录不存在，无需清理");
+                return;
             }
             FileInfo[] fileInfos = directoryInfo.GetFiles();
             if (fileInfos == null || fileInfos.Length <= 0)
@@ -290,7 +290,7 @@ namespace YUtilEditor
         }
 
         /// <summary>
-        /// 清理指定名称的bundle资源
+        /// 清理(删除)指定名称的bundle资源
         /// </summary>
         /// <param name="bundleName"></param>
         /// <exception cref="Exception"></exception>
@@ -303,7 +303,8 @@ namespace YUtilEditor
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (!directoryInfo.Exists)
             {
-                throw new Exception("ResOutputDirectory对应的目录不存在");
+                UnityEngine.Debug.Log($"ResOutputDirectory对应的目录不存在，无需清理");
+                return;
             }
             string path = Path.Combine(ResOutputDirectory, ABHelper.GetAssetBundleName(bundleName));
             if (File.Exists(path))

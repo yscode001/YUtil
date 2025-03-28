@@ -16,45 +16,35 @@ namespace YCSharp
         public long FileSize;
 
         /// <summary>
-        /// 文件的md5值
-        /// </summary>
-        public string FileMD5;
-
-        /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="assetBundleName">bundle包的名字</param>
         /// <param name="fileSize">文件大小(单位字节)</param>
-        /// <param name="fileMD5">文件的md5值</param>
-        public ABInfo(String assetBundleName, long fileSize, string fileMD5)
+        public ABInfo(String assetBundleName, long fileSize)
         {
             AssetBundleName = ABHelper.GetAssetBundleName(assetBundleName);
             FileSize = fileSize;
-            FileMD5 = fileMD5;
         }
 
-        public void EditFileInfo(long fileSize, string fileMD5)
+        public void EditFileInfo(long fileSize)
         {
             FileSize = fileSize;
-            FileMD5 = fileMD5;
         }
 
         public bool IsEmpty()
         {
-            return string.IsNullOrWhiteSpace(AssetBundleName) || FileSize <= 0 || string.IsNullOrWhiteSpace(FileMD5);
+            return string.IsNullOrWhiteSpace(AssetBundleName) || FileSize <= 0;
         }
 
         public static bool operator ==(ABInfo lhs, ABInfo rhs)
         {
             return lhs.AssetBundleName == rhs.AssetBundleName &&
-                   lhs.FileSize == rhs.FileSize &&
-                   lhs.FileMD5 == rhs.FileMD5;
+                   lhs.FileSize == rhs.FileSize;
         }
         public static bool operator !=(ABInfo lhs, ABInfo rhs)
         {
             return lhs.AssetBundleName != rhs.AssetBundleName ||
-                   lhs.FileSize != rhs.FileSize ||
-                   lhs.FileMD5 != rhs.FileMD5;
+                   lhs.FileSize != rhs.FileSize;
         }
 
         public override bool Equals(object obj)
