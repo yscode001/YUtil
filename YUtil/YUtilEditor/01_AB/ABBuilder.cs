@@ -241,7 +241,7 @@ namespace YUtilEditor
             for (int i = 0; i < filelist.Count; i++)
             {
                 FileInfo fileInfo = filelist[i];
-                manifestFile.Add(new ABInfo(fileInfo.Name, fileInfo.Length));
+                manifestFile.Add(fileInfo.Name);
             }
 
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(manifestFile.Serialize());

@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using YCSharp;
 
 namespace YUtilEditor
 {
     [Serializable]
     public class ABBuildManifestFile
     {
-        public List<ABInfo> AssetBundles { get; private set; } = new List<ABInfo>();
+        public List<string> AssetBundles { get; private set; } = new List<string>();
         public ABBuildManifestFile() { }
 
-        public void Add(ABInfo abInfo)
+        public void Add(string assetBundleName)
         {
-            if (abInfo.IsEmpty() || AssetBundles.Contains(abInfo))
+            if (string.IsNullOrWhiteSpace(assetBundleName) || AssetBundles.Contains(assetBundleName))
             {
                 return;
             }
-            AssetBundles.Add(abInfo);
+            AssetBundles.Add(assetBundleName);
         }
         public string Serialize()
         {

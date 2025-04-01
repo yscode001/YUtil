@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using YCSharp;
 
 namespace YUnity
 {
     [Serializable]
     public partial class ABLoadManifestFile
     {
-        public List<ABInfo> AssetBundles = new List<ABInfo>();
+        public List<string> AssetBundles = new List<string>();
         public ABLoadManifestFile() { }
 
         public byte[] Serialize()
@@ -31,27 +30,17 @@ namespace YUnity
             ABLoader.SaveManifestFile(this);
         }
 
-        public void AddOrUpdateABInfo(ABInfo abInfo)
+        public void Add(string assetBundleName)
         {
-            foreach (var item in AssetBundles)
+            if (string.IsNullOrWhiteSpace(assetBundleName) || AssetBundles.Contains(assetBundleName))
             {
-                if (ABHelper.GetAssetBundleName(item.AssetBundleName) == ABHelper.GetAssetBundleName(abInfo.AssetBundleName))
-                {
-                    item.EditFileInfo(abInfo.FileSize);
-                    return;
-                }
+                return;
             }
-            AssetBundles.Add(abInfo);
+            AssetBundles.Add(assetBundleName);
         }
         public void DeleteABInfo(string assetBundleName)
         {
-            for (int i = AssetBundles.Count - 1; i >= 0; i--)
-            {
-                if (ABHelper.GetAssetBundleName(AssetBundles[i].AssetBundleName) == ABHelper.GetAssetBundleName(assetBundleName))
-                {
-                    AssetBundles.RemoveAt(i);
-                }
-            }
+            AssetBundles.RemoveAll(m => m == assetBundleName);
         }
     }
 
@@ -63,7 +52,7 @@ namespace YUnity
         /// <param name="local">本地的bundle清单文件</param>
         /// <param name="remote">远端的bundle清单文件</param>
         /// <returns></returns>
-        public static List<ABInfo> CompareAndGetCanDownloadFiles(ABLoadManifestFile local, ABLoadManifestFile remote)
+        public static List<string> CompareAndGetCanDownloadFiles(ABLoadManifestFile local, ABLoadManifestFile remote)
         {
             if (remote == null || remote.AssetBundles == null || remote.AssetBundles.Count <= 0)
             {
@@ -75,31 +64,16 @@ namespace YUnity
                 // 本地没有资源，直接返回远端的所有资源
                 return remote.AssetBundles;
             }
-            List<ABInfo> result = new List<ABInfo>();
+            List<string> result = new List<string>();
             foreach (var remoteItem in remote.AssetBundles)
             {
-                if (remoteItem.IsEmpty() || result.Contains(remoteItem) || Contains(local.AssetBundles, remoteItem))
+                if (string.IsNullOrWhiteSpace(remoteItem) || result.Contains(remoteItem) || local.AssetBundles.Contains(remoteItem))
                 {
                     continue;
                 }
                 result.Add(remoteItem);
             }
             return result;
-        }
-        private static bool Contains(List<ABInfo> list, ABInfo item)
-        {
-            if (list == null || list.Count <= 0 || item == null)
-            {
-                return false;
-            }
-            foreach (var listItem in list)
-            {
-                if (listItem == item)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }
