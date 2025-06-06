@@ -232,6 +232,14 @@ namespace YUnity
         }
         public static void LoadPrefab(string bundleName, string assetName, Action<AssetBundle, GameObject> loaded)
         {
+            if (!assetName.EndsWith(".prefab"))
+            {
+                assetName += ".prefab";
+            }
+            LoadAsset<GameObject>(bundleName, assetName, loaded);
+        }
+        public static void LoadGameObject(string bundleName, string assetName, Action<AssetBundle, GameObject> loaded)
+        {
             LoadAsset<GameObject>(bundleName, assetName, loaded);
         }
         public static void LoadAudioClip(string bundleName, string assetName, Action<AssetBundle, AudioClip> loaded)
