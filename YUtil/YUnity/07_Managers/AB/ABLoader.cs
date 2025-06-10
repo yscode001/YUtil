@@ -19,7 +19,12 @@ namespace YUnity
         public static string BundlePath { get; private set; }
 
         public static AssetBundleManifest Manifest { get; private set; }
+
+        /// <summary>
+        /// 所有的Bundle包名字的集合，带扩展名，带hashcode，示例：ui_hashcode.unity3d
+        /// </summary>
         public static string[] AllAssetBundle { get; private set; }
+
         public static string[] AllAssetBundleWithVariant { get; private set; }
 
         /// <summary>
@@ -49,7 +54,18 @@ namespace YUnity
         /// <exception cref="System.Exception"></exception>
         public static void InitManifestAfterHotUpdate(string manifestBundleFullName, Action complete)
         {
-            manifestBundleFullName = ABHelper.GetAssetBundleName(manifestBundleFullName);
+            if (string.IsNullOrWhiteSpace(manifestBundleFullName))
+            {
+                throw new Exception("manifestBundleFullName不能为空");
+            }
+            if (manifestBundleFullName.EndsWith(ABHelper.BundleExt))
+            {
+                manifestBundleFullName = manifestBundleFullName.ToLower();
+            }
+            else
+            {
+                manifestBundleFullName = manifestBundleFullName.ToLower() + ABHelper.BundleExt;
+            }
             ABLoadUtil.Instance.LoadAssetBundle(Path.Combine(BundlePath, manifestBundleFullName), (manifestAB) =>
             {
                 if (manifestAB == null)
@@ -73,40 +89,40 @@ namespace YUnity
     }
     #endregion
 
-    #region 内部工具函数，获取bundle包的名字
+    #region 工具函数，获取bundle包的名字
     public static partial class ABLoader
     {
         /// <summary>
-        /// 示例：ui_sdfjksdkfjksdf.unity3d
+        /// 获取Bundle包的完整名字，结果带hashcode，带扩展名，如果不存在此Bundle包，返回空
         /// </summary>
-        /// <param name="assetBundleName"></param>
+        /// <param name="bundleName">带不带扩展名都可以，带不带hashcode都可以</param>
         /// <returns></returns>
-        private static string GetAssetBundleNameFromManifest(string assetBundleName)
+        public static string GetAssetBundleName(string bundleName)
         {
-            if (string.IsNullOrWhiteSpace(assetBundleName))
+            if (string.IsNullOrWhiteSpace(bundleName))
             {
-                throw new Exception("error");
+                return null;
             }
-            if (assetBundleName.EndsWith(ABHelper.BundleExt))
+            bundleName = bundleName.ToLower();
+            if (bundleName.Contains("_"))
             {
-                assetBundleName.Remove(assetBundleName.Length - ABHelper.BundleExt.Length);
-            }
-            string name = null;
-            if (assetBundleName.Contains("_"))
-            {
-                name = AllAssetBundle.FirstOrDefault(m => m == (assetBundleName + ABHelper.BundleExt));
-            }
-            else
-            {
-                name = AllAssetBundle.FirstOrDefault(m => m.StartsWith(assetBundleName + "_"));
-            }
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new Exception("error");
+                if (bundleName.EndsWith(ABHelper.BundleExt))
+                {
+                    // 带hashcode，带扩展名
+                    return AllAssetBundle.FirstOrDefault(m => m == bundleName);
+                }
+                else
+                {
+                    // 带hashcode，不带扩展名
+                    return AllAssetBundle.FirstOrDefault(m => m == bundleName + ABHelper.BundleExt);
+                }
             }
             else
             {
-                return name;
+                // 不带hashcode，先把扩展名给去掉
+                bundleName = ABHelper.RemoveHashcodeAndBundleExt(bundleName);
+                // 判断时加上 _
+                return AllAssetBundle.FirstOrDefault(m => m.StartsWith(bundleName + "_"));
             }
         }
     }
@@ -123,7 +139,15 @@ namespace YUnity
             }
             else
             {
-                return Manifest.GetAllDependencies(GetAssetBundleNameFromManifest(bundleName));
+                string abName = GetAssetBundleName(bundleName);
+                if (string.IsNullOrWhiteSpace(abName))
+                {
+                    return null;
+                }
+                else
+                {
+                    return Manifest.GetAllDependencies(abName);
+                }
             }
         }
     }
@@ -144,7 +168,7 @@ namespace YUnity
             var loadedList = ABLoadUtil.Instance.GetLoadedAssetBundleNameList();
             foreach (var dep in dependencies)
             {
-                if (!loadedList.Contains(dep) && !depList.Contains(dep))
+                if (!ABHelper.LoadedContains(loadedList, dep) && !depList.Contains(dep))
                 {
                     depList.Add(dep);
                 }
@@ -172,27 +196,6 @@ namespace YUnity
             }
         }
 
-        private static AssetBundle GetAssetBundleFromCache(string bundleFullName)
-        {
-            var loadABs = ABLoadUtil.Instance.GetLoadedAssetBundleList();
-            if (loadABs != null && loadABs.Count() > 0)
-            {
-                foreach (var loadAB in loadABs)
-                {
-                    // 示例：
-                    // loadABName：ui.unity3d
-                    // bundleFullName：ui_xcvcxcvc.unity3d
-                    string loadABName = loadAB.name.Remove(loadAB.name.Length - ABHelper.BundleExt.Length) + "_";
-                    string searchName = bundleFullName.Remove(bundleFullName.Length - ABHelper.BundleExt.Length);
-                    if (searchName.StartsWith(loadABName))
-                    {
-                        return loadAB;
-                    }
-                }
-            }
-            return null;
-        }
-
         private static readonly object lock_loadAssetBundle = new object();
         public static void LoadAssetBundle(string bundleName, Action<AssetBundle> complete)
         {
@@ -201,54 +204,34 @@ namespace YUnity
                 complete?.Invoke(null);
                 return;
             }
-            // 拼接带hashcode的AB名字：ab_hashcode.unity3d
-            string abName = GetAssetBundleNameFromManifest(bundleName);
-            int lastIndex = abName.LastIndexOf(ABHelper.BundleExt);
-            if (lastIndex != -1)
-            {
-                abName = abName.Remove(lastIndex, ABHelper.BundleExt.Length);
-            }
-            if (!abName.Contains("_"))
-            {
-                abName = $"{abName}_";
-            }
-            // 此时，abName == ab_hashcode 或 abName = ab_
-            foreach (var ab in AllAssetBundle)
-            {
-                if (abName.EndsWith("_") && ab.StartsWith(abName))
-                {
-                    // ab_
-                    abName = ab;
-                    break;
-                }
-                else if (!abName.EndsWith("_") && ab == $"{abName}{ABHelper.BundleExt}")
-                {
-                    // ab_hashcode
-                    abName = ab;
-                    break;
-                }
-            }
             // 先从缓存中查找
-            AssetBundle cacheBundle = GetAssetBundleFromCache(abName);
+            AssetBundle cacheBundle = ABLoadUtil.Instance.GetLoadedAssetBundle(bundleName);
             if (cacheBundle != null)
             {
                 complete?.Invoke(cacheBundle);
                 return;
             }
+            // 获取完整包名，示例：ui_hashcode.unity3d
+            string abName = GetAssetBundleName(bundleName);
+            if (string.IsNullOrWhiteSpace(abName))
+            {
+                complete?.Invoke(null);
+                return;
+            }
             // 先锁起来
             Monitor.Enter(lock_loadAssetBundle);
-            // 解锁后再从缓存中查找
-            cacheBundle = GetAssetBundleFromCache(abName);
+            // 解锁后先从缓存中查找
+            cacheBundle = ABLoadUtil.Instance.GetLoadedAssetBundle(bundleName);
             if (cacheBundle != null)
             {
                 Monitor.Exit(lock_loadAssetBundle);
                 complete?.Invoke(cacheBundle);
                 return;
             }
-            LoadDependencies(Manifest.GetAllDependencies(abName), () =>
+            LoadDependencies(GetAllDependencies(abName), () =>
             {
                 // 加载完依赖，再次判断缓存
-                cacheBundle = GetAssetBundleFromCache(abName);
+                cacheBundle = ABLoadUtil.Instance.GetLoadedAssetBundle(bundleName);
                 if (cacheBundle == null)
                 {
                     ABLoadUtil.Instance.LoadAssetBundle(Path.Combine(BundlePath, abName), (assetbundle) =>
@@ -414,7 +397,7 @@ namespace YUnity
                 Debug.Log($"{BundlePath}对应的目录不存在，无需清理");
                 return;
             }
-            string path = Path.Combine(BundlePath, GetAssetBundleNameFromManifest(bundleName));
+            string path = Path.Combine(BundlePath, GetAssetBundleName(bundleName));
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -493,13 +476,13 @@ namespace YUnity
             return ABLoadUtil.Instance.GetLoadedAssetBundleList();
         }
 
-        public static AssetBundle GetLoadedAssetBundle(string loadedBundleName)
+        public static AssetBundle GetLoadedAssetBundle(string bundleName)
         {
-            if (string.IsNullOrWhiteSpace(loadedBundleName))
+            if (string.IsNullOrWhiteSpace(bundleName))
             {
                 return null;
             }
-            return ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == loadedBundleName);
+            return ABLoadUtil.Instance.GetLoadedAssetBundle(bundleName);
         }
     }
     #endregion
@@ -509,15 +492,15 @@ namespace YUnity
         /// <summary>
         /// 同步卸载AssetBundle
         /// </summary>
-        /// <param name="loadedBundleName"></param>
+        /// <param name="bundleName"></param>
         /// <param name="unloadAllLoadedObjects"></param>
-        public static void UnloadAssetBundle(string loadedBundleName, bool unloadAllLoadedObjects)
+        public static void UnloadAssetBundle(string bundleName, bool unloadAllLoadedObjects)
         {
-            if (string.IsNullOrWhiteSpace(loadedBundleName))
+            if (string.IsNullOrWhiteSpace(bundleName))
             {
                 return;
             }
-            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == GetAssetBundleNameFromManifest(loadedBundleName));
+            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundle(bundleName);
             if (ab == null)
             {
                 return;
@@ -528,16 +511,16 @@ namespace YUnity
         /// <summary>
         /// 异步卸载AssetBundle，返回值可能为空
         /// </summary>
-        /// <param name="loadedBundleName"></param>
+        /// <param name="bundleName"></param>
         /// <param name="unloadAllLoadedObjects"></param>
         /// <returns></returns>
-        public static AsyncOperation UnloadAsyncAssetBundle(string loadedBundleName, bool unloadAllLoadedObjects)
+        public static AsyncOperation UnloadAsyncAssetBundle(string bundleName, bool unloadAllLoadedObjects)
         {
-            if (string.IsNullOrWhiteSpace(loadedBundleName))
+            if (string.IsNullOrWhiteSpace(bundleName))
             {
                 return null;
             }
-            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == GetAssetBundleNameFromManifest(loadedBundleName));
+            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundle(bundleName);
             if (ab == null)
             {
                 return null;

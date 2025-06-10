@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using YCSharp;
 
 namespace YUnity
 {
@@ -18,6 +19,10 @@ namespace YUnity
     #region 获取已加载的AssetBundle
     internal partial class ABLoadUtil
     {
+        /// <summary>
+        /// 获取已加载的所有AB的名字，不包含hashcode，示例：ui.unity3d
+        /// </summary>
+        /// <returns></returns>
         internal List<string> GetLoadedAssetBundleNameList()
         {
             List<string> list = new List<string>();
@@ -31,10 +36,36 @@ namespace YUnity
             }
             return list;
         }
+
+        /// <summary>
+        /// 获取已加载的所有AB，不包含hashcode，示例：ui.unity3d
+        /// </summary>
+        /// <returns></returns>
         internal IEnumerable<AssetBundle> GetLoadedAssetBundleList()
         {
-            var assetBundles = AssetBundle.GetAllLoadedAssetBundles();
-            return assetBundles ?? (new AssetBundle[] { });
+            return AssetBundle.GetAllLoadedAssetBundles() ?? (new AssetBundle[] { });
+        }
+
+        /// <summary>
+        /// 获取已加载的AB(参数：带不带扩展名都可以，带不带hashcode都可以)
+        /// </summary>
+        /// <param name="bundleName">带不带扩展名都可以，带不带hashcode都可以</param>
+        /// <returns></returns>
+        internal AssetBundle GetLoadedAssetBundle(string bundleName)
+        {
+            if (string.IsNullOrWhiteSpace(bundleName))
+            {
+                return null;
+            }
+            var loadABs = GetLoadedAssetBundleList();
+            foreach (var loadAB in loadABs)
+            {
+                if (ABHelper.BundleNameEqual(loadAB.name, bundleName))
+                {
+                    return loadAB;
+                }
+            }
+            return null;
         }
     }
     #endregion

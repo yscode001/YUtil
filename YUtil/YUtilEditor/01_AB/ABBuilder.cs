@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -184,7 +183,7 @@ namespace YUtilEditor
         private static AssetBundleBuild GetBuildInfo(DirectoryInfo directoryInfo)
         {
             AssetBundleBuild build = new AssetBundleBuild();
-            build.assetBundleName = ABHelper.GetAssetBundleName(directoryInfo.Name);
+            build.assetBundleName = ABBuilderHelper.GetAssetBundleName(directoryInfo.Name);
 
             List<FileInfo> fileInfolist = GetFilesWillBeBuiled(directoryInfo);
             List<string> fileNames = new List<string>();
@@ -220,7 +219,7 @@ namespace YUtilEditor
                 else if (fileInfo.Name == DirecoryUtil.GetLastDirectoryName(ResOutputDirectory))
                 {
                     // 修改主清单文件的bundle包的名字：manifest_hashcode.unity3d
-                    string newName = $"{fileInfo.Directory}/{ABHelper.GetManifestBundleName(YCSharp.FileUtil.GetMD5HashFromFile(fileInfo.FullName))}";
+                    string newName = $"{fileInfo.Directory}/{ABBuilderHelper.GetManifestBundleName(YCSharp.FileUtil.GetMD5HashFromFile(fileInfo.FullName))}";
                     fileInfo.MoveTo(newName);
                     // 再添加至清单列表
                     filelist.Add(fileInfo);
@@ -274,7 +273,7 @@ namespace YUtilEditor
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (!directoryInfo.Exists)
             {
-                UnityEngine.Debug.Log($"ResOutputDirectory对应的目录不存在，无需清理");
+                Debug.Log($"ResOutputDirectory对应的目录不存在，无需清理");
                 return;
             }
             FileInfo[] fileInfos = directoryInfo.GetFiles();
@@ -285,31 +284,6 @@ namespace YUtilEditor
             for (int i = fileInfos.Length - 1; i >= 0; i--)
             {
                 File.Delete(fileInfos[i].FullName);
-            }
-            AssetDatabase.Refresh();
-        }
-
-        /// <summary>
-        /// 清理(删除)指定名称的bundle资源
-        /// </summary>
-        /// <param name="bundleName"></param>
-        /// <exception cref="Exception"></exception>
-        public static void ClearBundle(string bundleName)
-        {
-            if (string.IsNullOrWhiteSpace(bundleName))
-            {
-                throw new Exception("bundleName不能为空");
-            }
-            DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
-            if (!directoryInfo.Exists)
-            {
-                UnityEngine.Debug.Log($"ResOutputDirectory对应的目录不存在，无需清理");
-                return;
-            }
-            string path = Path.Combine(ResOutputDirectory, ABHelper.GetAssetBundleName(bundleName));
-            if (File.Exists(path))
-            {
-                File.Delete(path);
             }
             AssetDatabase.Refresh();
         }
