@@ -20,9 +20,9 @@ namespace YCSharp
         public const string Manifest = "manifest";
 
         /// <summary>
-        /// 获取Manifest所在的AB包的名字
+        /// 获取Manifest所在的AB包的名字(Manifest_hashcode.unity3d)
         /// </summary>
-        /// <param name="manifestABHashCode"></param>
+        /// <param name="manifestABHashCode">hashCode</param>
         /// <returns>{Manifest}_{manifestABHashCode}{BundleExt}</returns>
         /// <exception cref="Exception"></exception>
         public static string GetManifestBundleName(string manifestABHashCode)
@@ -35,7 +35,7 @@ namespace YCSharp
         }
 
         /// <summary>
-        /// 获取AB包名称
+        /// 获取AB包名称(小写带扩展名，如：audio.unity3d)
         /// </summary>
         /// <param name="assetBundleName"></param>
         /// <returns>小写带扩展名，如：audio.unity3d</returns>

@@ -44,24 +44,24 @@ namespace YUnity
         /// <summary>
         /// 热更后初始化manifest依赖文件
         /// </summary>
-        /// <param name="manifestBundleName">manifestBundleName</param>
+        /// <param name="manifestBundleFullName">manifestBundleFullName(带hashCode)</param>
         /// <param name="complete">完成回调</param>
         /// <exception cref="System.Exception"></exception>
-        public static void InitManifestAfterHotUpdate(string manifestBundleName, Action complete)
+        public static void InitManifestAfterHotUpdate(string manifestBundleFullName, Action complete)
         {
-            manifestBundleName = ABHelper.GetAssetBundleName(manifestBundleName);
-            ABLoadUtil.Instance.LoadAssetBundle(Path.Combine(BundlePath, manifestBundleName), (manifestAB) =>
+            manifestBundleFullName = ABHelper.GetAssetBundleName(manifestBundleFullName);
+            ABLoadUtil.Instance.LoadAssetBundle(Path.Combine(BundlePath, manifestBundleFullName), (manifestAB) =>
             {
                 if (manifestAB == null)
                 {
-                    throw new System.Exception($"{manifestBundleName}，这个bundle包不存在");
+                    throw new System.Exception($"{manifestBundleFullName}，这个bundle包不存在");
                 }
                 else
                 {
                     Manifest = manifestAB.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                     if (Manifest == null)
                     {
-                        throw new System.Exception($"{manifestBundleName}，这个bundle包错误，取不到里面的AssetBundleManifest");
+                        throw new System.Exception($"{manifestBundleFullName}，这个bundle包错误，取不到里面的AssetBundleManifest");
                     }
                     manifestAB.Unload(false);
                     AllAssetBundle = Manifest.GetAllAssetBundles();
@@ -69,6 +69,45 @@ namespace YUnity
                 }
                 complete?.Invoke();
             });
+        }
+    }
+    #endregion
+
+    #region 内部工具函数，获取bundle包的名字
+    public static partial class ABLoader
+    {
+        /// <summary>
+        /// 示例：ui_sdfjksdkfjksdf.unity3d
+        /// </summary>
+        /// <param name="assetBundleName"></param>
+        /// <returns></returns>
+        private static string GetAssetBundleNameFromManifest(string assetBundleName)
+        {
+            if (string.IsNullOrWhiteSpace(assetBundleName))
+            {
+                throw new Exception("error");
+            }
+            if (assetBundleName.EndsWith(ABHelper.BundleExt))
+            {
+                assetBundleName.Remove(assetBundleName.Length - ABHelper.BundleExt.Length);
+            }
+            string name = null;
+            if (assetBundleName.Contains("_"))
+            {
+                name = AllAssetBundle.FirstOrDefault(m => m == (assetBundleName + ABHelper.BundleExt));
+            }
+            else
+            {
+                name = AllAssetBundle.FirstOrDefault(m => m.StartsWith(assetBundleName + "_"));
+            }
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new Exception("error");
+            }
+            else
+            {
+                return name;
+            }
         }
     }
     #endregion
@@ -84,7 +123,7 @@ namespace YUnity
             }
             else
             {
-                return Manifest.GetAllDependencies(ABHelper.GetAssetBundleName(bundleName));
+                return Manifest.GetAllDependencies(GetAssetBundleNameFromManifest(bundleName));
             }
         }
     }
@@ -133,9 +172,25 @@ namespace YUnity
             }
         }
 
-        private static AssetBundle GetAssetBundleFromCache(string bundleName)
+        private static AssetBundle GetAssetBundleFromCache(string bundleFullName)
         {
-            return ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == bundleName);
+            var loadABs = ABLoadUtil.Instance.GetLoadedAssetBundleList();
+            if (loadABs != null && loadABs.Count() > 0)
+            {
+                foreach (var loadAB in loadABs)
+                {
+                    // 示例：
+                    // loadABName：ui.unity3d
+                    // bundleFullName：ui_xcvcxcvc.unity3d
+                    string loadABName = loadAB.name.Remove(loadAB.name.Length - ABHelper.BundleExt.Length) + "_";
+                    string searchName = bundleFullName.Remove(bundleFullName.Length - ABHelper.BundleExt.Length);
+                    if (searchName.StartsWith(loadABName))
+                    {
+                        return loadAB;
+                    }
+                }
+            }
+            return null;
         }
 
         private static readonly object lock_loadAssetBundle = new object();
@@ -147,7 +202,7 @@ namespace YUnity
                 return;
             }
             // 拼接带hashcode的AB名字：ab_hashcode.unity3d
-            string abName = ABHelper.GetAssetBundleName(bundleName);
+            string abName = GetAssetBundleNameFromManifest(bundleName);
             int lastIndex = abName.LastIndexOf(ABHelper.BundleExt);
             if (lastIndex != -1)
             {
@@ -359,7 +414,7 @@ namespace YUnity
                 Debug.Log($"{BundlePath}对应的目录不存在，无需清理");
                 return;
             }
-            string path = Path.Combine(BundlePath, ABHelper.GetAssetBundleName(bundleName));
+            string path = Path.Combine(BundlePath, GetAssetBundleNameFromManifest(bundleName));
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -462,7 +517,7 @@ namespace YUnity
             {
                 return;
             }
-            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == ABHelper.GetAssetBundleName(loadedBundleName));
+            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == GetAssetBundleNameFromManifest(loadedBundleName));
             if (ab == null)
             {
                 return;
@@ -482,7 +537,7 @@ namespace YUnity
             {
                 return null;
             }
-            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == ABHelper.GetAssetBundleName(loadedBundleName));
+            AssetBundle ab = ABLoadUtil.Instance.GetLoadedAssetBundleList().FirstOrDefault(m => m.name == GetAssetBundleNameFromManifest(loadedBundleName));
             if (ab == null)
             {
                 return null;

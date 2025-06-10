@@ -23,7 +23,7 @@ namespace YUtilEditor
         /// <summary>
         /// 初始化，注意，资源根目录下面的子目录的名字不要包含"_"，否则可能会有意想不到的错误
         /// </summary>
-        /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Res)</param>
+        /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Editor/ABRes)</param>
         /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/)</param>
         /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
         public static void Init(string resSourceDirectory, string resOutputDirectory = null, string[] ignoreExts = null)
