@@ -5,17 +5,18 @@ using UnityEngine.Networking;
 
 namespace YUnity
 {
-    public partial class NetworkMag : MonoBehaviourBaseY
+    public partial class HttpMag : MonoBehaviourBaseY
     {
-        private NetworkMag() { }
-        public static NetworkMag Instance { get; private set; } = null;
+        private HttpMag() { }
+        public static HttpMag Instance { get; private set; } = null;
 
         internal void Init()
         {
             Instance = this;
         }
     }
-    public partial class NetworkMag
+    #region 下载文件
+    public partial class HttpMag
     {
         /// <summary>
         /// 获取服务器上的文本文件的内容
@@ -44,7 +45,7 @@ namespace YUnity
             }
         }
     }
-    public partial class NetworkMag
+    public partial class HttpMag
     {
         /// <summary>
         /// 下载服务器上的文件(不带进度)
@@ -79,7 +80,7 @@ namespace YUnity
             }
         }
     }
-    public partial class NetworkMag
+    public partial class HttpMag
     {
         /// <summary>
         /// 下载服务器上的文件(带进度，0到1)
@@ -124,4 +125,5 @@ namespace YUnity
             }
         }
     }
+    #endregion
 }
