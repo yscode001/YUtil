@@ -7,38 +7,74 @@ using System;
 namespace YCSharp
 {
     /// <summary>
-    /// 单选状态(常用于ListView)
+    /// 单选状态
     /// </summary>
-    public class RadioSelectedState
+    public class RadioState
     {
         #region 构造函数
-        public RadioSelectedState() { }
-        public RadioSelectedState(int initValue)
+        public RadioState() { }
+
+        public RadioState(int initValue, Action<int> immediateTrigger = null)
         {
             _currentIntValue = initValue;
+            if (immediateTrigger != null)
+            {
+                Event_CurrentIntValueChanged += immediateTrigger;
+                Event_CurrentIntValueChanged?.Invoke(_currentIntValue);
+            }
         }
-        public RadioSelectedState(string initValue)
+
+        public RadioState(float initValue, Action<float> immediateTrigger = null)
+        {
+            _currentFloatValue = initValue;
+            if (immediateTrigger != null)
+            {
+                Event_CurrentFloatValueChanged += immediateTrigger;
+                Event_CurrentFloatValueChanged?.Invoke(_currentFloatValue);
+            }
+        }
+
+        public RadioState(string initValue, Action<string> immediateTrigger = null)
         {
             if (!string.IsNullOrWhiteSpace(initValue))
             {
                 _currentStringValue = initValue;
             }
+            if (immediateTrigger != null)
+            {
+                Event_CurrentStringValueChanged += immediateTrigger;
+                Event_CurrentStringValueChanged?.Invoke(_currentStringValue);
+            }
         }
-        public RadioSelectedState(bool initValue)
+
+        public RadioState(bool initValue, Action<bool> immediateTrigger = null)
         {
             _currentBoolValue = initValue;
+            if (immediateTrigger != null)
+            {
+                Event_CurrentBoolValueChanged += immediateTrigger;
+                Event_CurrentBoolValueChanged?.Invoke(_currentBoolValue);
+            }
         }
-        public RadioSelectedState(object initValue)
+
+        public RadioState(object initValue, Action<object> immediateTrigger = null)
         {
             if (initValue != null)
             {
                 _currentObjectValue = initValue;
+            }
+            if (immediateTrigger != null)
+            {
+                Event_CurrentObjectValueChanged += immediateTrigger;
+                Event_CurrentObjectValueChanged?.Invoke(_currentObjectValue);
             }
         }
         #endregion
 
         #region 事件声明
         public event Action<int> Event_CurrentIntValueChanged;
+
+        public event Action<float> Event_CurrentFloatValueChanged;
 
         public event Action<string> Event_CurrentStringValueChanged;
 
@@ -57,6 +93,18 @@ namespace YCSharp
                 if (_currentIntValue == value) { return; }
                 _currentIntValue = value;
                 Event_CurrentIntValueChanged?.Invoke(_currentIntValue);
+            }
+        }
+
+        private float _currentFloatValue = 0;
+        public float CurrentFloatValue
+        {
+            get => _currentFloatValue;
+            set
+            {
+                if (_currentFloatValue == value) { return; }
+                _currentFloatValue = value;
+                Event_CurrentFloatValueChanged?.Invoke(_currentFloatValue);
             }
         }
 
