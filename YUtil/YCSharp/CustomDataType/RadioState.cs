@@ -12,25 +12,13 @@ namespace YCSharp
     public class RadioState
     {
         #region 构造函数
-        public RadioState() { }
-
         public RadioState(int initValue, Action<int> immediateTrigger = null)
         {
-            _currentIntValue = initValue;
+            _intValue = initValue;
             if (immediateTrigger != null)
             {
-                Event_CurrentIntValueChanged += immediateTrigger;
-                Event_CurrentIntValueChanged?.Invoke(_currentIntValue);
-            }
-        }
-
-        public RadioState(float initValue, Action<float> immediateTrigger = null)
-        {
-            _currentFloatValue = initValue;
-            if (immediateTrigger != null)
-            {
-                Event_CurrentFloatValueChanged += immediateTrigger;
-                Event_CurrentFloatValueChanged?.Invoke(_currentFloatValue);
+                Event_IntValueChanged += immediateTrigger;
+                Event_IntValueChanged?.Invoke(_intValue);
             }
         }
 
@@ -38,22 +26,22 @@ namespace YCSharp
         {
             if (!string.IsNullOrWhiteSpace(initValue))
             {
-                _currentStringValue = initValue;
+                _stringValue = initValue;
             }
             if (immediateTrigger != null)
             {
-                Event_CurrentStringValueChanged += immediateTrigger;
-                Event_CurrentStringValueChanged?.Invoke(_currentStringValue);
+                Event_StringValueChanged += immediateTrigger;
+                Event_StringValueChanged?.Invoke(_stringValue);
             }
         }
 
         public RadioState(bool initValue, Action<bool> immediateTrigger = null)
         {
-            _currentBoolValue = initValue;
+            _boolValue = initValue;
             if (immediateTrigger != null)
             {
-                Event_CurrentBoolValueChanged += immediateTrigger;
-                Event_CurrentBoolValueChanged?.Invoke(_currentBoolValue);
+                Event_BoolValueChanged += immediateTrigger;
+                Event_BoolValueChanged?.Invoke(_boolValue);
             }
         }
 
@@ -61,86 +49,72 @@ namespace YCSharp
         {
             if (initValue != null)
             {
-                _currentObjectValue = initValue;
+                _objectValue = initValue;
             }
             if (immediateTrigger != null)
             {
-                Event_CurrentObjectValueChanged += immediateTrigger;
-                Event_CurrentObjectValueChanged?.Invoke(_currentObjectValue);
+                Event_ObjectValueChanged += immediateTrigger;
+                Event_ObjectValueChanged?.Invoke(_objectValue);
             }
         }
         #endregion
 
         #region 事件声明
-        public event Action<int> Event_CurrentIntValueChanged;
+        public event Action<int> Event_IntValueChanged;
 
-        public event Action<float> Event_CurrentFloatValueChanged;
+        public event Action<string> Event_StringValueChanged;
 
-        public event Action<string> Event_CurrentStringValueChanged;
+        public event Action<bool> Event_BoolValueChanged;
 
-        public event Action<bool> Event_CurrentBoolValueChanged;
-
-        public event Action<object> Event_CurrentObjectValueChanged;
+        public event Action<object> Event_ObjectValueChanged;
         #endregion
 
         #region 当前值的读与写
-        private int _currentIntValue = 0;
-        public int CurrentIntValue
+        private int _intValue = 0;
+        public int IntValue
         {
-            get => _currentIntValue;
+            get => _intValue;
             set
             {
-                if (_currentIntValue == value) { return; }
-                _currentIntValue = value;
-                Event_CurrentIntValueChanged?.Invoke(_currentIntValue);
+                if (_intValue == value) { return; }
+                _intValue = value;
+                Event_IntValueChanged?.Invoke(_intValue);
             }
         }
 
-        private float _currentFloatValue = 0;
-        public float CurrentFloatValue
+        private string _stringValue = "";
+        public string StringValue
         {
-            get => _currentFloatValue;
+            get => _stringValue;
             set
             {
-                if (_currentFloatValue == value) { return; }
-                _currentFloatValue = value;
-                Event_CurrentFloatValueChanged?.Invoke(_currentFloatValue);
+                if (string.IsNullOrWhiteSpace(value) || _stringValue == value) { return; }
+                _stringValue = value;
+                Event_StringValueChanged?.Invoke(_stringValue);
             }
         }
 
-        private string _currentStringValue = "";
-        public string CurrentStringValue
+        private bool _boolValue = false;
+        public bool BoolValue
         {
-            get => _currentStringValue;
+            get => _boolValue;
             set
             {
-                if (string.IsNullOrWhiteSpace(value) || _currentStringValue == value) { return; }
-                _currentStringValue = value;
-                Event_CurrentStringValueChanged?.Invoke(_currentStringValue);
+                if (_boolValue == value) { return; }
+                _boolValue = value;
+                Event_BoolValueChanged?.Invoke(_boolValue);
             }
         }
 
-        private bool _currentBoolValue = false;
-        public bool CurrentBoolValue
+        private object _objectValue = null;
+        public object ObjectValue
         {
-            get => _currentBoolValue;
+            get => _objectValue;
             set
             {
-                if (_currentBoolValue == value) { return; }
-                _currentBoolValue = value;
-                Event_CurrentBoolValueChanged?.Invoke(_currentBoolValue);
-            }
-        }
-
-        private object _currentObjectValue = null;
-        public object CurrentObjectValue
-        {
-            get => _currentObjectValue;
-            set
-            {
-                if (value == null || _currentObjectValue == value) { return; }
-                _currentObjectValue = value;
-                Event_CurrentObjectValueChanged?.Invoke(_currentObjectValue);
+                if (value == null || _objectValue == value) { return; }
+                _objectValue = value;
+                Event_ObjectValueChanged?.Invoke(_objectValue);
             }
         }
         #endregion
