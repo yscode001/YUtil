@@ -53,6 +53,13 @@ namespace YUnity
         /// 自己是否是栈顶元素
         /// </summary>
         public bool IsStackTopElement => this == StackTopElement;
+
+        private bool _isPageActive = false;
+
+        /// <summary>
+        /// 页面是否活跃(OnPushOrOnResume后为true，OnPauseOrOnExit后为false)
+        /// </summary>
+        public bool IsPageActive => _isPageActive;
     }
     #endregion
     #region 自定义生命周期函数
@@ -67,6 +74,7 @@ namespace YUnity
         {
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;
+            _isPageActive = true;
         }
 
         /// <summary>
@@ -76,6 +84,7 @@ namespace YUnity
         public virtual void OnPause(RectTransform topRT)
         {
             CvsGroup.blocksRaycasts = false;
+            _isPageActive = false;
         }
 
         /// <summary>
@@ -86,6 +95,7 @@ namespace YUnity
         {
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;
+            _isPageActive = true;
         }
 
         /// <summary>
@@ -95,6 +105,7 @@ namespace YUnity
         /// <param name="popType">自己被pop掉的理由</param>
         public virtual void OnExit(UIStackPopMode popMode, UIStackPopType popType)
         {
+            _isPageActive = false;
             Destroy(gameObject);
         }
 
@@ -104,7 +115,7 @@ namespace YUnity
         /// <param name="isAfterOnPush">true为onPush之后执行，false为OnResume之后执行</param>
         public virtual void ExecuteAfterOnPushOrOnResume(bool isAfterOnPush)
         {
-
+            _isPageActive = true;
         }
     }
     #endregion
