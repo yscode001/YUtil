@@ -69,7 +69,7 @@ namespace YCSharp
         public event Action<object> Event_ObjectValueChanged;
         #endregion
 
-        #region 当前值的读与写
+        #region 当前值的读与写，与触发事件
         private int _intValue = 0;
         public int IntValue
         {
@@ -116,6 +116,25 @@ namespace YCSharp
                 _objectValue = value;
                 Event_ObjectValueChanged?.Invoke(_objectValue);
             }
+        }
+        #endregion
+
+        #region 强制触发事件
+        public void ForceTriggerEvent_IntValueChanged()
+        {
+            Event_IntValueChanged?.Invoke(_intValue);
+        }
+        public void ForceTriggerEvent_StringValueChanged()
+        {
+            Event_StringValueChanged?.Invoke(_stringValue);
+        }
+        public void ForceTriggerEvent_BoolValueChanged()
+        {
+            Event_BoolValueChanged?.Invoke(_boolValue);
+        }
+        public void ForceTriggerEvent_ObjectValueChanged()
+        {
+            Event_ObjectValueChanged?.Invoke(_objectValue);
         }
         #endregion
     }
