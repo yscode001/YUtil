@@ -24,6 +24,7 @@
     <None Remove="12_Game\" />
     <None Remove="12_Game\BlockPuzzle\" />
     <None Remove="12_Game\HP\" />
+    <None Remove="12_Game\FightLogic\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -47,6 +48,7 @@
     <Folder Include="12_Game\" />
     <Folder Include="12_Game\BlockPuzzle\" />
     <Folder Include="12_Game\HP\" />
+    <Folder Include="12_Game\FightLogic\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YCSharp\YCSharp.csproj" />
