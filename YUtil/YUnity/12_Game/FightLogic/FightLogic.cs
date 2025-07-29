@@ -48,7 +48,7 @@ namespace YUnity.Game
         /// </summary>
         public event Action<int> Event_ReadySecondsChanged;
 
-        private int ReadyTotalSeconds = 4;
+        private int ReadyTotalSeconds = 0;
         private int ReadyCurSeconds = 0;
         private float ReadyDeltaSeconds = 0;
     }
@@ -91,14 +91,17 @@ namespace YUnity.Game
             }
             Instance = this;
 
+            ReadyTotalSeconds = 0;
+            ReadyCurSeconds = 0;
+            ReadyDeltaSeconds = 0;
             FightState = FightState.Default;
             FightResult = FightResult.Draw;
             FightResultReason = null;
             FightRewards = null;
 
-            ReadyTotalSeconds = 4;
-            ReadyCurSeconds = 0;
-            ReadyDeltaSeconds = 0;
+            // 状态、准备倒计时
+            Event_FightStateChanged?.Invoke();
+            Event_ReadySecondsChanged?.Invoke(ReadyTotalSeconds);
         }
 
         /// <summary>
