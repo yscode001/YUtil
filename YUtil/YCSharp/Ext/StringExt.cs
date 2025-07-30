@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace YCSharp
 {
@@ -30,6 +31,22 @@ namespace YCSharp
             MD5 md5 = new MD5CryptoServiceProvider();
             byte[] output = md5.ComputeHash(result);
             return BitConverter.ToString(output).Replace("-", "");
+        }
+
+        public static T ToModel<T>(this string str) where T : class
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return null;
+            }
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(str);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>

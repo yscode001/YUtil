@@ -4,6 +4,7 @@
 // ------------------------------
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace YCSharp
 {
@@ -50,6 +51,37 @@ namespace YCSharp
                 newDict.AddOrUpdate(data.key, data.value);
             });
             return newDict;
+        }
+
+        public static string ToJsonString<TKey, TValue>(this Dictionary<TKey, TValue> dict)
+        {
+            if (dict == null || dict.Count == 0)
+            {
+                return null;
+            }
+            try
+            {
+                return JsonConvert.SerializeObject(dict);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static T ToModel<T, TKey, TValue>(this Dictionary<TKey, TValue> dict) where T : class
+        {
+            if (dict == null || dict.Count == 0)
+            {
+                return null;
+            }
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(dict));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
