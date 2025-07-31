@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace YCSharp
 {
@@ -76,12 +77,41 @@ namespace YCSharp
             }
             try
             {
-                return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(dict));
+                string jsonString = JsonConvert.SerializeObject(dict);
+                return JsonConvert.DeserializeObject<T>(jsonString);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// 创建并返回一个新的字典，新字典是2个参数字典的并集，dictionary优先级低，dictionary2优先级高，key如果重复，优先使用dictionary2的value
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="dictionary">优先级低，key如果重复，优先使用dictionary2的value</param>
+        /// <param name="dictionary2">优先级高，key如果重复，优先使用dictionary2的value</param>
+        /// <returns></returns>
+        public static Dictionary<TKey, TValue> Merge<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, Dictionary<TKey, TValue> dictionary2)
+        {
+            Dictionary<TKey, TValue> newDict = new Dictionary<TKey, TValue>();
+            if (dictionary != null)
+            {
+                foreach (var item in dictionary)
+                {
+                    newDict.AddOrUpdate(item.Key, item.Value);
+                }
+            }
+            if (dictionary2 != null)
+            {
+                foreach (var item in dictionary2)
+                {
+                    newDict.AddOrUpdate(item.Key, item.Value);
+                }
+            }
+            return newDict;
         }
     }
 }
