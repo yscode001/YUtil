@@ -65,5 +65,39 @@ namespace YUnity
         {
             component.gameObject.DestroyAllChild(immediate);
         }
+
+        /// <summary>
+        /// 重置自己和所有孩子身上的所有Render的shader
+        /// </summary>
+        /// <param name="component"></param>
+        public static void ResetAllRendersShader(this Component component)
+        {
+            Renderer[] renderers = component.GetComponentsInChildren<Renderer>(true);
+            if (renderers != null)
+            {
+                foreach (var renderer in renderers)
+                {
+                    // 处理单个材质的情况
+                    if (renderer.material != null)
+                    {
+                        renderer.material.ResetShader();
+                    }
+                    // 处理多材质的情况
+                    if (renderer.materials != null && renderer.materials.Length > 0)
+                    {
+                        Material[] materials = renderer.materials;
+                        for (int i = 0; i < materials.Length; i++)
+                        {
+                            if (materials[i] != null)
+                            {
+                                materials[i].ResetShader();
+                            }
+                        }
+                        // 重新赋值材质数组（确保修改生效）
+                        renderer.materials = materials;
+                    }
+                }
+            }
+        }
     }
 }

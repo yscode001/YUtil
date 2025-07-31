@@ -135,7 +135,8 @@ namespace YUtilEditor
             DirectoryInfo outputDirInfo = new DirectoryInfo(ResOutputDirectory);
 
             // EditorUserBuildSettings.activeBuildTarget
-            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BuildAssetBundleOptions.AppendHashToAssetBundleName | BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.None, buildTarget);
+            // BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BuildAssetBundleOptions.AppendHashToAssetBundleName | BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.None, buildTarget);
+            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BuildAssetBundleOptions.AppendHashToAssetBundleName, buildTarget);
             AfterBuild();
         }
 
