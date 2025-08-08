@@ -75,8 +75,7 @@ namespace YUnity
         /// <param name="parent"></param>
         /// <param name="pushType"></param>
         /// <param name="before">压栈流程开始之前执行</param>
-        /// <param name="complete">压栈流程完成之后执行</param>
-        public void Push(RectTransform rt, Transform parent, UIStackPushType pushType, Action<RectTransform> before, Action<RectTransform> complete)
+        public void Push(RectTransform rt, Transform parent, UIStackPushType pushType, Action<RectTransform> before)
         {
             if (rt == null || RTStack.Contains(rt) || parent == null)
             {
@@ -84,7 +83,6 @@ namespace YUnity
             }
             before?.Invoke(rt);
             Push(rt, parent, pushType);
-            complete?.Invoke(rt);
         }
     }
     #endregion
