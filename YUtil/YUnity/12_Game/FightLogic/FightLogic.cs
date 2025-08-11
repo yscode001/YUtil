@@ -14,6 +14,11 @@ namespace YUnity.Game
         public static FightLogic Instance { get; private set; } = null;
 
         /// <summary>
+        /// 游戏玩法
+        /// </summary>
+        public int GamePlay { get; private set; } = 0;
+
+        /// <summary>
         /// 战斗状态
         /// </summary>
         public FightState FightState { get; private set; } = FightState.Default;
@@ -91,6 +96,7 @@ namespace YUnity.Game
             }
             Instance = this;
 
+            GamePlay = 0;
             ReadyTotalSeconds = 0;
             ReadyCurSeconds = 0;
             ReadyDeltaSeconds = 0;
@@ -109,13 +115,13 @@ namespace YUnity.Game
         /// </summary>
         /// <param name="readyTotalSeconds">战前准备剩余秒数(用于UI显示：3、2、1、开始战斗)，0表示战斗开始了(开始战斗UI应该消失)</param>
         /// <exception cref="Exception"></exception>
-        public void Ready(int readyTotalSeconds)
+        public void Ready(int gamePlay, int readyTotalSeconds)
         {
-            if (readyTotalSeconds <= 0)
+            if (gamePlay < 0 || readyTotalSeconds <= 0)
             {
-                throw new Exception("readyTotalSeconds需大于0");
+                throw new Exception("gamePlay需大于等于0，readyTotalSeconds需大于0");
             }
-
+            GamePlay = gamePlay;
             ReadyTotalSeconds = readyTotalSeconds;
             ReadyCurSeconds = 0;
             ReadyDeltaSeconds = 0;
