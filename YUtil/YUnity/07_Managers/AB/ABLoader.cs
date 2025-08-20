@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.U2D;
 using YCSharp;
 
 namespace YUnity
@@ -291,6 +292,10 @@ namespace YUnity
         public static void LoadSprite(string bundleName, string assetName, Action<AssetBundle, Sprite> loaded)
         {
             LoadAsset<Sprite>(bundleName, assetName, loaded);
+        }
+        public static void LoadSpriteAtlas(string bundleName, string assetName, Action<AssetBundle, SpriteAtlas> loaded)
+        {
+            LoadAsset<SpriteAtlas>(bundleName, assetName, loaded);
         }
         public static void LoadTexture(string bundleName, string assetName, Action<AssetBundle, Texture> loaded)
         {
