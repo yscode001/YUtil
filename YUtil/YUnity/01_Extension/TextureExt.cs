@@ -11,7 +11,6 @@ namespace YUnity
     {
         private static Texture2D ConvertToTexture2D(this Texture texture)
         {
-            if (texture == null || texture.width <= 0 || texture.height <= 0) { return null; }
             Texture2D texture2D = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
 
             RenderTexture currentRT = RenderTexture.active;
@@ -31,7 +30,6 @@ namespace YUnity
         public static Color[] GetPixels(this Texture texture)
         {
             Texture2D texture2D = texture.ConvertToTexture2D();
-            if (texture2D == null) { return null; }
             return texture2D.GetPixels();
         }
     }

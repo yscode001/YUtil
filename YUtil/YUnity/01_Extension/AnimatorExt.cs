@@ -11,7 +11,6 @@ namespace YUnity
     {
         public static AnimationClip[] GetCurrentControllerClips(this Animator animator)
         {
-            if (animator == null) { return null; }
             return animator.runtimeAnimatorController.animationClips;
         }
     }

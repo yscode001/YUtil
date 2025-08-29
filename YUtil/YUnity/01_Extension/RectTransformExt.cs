@@ -81,10 +81,6 @@ namespace YUnity
         /// <returns></returns>
         public static Vector2 GetPosInRectBox(this RectTransform rect, RectTransformPosEnum selfReferencePoint, RectTransform rectBox, RectTransformPosEnum rectBoxReferencePoint, Camera cam)
         {
-            if (rect == null || rectBox == null)
-            {
-                throw new System.Exception($"rect和rectBox不能为空");
-            }
             Vector3[] _corners = new Vector3[4];
             rect.GetWorldCorners(_corners); //获得对象的四个角坐标
 

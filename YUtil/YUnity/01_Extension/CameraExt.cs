@@ -7,7 +7,6 @@ namespace YUnity
         /// 打开或关闭层
         public static void CullingMaskOpenOrClose(this Camera camera, bool open, string cullingMask)
         {
-            if (camera == null || string.IsNullOrWhiteSpace(cullingMask)) { return; }
             int layer = LayerMask.NameToLayer(cullingMask);
             if (layer < 0) { return; }
             if (open)
@@ -23,7 +22,6 @@ namespace YUnity
         /// 显示所有层，除了指定的层
         public static void CullingMaskShowAllExcept(this Camera camera, string cullingMask)
         {
-            if (camera == null || string.IsNullOrWhiteSpace(cullingMask)) { return; }
             int layer = LayerMask.NameToLayer(cullingMask);
             if (layer < 0) { return; }
             camera.cullingMask = ~(1 << layer);
@@ -32,7 +30,6 @@ namespace YUnity
         /// 只显示指定的层
         public static void CullingMaskOnlyShow(this Camera camera, string cullingMask)
         {
-            if (camera == null || string.IsNullOrWhiteSpace(cullingMask)) { return; }
             int layer = LayerMask.NameToLayer(cullingMask);
             if (layer < 0) { return; }
             camera.cullingMask = 1 << layer;

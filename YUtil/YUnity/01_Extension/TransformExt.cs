@@ -23,10 +23,6 @@ namespace YUnity
         #region 查找子物体
         public static Transform FindChildRecursively(this Transform parent, string name)
         {
-            if (parent == null || string.IsNullOrWhiteSpace(name))
-            {
-                return null;
-            }
             Transform child = parent.Find(name);
             if (child == null)
             {
@@ -43,10 +39,6 @@ namespace YUnity
         }
         public static Transform FindChildByPath(this Transform parent, string path)
         {
-            if (parent == null || string.IsNullOrWhiteSpace(path))
-            {
-                return null;
-            }
             return parent.Find(path);
         }
         #endregion
@@ -80,7 +72,6 @@ namespace YUnity
         /// <param name="isLocal"></param>
         public static void CopyBasicPropertyToAnthor(this Transform from, Transform to, bool isLocal)
         {
-            if (from == null || to == null) { return; }
             if (isLocal)
             {
                 to.localPosition = from.localPosition;

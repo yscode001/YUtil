@@ -10,10 +10,6 @@ namespace YUnity
     {
         public static void ResetShader(this Material material)
         {
-            if (material == null)
-            {
-                return;
-            }
             Shader shader = Shader.Find(material.shader.name);
             if (shader != null)
             {

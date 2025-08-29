@@ -11,7 +11,6 @@ namespace YUnity
     {
         public static Color Color(this string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) { return UnityEngine.Color.clear; }
             if (ColorUtility.TryParseHtmlString(value, out Color col))
             {
                 return col;
