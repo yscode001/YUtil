@@ -9,12 +9,14 @@
     <None Remove="DataType\" />
     <None Remove="Tools\" />
     <None Remove="AssetBundleTools\" />
+    <None Remove="Observable\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ext\" />
     <Folder Include="CustomDataType\" />
     <Folder Include="Tools\" />
     <Folder Include="AssetBundleTools\" />
+    <Folder Include="Observable\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
