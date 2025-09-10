@@ -45,8 +45,8 @@ namespace YUnity
         /// </summary>
         /// <param name="rt"></param>
         /// <param name="parent"></param>
-        /// <param name="pushType"></param>
-        public void Push(RectTransform rt, Transform parent, UIStackPushType pushType)
+        /// <param name="targetPageType"></param>
+        public void Push(RectTransform rt, Transform parent, TargetPageType targetPageType)
         {
             if (rt == null || RTStack.Contains(rt) || parent == null)
             {
@@ -60,7 +60,7 @@ namespace YUnity
                 bottomRT = RTStack.Peek();
                 bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt);
             }
-            rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pushType, bottomRT);
+            rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(targetPageType, bottomRT);
             rt.GetOrAddComponent<UIStackBaseWnd>().ExecuteAfterOnPushOrOnResume(true);
             RTStack.Push(rt);
             if (!string.IsNullOrWhiteSpace(rt.name) && !PushedNames.Contains(rt.name))
@@ -73,37 +73,36 @@ namespace YUnity
         /// </summary>
         /// <param name="rt"></param>
         /// <param name="parent"></param>
-        /// <param name="pushType"></param>
+        /// <param name="targetPageType"></param>
         /// <param name="before">压栈流程开始之前执行</param>
-        public void Push(RectTransform rt, Transform parent, UIStackPushType pushType, Action<RectTransform> before)
+        public void Push(RectTransform rt, Transform parent, TargetPageType targetPageType, Action<RectTransform> before)
         {
             if (rt == null || RTStack.Contains(rt) || parent == null)
             {
                 return;
             }
             before?.Invoke(rt);
-            Push(rt, parent, pushType);
+            Push(rt, parent, targetPageType);
         }
     }
     #endregion
     #region 私有API:pop工具方法
     public partial class UIStackMag
     {
-        private void PrivatePop(UIStackPopMode popMode, UIStackPopType popType, int popCount, Action before, Action complete)
+        private void PrivatePop(PopType popType, PopReason popReason, int popCount)
         {
             if (popCount <= 0 || RTStack.Count <= 0) { return; };
             int pc = popCount;
-            switch (popMode)
+            switch (popType)
             {
-                case UIStackPopMode.Pop: pc = 1; break;
-                case UIStackPopMode.PopCount: pc = Mathf.Clamp(popCount, 0, RTStack.Count); break;
-                case UIStackPopMode.PopToRoot: pc = RTStack.Count - 1; break;
-                case UIStackPopMode.PopAll: pc = RTStack.Count; break;
+                case PopType.Pop: pc = 1; break;
+                case PopType.PopCount: pc = Mathf.Clamp(popCount, 0, RTStack.Count); break;
+                case PopType.PopToRoot: pc = RTStack.Count - 1; break;
+                case PopType.PopAll: pc = RTStack.Count; break;
                 default: break;
             }
             if (pc <= 0) { return; }
-            before?.Invoke();
-            UIStackPopMode model = pc == 1 ? UIStackPopMode.Pop : popMode;
+            PopType type = pc == 1 ? PopType.Pop : popType;
 
             List<RectTransform> willPopRTList = new List<RectTransform>();
             for (int times = 1; times <= pc && RTStack.Count > 0; times++)
@@ -127,9 +126,8 @@ namespace YUnity
             }
             foreach (RectTransform rt in willPopRTList)
             {
-                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(popMode, popType);
+                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(popType, popReason);
             }
-            complete?.Invoke();
         }
     }
     #endregion
@@ -139,91 +137,38 @@ namespace YUnity
         /// <summary>
         /// 出栈，把栈顶元素pop掉
         /// </summary>
-        /// <param name="popType"></param>
-        public void Pop(UIStackPopType popType)
+        /// <param name="popReason"></param>
+        public void Pop(PopReason popReason)
         {
-            PrivatePop(UIStackPopMode.Pop, popType, 1, null, null);
+            PrivatePop(PopType.Pop, popReason, 1);
         }
-        /// <summary>
-        /// 出栈，把栈顶元素pop掉
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="before">出栈流程开始之前执行</param>
-        /// <param name="complete">出栈流程完成之后执行</param>
-        public void Pop(UIStackPopType popType, Action before, Action complete)
-        {
-            PrivatePop(UIStackPopMode.Pop, popType, 1, before, complete);
-        }
-    }
-    #endregion
-    #region popCount
-    public partial class UIStackMag
-    {
+
         /// <summary>
         /// 指定次数的pop，即pop掉指定个数的栈顶元素
         /// </summary>
-        /// <param name="popType"></param>
+        /// <param name="popReason"></param>
         /// <param name="popCount"></param>
-        public void PopCount(UIStackPopType popType, int popCount)
+        public void PopCount(PopReason popReason, int popCount)
         {
-            PrivatePop(UIStackPopMode.PopCount, popType, popCount, null, null);
+            PrivatePop(PopType.PopCount, popReason, popCount);
         }
-        /// <summary>
-        /// 指定次数的pop，即pop掉指定个数的栈顶元素
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="popCount"></param>
-        /// <param name="before">出栈流程开始之前执行</param>
-        /// <param name="complete">出栈流程完成之后执行</param>
-        public void PopCount(UIStackPopType popType, int popCount, Action before, Action complete)
-        {
-            PrivatePop(UIStackPopMode.PopCount, popType, popCount, before, complete);
-        }
-    }
-    #endregion
-    #region popToRoot
-    public partial class UIStackMag
-    {
+
         /// <summary>
         /// 出栈至栈中只剩一个元素
         /// </summary>
-        /// <param name="popType"></param>
-        public void PopToRoot(UIStackPopType popType)
+        /// <param name="popReason"></param>
+        public void PopToRoot(PopReason popReason)
         {
-            PrivatePop(UIStackPopMode.PopToRoot, popType, RTStack.Count - 1, null, null);
+            PrivatePop(PopType.PopToRoot, popReason, RTStack.Count - 1);
         }
-        /// <summary>
-        /// 出栈至栈中只剩一个元素
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="before">出栈流程开始之前执行</param>
-        /// <param name="complete">出栈流程完成之后执行</param>
-        public void PopToRoot(UIStackPopType popType, Action before, Action complete)
-        {
-            PrivatePop(UIStackPopMode.PopToRoot, popType, RTStack.Count - 1, before, complete);
-        }
-    }
-    #endregion
-    #region popAll
-    public partial class UIStackMag
-    {
+
         /// <summary>
         /// pop掉全部元素
         /// </summary>
-        /// <param name="popType"></param>
-        public void PopAll(UIStackPopType popType)
+        /// <param name="popReason"></param>
+        public void PopAll(PopReason popReason)
         {
-            PrivatePop(UIStackPopMode.PopAll, popType, RTStack.Count, null, null);
-        }
-        /// <summary>
-        /// pop掉全部元素
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="before">出栈流程开始之前执行</param>
-        /// <param name="complete">出栈流程完成之后执行</param>
-        public void PopAll(UIStackPopType popType, Action before, Action complete)
-        {
-            PrivatePop(UIStackPopMode.PopAll, popType, RTStack.Count, before, complete);
+            PrivatePop(PopType.PopAll, popReason, RTStack.Count);
         }
     }
     #endregion

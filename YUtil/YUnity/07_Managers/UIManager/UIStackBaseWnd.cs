@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace YUnity
@@ -68,9 +67,9 @@ namespace YUnity
         /// <summary>
         /// 元素被放入栈中，可以交互
         /// </summary>
-        /// <param name="pushType"></param>
-        /// <param name="bottomRT">自己底下的元素，及自己从哪个页面进来的</param>
-        public virtual void OnPush(UIStackPushType pushType, RectTransform bottomRT)
+        /// <param name="targetPageType"></param>
+        /// <param name="bottomRT">自己底下的元素，即自己从哪个页面进来的</param>
+        public virtual void OnPush(TargetPageType targetPageType, RectTransform bottomRT)
         {
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;
@@ -101,9 +100,9 @@ namespace YUnity
         /// <summary>
         /// 自己被pop后执行退出方法(此方法里面会执行Destroy)
         /// </summary>
-        /// <param name="popMode">自己被pop掉的方式</param>
-        /// <param name="popType">自己被pop掉的理由</param>
-        public virtual void OnExit(UIStackPopMode popMode, UIStackPopType popType)
+        /// <param name="popType">自己被pop掉的方式</param>
+        /// <param name="popReason">自己被pop掉的理由</param>
+        public virtual void OnExit(PopType popType, PopReason popReason)
         {
             _isPageActive = false;
             Destroy(gameObject);
@@ -116,102 +115,6 @@ namespace YUnity
         public virtual void ExecuteAfterOnPushOrOnResume(bool isAfterOnPush)
         {
             _isPageActive = true;
-        }
-    }
-    #endregion
-    #region pop
-    public partial class UIStackBaseWnd
-    {
-        /// <summary>
-        /// Pop掉栈顶元素
-        /// </summary>
-        /// <param name="popType"></param>
-        public virtual void PopStackTopElement(UIStackPopType popType)
-        {
-            UIStackMag.Instance.Pop(popType);
-        }
-
-        /// <summary>
-        /// Pop掉栈顶元素
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="before">出栈流程开始之前执行</param>
-        /// <param name="complete">出栈流程完成之后执行</param>
-        public virtual void PopStackTopElement(UIStackPopType popType, Action before, Action complete)
-        {
-            UIStackMag.Instance.Pop(popType, before, complete);
-        }
-    }
-    #endregion
-    #region popCount
-    public partial class UIStackBaseWnd
-    {
-        /// <summary>
-        /// pop掉栈中固定个数的栈顶元素
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="popCount">固定个数的栈顶元素</param>
-        public virtual void PopStackFixedCountElements(UIStackPopType popType, int popCount)
-        {
-            UIStackMag.Instance.PopCount(popType, popCount);
-        }
-        /// <summary>
-        /// pop掉栈中固定个数的栈顶元素
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="popCount">固定个数的栈顶元素</param>
-        /// <param name="before">出栈流程开始之前执行</param>
-        /// <param name="complete">出栈流程完成之后执行</param>
-        public virtual void PopStackFixedCountElements(UIStackPopType popType, int popCount, Action before, Action complete)
-        {
-            UIStackMag.Instance.PopCount(popType, popCount, before, complete);
-        }
-    }
-    #endregion
-    #region popToRoot
-    public partial class UIStackBaseWnd
-    {
-        /// <summary>
-        /// 出栈至栈中只剩一个元素
-        /// </summary>
-        /// <param name="popType"></param>
-        public virtual void PopStackToRootElement(UIStackPopType popType)
-        {
-            UIStackMag.Instance.PopToRoot(popType);
-        }
-
-        /// <summary>
-        /// 出栈至栈中只剩一个元素
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="before">出栈流程开始之前执行</param>
-        /// <param name="complete">出栈流程完成之后执行</param>
-        public virtual void PopStackToRootElement(UIStackPopType popType, Action before, Action complete)
-        {
-            UIStackMag.Instance.PopToRoot(popType, before, complete);
-        }
-    }
-    #endregion
-    #region popAll
-    public partial class UIStackBaseWnd
-    {
-        /// <summary>
-        /// pop掉栈中的所有元素
-        /// </summary>
-        /// <param name="popType"></param>
-        public virtual void PopStackAllElements(UIStackPopType popType)
-        {
-            UIStackMag.Instance.PopAll(popType);
-        }
-        /// <summary>
-        /// pop掉栈中的所有元素
-        /// </summary>
-        /// <param name="popType"></param>
-        /// <param name="before">出栈流程开始之前执行</param>
-        /// <param name="complete">出栈流程完成之后执行</param>
-        public virtual void PopStackAllElements(UIStackPopType popType, Action before, Action complete)
-        {
-            UIStackMag.Instance.PopAll(popType, before, complete);
         }
     }
     #endregion
