@@ -67,9 +67,9 @@ namespace YUnity
         /// <summary>
         /// 元素被放入栈中，可以交互
         /// </summary>
-        /// <param name="targetPageType"></param>
+        /// <param name="pageType"></param>
         /// <param name="bottomRT">自己底下的元素，即自己从哪个页面进来的</param>
-        public virtual void OnPush(TargetPageType targetPageType, RectTransform bottomRT)
+        public virtual void OnPush(PageType pageType, RectTransform bottomRT)
         {
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;

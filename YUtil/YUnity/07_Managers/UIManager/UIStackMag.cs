@@ -45,8 +45,8 @@ namespace YUnity
         /// </summary>
         /// <param name="rt"></param>
         /// <param name="parent"></param>
-        /// <param name="targetPageType"></param>
-        public void Push(RectTransform rt, Transform parent, TargetPageType targetPageType)
+        /// <param name="pageType"></param>
+        public void Push(RectTransform rt, Transform parent, PageType pageType)
         {
             if (rt == null || RTStack.Contains(rt) || parent == null)
             {
@@ -60,7 +60,7 @@ namespace YUnity
                 bottomRT = RTStack.Peek();
                 bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt);
             }
-            rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(targetPageType, bottomRT);
+            rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pageType, bottomRT);
             rt.GetOrAddComponent<UIStackBaseWnd>().ExecuteAfterOnPushOrOnResume(true);
             RTStack.Push(rt);
             if (!string.IsNullOrWhiteSpace(rt.name) && !PushedNames.Contains(rt.name))
@@ -73,16 +73,16 @@ namespace YUnity
         /// </summary>
         /// <param name="rt"></param>
         /// <param name="parent"></param>
-        /// <param name="targetPageType"></param>
+        /// <param name="pageType"></param>
         /// <param name="before">压栈流程开始之前执行</param>
-        public void Push(RectTransform rt, Transform parent, TargetPageType targetPageType, Action<RectTransform> before)
+        public void Push(RectTransform rt, Transform parent, PageType pageType, Action<RectTransform> before)
         {
             if (rt == null || RTStack.Contains(rt) || parent == null)
             {
                 return;
             }
             before?.Invoke(rt);
-            Push(rt, parent, targetPageType);
+            Push(rt, parent, pageType);
         }
     }
     #endregion

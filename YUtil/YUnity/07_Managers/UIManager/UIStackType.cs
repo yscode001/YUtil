@@ -5,7 +5,7 @@
 
 namespace YUnity
 {
-    public enum TargetPageType
+    public enum PageType
     {
         NewPage,
         Dialog,
