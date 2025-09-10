@@ -215,41 +215,4 @@ namespace YUnity
         }
     }
     #endregion
-    #region 简单pop方法
-    public partial class UIStackBaseWnd
-    {
-        public void PopStackTopElement_destroy() { PopStackTopElement(UIStackPopType.Destroy); }
-        public void PopStackTopElement_exit() { PopStackTopElement(UIStackPopType.Exit); }
-        public void PopStackTopElement_close() { PopStackTopElement(UIStackPopType.Close); }
-        public void PopStackTopElement_cancel() { PopStackTopElement(UIStackPopType.Cancel); }
-        public void PopStackTopElement_back() { PopStackTopElement(UIStackPopType.Back); }
-        public void PopStackTopElement_submit() { PopStackTopElement(UIStackPopType.Submit); }
-        public void PopStackTopElement_delete() { PopStackTopElement(UIStackPopType.Delete); }
-        public void PopStackTopElement_done() { PopStackTopElement(UIStackPopType.Done); }
-        public void PopStackTopElement_send() { PopStackTopElement(UIStackPopType.Send); }
-        public void PopStackTopElement_confirm() { PopStackTopElement(UIStackPopType.Confirm); }
-
-        public void PopStackToRootElement_destroy() { PopStackToRootElement(UIStackPopType.Destroy); }
-        public void PopStackToRootElement_exit() { PopStackToRootElement(UIStackPopType.Exit); }
-        public void PopStackToRootElement_close() { PopStackToRootElement(UIStackPopType.Close); }
-        public void PopStackToRootElement_cancel() { PopStackToRootElement(UIStackPopType.Cancel); }
-        public void PopStackToRootElement_back() { PopStackToRootElement(UIStackPopType.Back); }
-        public void PopStackToRootElement_submit() { PopStackToRootElement(UIStackPopType.Submit); }
-        public void PopStackToRootElement_delete() { PopStackToRootElement(UIStackPopType.Delete); }
-        public void PopStackToRootElement_done() { PopStackToRootElement(UIStackPopType.Done); }
-        public void PopStackToRootElement_send() { PopStackToRootElement(UIStackPopType.Send); }
-        public void PopStackToRootElement_confirm() { PopStackToRootElement(UIStackPopType.Confirm); }
-
-        public void PopStackAllElements_destroy() { PopStackAllElements(UIStackPopType.Destroy); }
-        public void PopStackAllElements_exit() { PopStackAllElements(UIStackPopType.Exit); }
-        public void PopStackAllElements_close() { PopStackAllElements(UIStackPopType.Close); }
-        public void PopStackAllElements_cancel() { PopStackAllElements(UIStackPopType.Cancel); }
-        public void PopStackAllElements_back() { PopStackAllElements(UIStackPopType.Back); }
-        public void PopStackAllElements_submit() { PopStackAllElements(UIStackPopType.Submit); }
-        public void PopStackAllElements_delete() { PopStackAllElements(UIStackPopType.Delete); }
-        public void PopStackAllElements_done() { PopStackAllElements(UIStackPopType.Done); }
-        public void PopStackAllElements_send() { PopStackAllElements(UIStackPopType.Send); }
-        public void PopStackAllElements_confirm() { PopStackAllElements(UIStackPopType.Confirm); }
-    }
-    #endregion
 }

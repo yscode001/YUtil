@@ -227,43 +227,6 @@ namespace YUnity
         }
     }
     #endregion
-    #region 简单pop方法
-    public partial class UIStackMag
-    {
-        public void Pop_destroy() { Pop(UIStackPopType.Destroy); }
-        public void Pop_exit() { Pop(UIStackPopType.Exit); }
-        public void Pop_close() { Pop(UIStackPopType.Close); }
-        public void Pop_cancel() { Pop(UIStackPopType.Cancel); }
-        public void Pop_back() { Pop(UIStackPopType.Back); }
-        public void Pop_submit() { Pop(UIStackPopType.Submit); }
-        public void Pop_delete() { Pop(UIStackPopType.Delete); }
-        public void Pop_done() { Pop(UIStackPopType.Done); }
-        public void Pop_send() { Pop(UIStackPopType.Send); }
-        public void Pop_confirm() { Pop(UIStackPopType.Confirm); }
-
-        public void PopToRoot_destroy() { PopToRoot(UIStackPopType.Destroy); }
-        public void PopToRoot_exit() { PopToRoot(UIStackPopType.Exit); }
-        public void PopToRoot_close() { PopToRoot(UIStackPopType.Close); }
-        public void PopToRoot_cancel() { PopToRoot(UIStackPopType.Cancel); }
-        public void PopToRoot_back() { PopToRoot(UIStackPopType.Back); }
-        public void PopToRoot_submit() { PopToRoot(UIStackPopType.Submit); }
-        public void PopToRoot_delete() { PopToRoot(UIStackPopType.Delete); }
-        public void PopToRoot_done() { PopToRoot(UIStackPopType.Done); }
-        public void PopToRoot_send() { PopToRoot(UIStackPopType.Send); }
-        public void PopToRoot_confirm() { PopToRoot(UIStackPopType.Confirm); }
-
-        public void PopAll_destroy() { PopAll(UIStackPopType.Destroy); }
-        public void PopAll_exit() { PopAll(UIStackPopType.Exit); }
-        public void PopAll_close() { PopAll(UIStackPopType.Close); }
-        public void PopAll_cancel() { PopAll(UIStackPopType.Cancel); }
-        public void PopAll_back() { PopAll(UIStackPopType.Back); }
-        public void PopAll_submit() { PopAll(UIStackPopType.Submit); }
-        public void PopAll_delete() { PopAll(UIStackPopType.Delete); }
-        public void PopAll_done() { PopAll(UIStackPopType.Done); }
-        public void PopAll_send() { PopAll(UIStackPopType.Send); }
-        public void PopAll_confirm() { PopAll(UIStackPopType.Confirm); }
-    }
-    #endregion
     #region other
     public partial class UIStackMag
     {
