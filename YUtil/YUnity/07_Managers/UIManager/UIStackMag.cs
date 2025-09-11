@@ -32,9 +32,23 @@ namespace YUnity
             }
         }
 
+        /// <summary>
+        /// 最大Push转场时间，用于Push一个NewPage后，把底下的置为Active=false
+        /// </summary>
+        public float MaxPushTransitionSeconds { get; private set; } = 0.5f;
+
         internal void Init()
         {
             Instance = this;
+        }
+
+        /// <summary>
+        /// 设置最大转场时间，用于Push一个NewPage后，把底下的置为Active=false
+        /// </summary>
+        /// <param name="maxPushTransitionSeconds"></param>
+        public void SetupMaxTransitionSeconds(float maxPushTransitionSeconds)
+        {
+            MaxPushTransitionSeconds = Mathf.Max(0, maxPushTransitionSeconds);
         }
     }
     #region push
@@ -58,7 +72,7 @@ namespace YUnity
             if (RTStack.Count > 0)
             {
                 bottomRT = RTStack.Peek();
-                bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt);
+                bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt, pageType);
             }
             rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pageType, bottomRT);
             rt.GetOrAddComponent<UIStackBaseWnd>().ExecuteAfterOnPushOrOnResume(true);
@@ -89,7 +103,7 @@ namespace YUnity
     #region 私有API:pop工具方法
     public partial class UIStackMag
     {
-        private void PrivatePop(PopType popType, PopReason popReason, int popCount)
+        private void PrivatePop(PopType popType, PopReason popReason, int popCount, float popAniSeconds)
         {
             if (popCount <= 0 || RTStack.Count <= 0) { return; };
             int pc = popCount;
@@ -126,7 +140,7 @@ namespace YUnity
             }
             foreach (RectTransform rt in willPopRTList)
             {
-                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(popType, popReason);
+                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(popType, popReason, popAniSeconds);
             }
         }
     }
@@ -135,12 +149,13 @@ namespace YUnity
     public partial class UIStackMag
     {
         /// <summary>
-        /// 出栈，把栈顶元素pop掉
+        /// 出栈，把栈顶元素pop掉(pop动画时长，用于延迟销毁)
         /// </summary>
         /// <param name="popReason"></param>
-        public void Pop(PopReason popReason)
+        /// <param name="popAniSeconds"></param>
+        public void Pop(PopReason popReason, float popAniSeconds)
         {
-            PrivatePop(PopType.Pop, popReason, 1);
+            PrivatePop(PopType.Pop, popReason, 1, popAniSeconds);
         }
 
         /// <summary>
@@ -150,7 +165,7 @@ namespace YUnity
         /// <param name="popCount"></param>
         public void PopCount(PopReason popReason, int popCount)
         {
-            PrivatePop(PopType.PopCount, popReason, popCount);
+            PrivatePop(PopType.PopCount, popReason, popCount, 0);
         }
 
         /// <summary>
@@ -159,7 +174,7 @@ namespace YUnity
         /// <param name="popReason"></param>
         public void PopToRoot(PopReason popReason)
         {
-            PrivatePop(PopType.PopToRoot, popReason, RTStack.Count - 1);
+            PrivatePop(PopType.PopToRoot, popReason, RTStack.Count - 1, 0);
         }
 
         /// <summary>
@@ -168,7 +183,7 @@ namespace YUnity
         /// <param name="popReason"></param>
         public void PopAll(PopReason popReason)
         {
-            PrivatePop(PopType.PopAll, popReason, RTStack.Count);
+            PrivatePop(PopType.PopAll, popReason, RTStack.Count, 0);
         }
     }
     #endregion

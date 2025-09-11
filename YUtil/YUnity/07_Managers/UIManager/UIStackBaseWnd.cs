@@ -6,21 +6,21 @@ namespace YUnity
     [RequireComponent(typeof(CanvasGroup))]
     public partial class UIStackBaseWnd : MonoBehaviourBaseY
     {
-        private CanvasGroup cvsGroup;
+        private CanvasGroup _cvsGroup;
         public CanvasGroup CvsGroup
         {
             get
             {
-                if (cvsGroup == null)
+                if (_cvsGroup == null)
                 {
-                    cvsGroup = gameObject.GetComponent<CanvasGroup>();
+                    _cvsGroup = gameObject.GetComponent<CanvasGroup>();
                 }
-                return cvsGroup;
+                return _cvsGroup;
             }
         }
 
         /// <summary>
-        /// 自己当前的alpha
+        /// CanvasGroup的alpha
         /// </summary>
         public virtual float AlphaValue
         {
@@ -32,7 +32,7 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 是否可以交互
+        /// 是否可以交互，CanvasGroup的blocksRaycasts
         /// </summary>
         public bool IsInteractive
         {
@@ -46,19 +46,19 @@ namespace YUnity
         /// <summary>
         /// 获取栈顶元素
         /// </summary>
-        public RectTransform StackTopElement => UIStackMag.Instance.TopElement;
+        public RectTransform GetStackTopElement() => UIStackMag.Instance.TopElement;
 
         /// <summary>
         /// 自己是否是栈顶元素
         /// </summary>
-        public bool IsStackTopElement => this == StackTopElement;
+        public bool IsStackTopElement => this == GetStackTopElement();
 
-        private bool _isPageActive = false;
+        private bool _isPushedOrResumed = false;
 
         /// <summary>
-        /// 页面是否活跃(OnPushOrOnResume后为true，OnPauseOrOnExit后为false)
+        /// OnPushOrOnResume后为true，OnPauseOrOnExit后为false
         /// </summary>
-        public bool IsPageActive => _isPageActive;
+        public bool IsPushedOrResumed => _isPushedOrResumed;
     }
     #endregion
     #region 自定义生命周期函数
@@ -73,17 +73,28 @@ namespace YUnity
         {
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;
-            _isPageActive = true;
+            _isPushedOrResumed = true;
         }
 
         /// <summary>
         /// 有新的元素入栈，此界面暂停，失去交互
         /// </summary>
         /// <param name="topRT">被push在自己上面的游戏物体</param>
-        public virtual void OnPause(RectTransform topRT)
+        public virtual void OnPause(RectTransform topRT, PageType topPageType)
         {
             CvsGroup.blocksRaycasts = false;
-            _isPageActive = false;
+            _isPushedOrResumed = false;
+            if (topPageType == PageType.NewPage && UIStackMag.Instance.MaxPushTransitionSeconds > 0)
+            {
+                Invoke(nameof(SetActiveFalseAfterOnPause), UIStackMag.Instance.MaxPushTransitionSeconds);
+            }
+        }
+        private void SetActiveFalseAfterOnPause()
+        {
+            if (!this.IsStackTopElement)
+            {
+                this.SetAct(false);
+            }
         }
 
         /// <summary>
@@ -92,9 +103,10 @@ namespace YUnity
         /// <param name="popedRT">从哪个页面发起的pop</param>
         public virtual void OnResume(RectTransform popedRT)
         {
+            this.SetAct(true);
             CvsGroup.alpha = 1;
             CvsGroup.blocksRaycasts = true;
-            _isPageActive = true;
+            _isPushedOrResumed = true;
         }
 
         /// <summary>
@@ -102,10 +114,17 @@ namespace YUnity
         /// </summary>
         /// <param name="popType">自己被pop掉的方式</param>
         /// <param name="popReason">自己被pop掉的理由</param>
-        public virtual void OnExit(PopType popType, PopReason popReason)
+        /// <param name="delayThenDestroySeconds">延迟x秒后执行Destroy</param>
+        public virtual void OnExit(PopType popType, PopReason popReason, float delayThenDestroySeconds)
         {
-            _isPageActive = false;
-            Destroy(gameObject);
+            if (delayThenDestroySeconds <= 0 || gameObject.activeInHierarchy == false)
+            {
+                DestroyImmediate(gameObject);
+            }
+            else
+            {
+                DoAfterDelay(delayThenDestroySeconds, () => { DestroyImmediate(gameObject); });
+            }
         }
 
         /// <summary>
@@ -114,7 +133,7 @@ namespace YUnity
         /// <param name="isAfterOnPush">true为onPush之后执行，false为OnResume之后执行</param>
         public virtual void ExecuteAfterOnPushOrOnResume(bool isAfterOnPush)
         {
-            _isPageActive = true;
+            _isPushedOrResumed = true;
         }
     }
     #endregion
