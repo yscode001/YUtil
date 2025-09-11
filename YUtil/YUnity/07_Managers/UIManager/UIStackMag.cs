@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.WSA;
 
 namespace YUnity
 {
@@ -75,7 +76,7 @@ namespace YUnity
                 bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt, pageType);
             }
             rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pageType, bottomRT);
-            rt.GetOrAddComponent<UIStackBaseWnd>().ExecuteAfterOnPushOrOnResume(true);
+            rt.GetOrAddComponent<UIStackBaseWnd>()?.ExecuteAfterOnPushOrOnResume(true);
             RTStack.Push(rt);
             if (!string.IsNullOrWhiteSpace(rt.name) && !PushedNames.Contains(rt.name))
             {
@@ -103,7 +104,7 @@ namespace YUnity
     #region 私有API:pop工具方法
     public partial class UIStackMag
     {
-        private void PrivatePop(PopType popType, PopReason popReason, int popCount, float popAniSeconds)
+        private void PrivatePop(PopType popType, PopReason popReason, int popCount, float delaySecondsThenDestroy)
         {
             if (popCount <= 0 || RTStack.Count <= 0) { return; };
             int pc = popCount;
@@ -140,7 +141,7 @@ namespace YUnity
             }
             foreach (RectTransform rt in willPopRTList)
             {
-                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(popType, popReason, popAniSeconds);
+                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(popType, popReason, delaySecondsThenDestroy);
             }
         }
     }
@@ -149,13 +150,13 @@ namespace YUnity
     public partial class UIStackMag
     {
         /// <summary>
-        /// 出栈，把栈顶元素pop掉(pop动画时长，用于延迟销毁)
+        /// 出栈，把栈顶元素pop掉(延迟销毁时间，期间用于执行pop动画)
         /// </summary>
         /// <param name="popReason"></param>
-        /// <param name="popAniSeconds"></param>
-        public void Pop(PopReason popReason, float popAniSeconds)
+        /// <param name="delaySecondsThenDestroy"></param>
+        public void Pop(PopReason popReason, float delaySecondsThenDestroy)
         {
-            PrivatePop(PopType.Pop, popReason, 1, popAniSeconds);
+            PrivatePop(PopType.Pop, popReason, 1, delaySecondsThenDestroy);
         }
 
         /// <summary>
