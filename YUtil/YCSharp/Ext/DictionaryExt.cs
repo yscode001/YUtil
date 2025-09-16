@@ -76,8 +76,18 @@ namespace YCSharp
             }
             try
             {
+                // 配置序列化设置
+                var settings = new JsonSerializerSettings
+                {
+                    // 忽略 null 值
+                    NullValueHandling = NullValueHandling.Ignore,
+                    // 为 null 值设置默认值
+                    DefaultValueHandling = DefaultValueHandling.Populate,
+                    // 遇到错误时继续处理
+                    Error = (sender, args) => args.ErrorContext.Handled = true
+                };
                 string jsonString = JsonConvert.SerializeObject(dict);
-                return JsonConvert.DeserializeObject<T>(jsonString);
+                return JsonConvert.DeserializeObject<T>(jsonString, settings);
             }
             catch (Exception ex)
             {
