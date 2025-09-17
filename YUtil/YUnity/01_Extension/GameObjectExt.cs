@@ -44,28 +44,6 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 销毁组件(如果存在)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="go"></param>
-        /// <param name="immediate"></param>
-        public static void DestroyComponent<T>(this GameObject go, bool immediate = false) where T : Component
-        {
-            T com = go.GetComponent<T>();
-            if (com != null)
-            {
-                if (immediate)
-                {
-                    Object.DestroyImmediate(com);
-                }
-                else
-                {
-                    Object.Destroy(com);
-                }
-            }
-        }
-
-        /// <summary>
         /// 设置激活状态
         /// </summary>
         /// <param name="go"></param>
@@ -75,23 +53,6 @@ namespace YUnity
             if (go.activeSelf != active)
             {
                 go.SetActive(active);
-            }
-        }
-
-        /// <summary>
-        /// 销毁自己
-        /// </summary>
-        /// <param name="go"></param>
-        /// <param name="immediate"></param>
-        public static void DestroySelf(this GameObject go, bool immediate = false)
-        {
-            if (immediate)
-            {
-                Object.DestroyImmediate(go);
-            }
-            else
-            {
-                Object.Destroy(go);
             }
         }
 

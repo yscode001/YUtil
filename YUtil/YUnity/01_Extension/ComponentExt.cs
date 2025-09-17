@@ -27,16 +27,6 @@ namespace YUnity
         }
 
         /// <summary>
-        /// 销毁组件(如果存在)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="component"></param>
-        public static void DestroyComponent<T>(this Component component) where T : Component
-        {
-            component.gameObject.DestroyComponent<T>();
-        }
-
-        /// <summary>
         /// 设置激活状态
         /// </summary>
         /// <param name="component"></param>
@@ -44,16 +34,6 @@ namespace YUnity
         public static void SetAct(this Component component, bool active)
         {
             component.gameObject.SetAct(active);
-        }
-
-        /// <summary>
-        /// 销毁自己
-        /// </summary>
-        /// <param name="component"></param>
-        /// <param name="immediate"></param>
-        public static void DestroySelf(this Component component, bool immediate = false)
-        {
-            component.gameObject.DestroySelf(immediate);
         }
 
         /// <summary>
