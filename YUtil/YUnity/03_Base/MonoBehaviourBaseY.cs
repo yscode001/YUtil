@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 using UnityEngine.Video;
 
 namespace YUnity
@@ -638,57 +637,6 @@ namespace YUnity
     }
     #endregion
 
-    #region 监听动画事件
-    public partial class MonoBehaviourBaseY
-    {
-        /// <summary>
-        /// 监听动画事件
-        /// </summary>
-        public virtual void AniEvent()
-        {
-            Debug.Log("动画事件：没有参数");
-        }
-
-        /// <summary>
-        /// 监听动画事件
-        /// </summary>
-        /// <param name="args"></param>
-        public virtual void AniEvent(float args)
-        {
-            Debug.Log($"动画事件：float：{args}");
-        }
-
-        /// <summary>
-        /// 监听动画事件
-        /// </summary>
-        /// <param name="args"></param>
-        public virtual void AniEvent(int args)
-        {
-            Debug.Log($"动画事件：int：{args}");
-        }
-
-        /// <summary>
-        /// 监听动画事件
-        /// </summary>
-        /// <param name="args"></param>
-        public virtual void AniEvent(string args)
-        {
-            string arg = string.IsNullOrWhiteSpace(args) ? "" : args;
-            Debug.Log($"动画事件：string：{arg}");
-        }
-
-        /// <summary>
-        /// 监听动画事件
-        /// </summary>
-        /// <param name="args"></param>
-        public virtual void AniEvent(object args)
-        {
-            string arg = args == null ? "" : args.ToString();
-            Debug.Log($"动画事件：object：{arg}");
-        }
-    }
-    #endregion
-
     #region 在相机可见
     public partial class MonoBehaviourBaseY
     {
@@ -742,30 +690,6 @@ namespace YUnity
                 return null;
             }
             return StartCoroutine(DoAfterDelayAtor(delaySeconds, delayAction));
-        }
-
-        /// <summary>
-        /// 使用协成延迟执行
-        /// </summary>
-        /// <param name="delaySeconds">延迟秒数</param>
-        /// <param name="immediateAction">立即执行的行为</param>
-        /// <param name="delayAction">延迟执行的行为</param>
-        /// <returns></returns>
-        public Coroutine DoAfterDelay(float delaySeconds, Action immediateAction, Action delayAction)
-        {
-            immediateAction?.Invoke();
-            return DoAfterDelay(delaySeconds, delayAction);
-        }
-
-        /// <summary>
-        /// 使用协成立即禁用按钮，然后延迟几秒后再次启用
-        /// </summary>
-        /// <param name="button">按钮</param>
-        /// <param name="delaySeconds">延迟秒数</param>
-        public void EnableButtonAfterDelay(Button button, float delaySeconds)
-        {
-            button.interactable = false;
-            DoAfterDelay(delaySeconds, () => { button.interactable = true; });
         }
     }
     #endregion

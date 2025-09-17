@@ -6,28 +6,15 @@ namespace YUnity
     [RequireComponent(typeof(CanvasGroup))]
     public partial class UIStackBaseWnd : MonoBehaviourBaseY
     {
-        private CanvasGroup _cvsGroup;
-        public CanvasGroup CvsGroup
-        {
-            get
-            {
-                if (_cvsGroup == null)
-                {
-                    _cvsGroup = gameObject.GetComponent<CanvasGroup>();
-                }
-                return _cvsGroup;
-            }
-        }
-
         /// <summary>
         /// CanvasGroup的alpha
         /// </summary>
         public virtual float AlphaValue
         {
-            get => CvsGroup.alpha;
+            get => CanvasGroupY.alpha;
             set
             {
-                CvsGroup.alpha = Mathf.Clamp(value, 0, 1);
+                CanvasGroupY.alpha = Mathf.Clamp(value, 0, 1);
             }
         }
 
@@ -36,10 +23,10 @@ namespace YUnity
         /// </summary>
         public bool IsInteractive
         {
-            get => CvsGroup.blocksRaycasts;
+            get => CanvasGroupY.blocksRaycasts;
             set
             {
-                CvsGroup.blocksRaycasts = value;
+                CanvasGroupY.blocksRaycasts = value;
             }
         }
 
@@ -56,13 +43,13 @@ namespace YUnity
         public virtual void OnPush(PageType pageType, RectTransform bottomRT)
         {
             this.SetAct(true);
-            CvsGroup.alpha = 1;
-            CvsGroup.blocksRaycasts = true;
+            CanvasGroupY.alpha = 1;
+            CanvasGroupY.blocksRaycasts = true;
             PageState = PageState.AfterPush;
         }
         public virtual void OnPause(RectTransform topRT, PageType topPageType)
         {
-            CvsGroup.blocksRaycasts = false;
+            CanvasGroupY.blocksRaycasts = false;
             PageState = PageState.AfterPause;
             if (topPageType == PageType.NewPage)
             {
@@ -87,8 +74,8 @@ namespace YUnity
         public virtual void OnResume(RectTransform popedRT)
         {
             this.SetAct(true);
-            CvsGroup.alpha = 1;
-            CvsGroup.blocksRaycasts = true;
+            CanvasGroupY.alpha = 1;
+            CanvasGroupY.blocksRaycasts = true;
             PageState = PageState.AfterResume;
         }
 

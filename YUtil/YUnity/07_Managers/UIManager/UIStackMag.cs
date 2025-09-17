@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.WSA;
 
 namespace YUnity
 {
@@ -20,16 +19,6 @@ namespace YUnity
             {
                 if (_rtStack == null) { _rtStack = new Stack<RectTransform>(); }
                 return _rtStack;
-            }
-        }
-
-        private List<string> _pushedNames;
-        private List<string> PushedNames
-        {
-            get
-            {
-                if (_pushedNames == null) { _pushedNames = new List<string>(); }
-                return _pushedNames;
             }
         }
 
@@ -63,7 +52,7 @@ namespace YUnity
         /// <param name="pageType"></param>
         public void Push(RectTransform rt, Transform parent, PageType pageType)
         {
-            if (rt == null || RTStack.Contains(rt) || parent == null)
+            if (rt == null || RTStack.Contains(rt))
             {
                 return;
             }
@@ -78,10 +67,6 @@ namespace YUnity
             rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pageType, bottomRT);
             rt.GetOrAddComponent<UIStackBaseWnd>()?.ExecuteAfterOnPushOrOnResume(true);
             RTStack.Push(rt);
-            if (!string.IsNullOrWhiteSpace(rt.name) && !PushedNames.Contains(rt.name))
-            {
-                PushedNames.Add(rt.name);
-            }
         }
         /// <summary>
         /// 压栈，把RT放入栈中
@@ -92,7 +77,7 @@ namespace YUnity
         /// <param name="before">压栈流程开始之前执行</param>
         public void Push(RectTransform rt, Transform parent, PageType pageType, Action<RectTransform> before)
         {
-            if (rt == null || RTStack.Contains(rt) || parent == null)
+            if (rt == null || RTStack.Contains(rt))
             {
                 return;
             }
@@ -192,14 +177,6 @@ namespace YUnity
     public partial class UIStackMag
     {
         /// <summary>
-        /// 仅仅清空栈里面所有的元素(不会执行元素的Destroy方法)
-        /// </summary>
-        public void ClearStackElementsButNotExecuteDestroyElementMethod()
-        {
-            RTStack.Clear();
-        }
-
-        /// <summary>
         /// 栈里面元素的个数
         /// </summary>
         public int StackElementsCount => RTStack.Count;
@@ -208,17 +185,6 @@ namespace YUnity
         /// 获取栈顶元素
         /// </summary>
         public RectTransform TopElement => RTStack.Peek();
-
-        /// <summary>
-        /// push过的RectTransform中是否包含名字rectTransformName(哪怕销毁过也算)
-        /// </summary>
-        /// <param name="rectTransformName">RectTransform的名字</param>
-        /// <returns></returns>
-        public bool IsPushedOnce(string rectTransformName)
-        {
-            if (string.IsNullOrWhiteSpace(rectTransformName)) { return false; }
-            return PushedNames.Contains(rectTransformName);
-        }
     }
     #endregion
 }
