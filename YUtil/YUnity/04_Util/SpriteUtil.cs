@@ -55,21 +55,9 @@ namespace YUnity
         /// </summary>
         public static Sprite GenerateTransparentSprite(int width, int height)
         {
-            // 创建一个透明的Texture2D
-            Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
-
-            // 设置所有像素为透明
-            Color transparentColor = new Color(0, 0, 0, 0);
-            Color[] pixels = new Color[width * height];
-            for (int i = 0; i < pixels.Length; i++)
-            {
-                pixels[i] = transparentColor;
-            }
-            texture.SetPixels(pixels);
-            texture.Apply();
-
+            Texture2D texture2D = Texture2DUtil.GenerateTransparentTexture2D(width, height);
             // 转换
-            return Sprite.Create(texture, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f));
+            return Sprite.Create(texture2D, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f));
         }
 
         private static Sprite _transparentSprite = null;
