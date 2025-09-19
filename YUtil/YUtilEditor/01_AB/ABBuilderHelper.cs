@@ -6,18 +6,12 @@ namespace YUtilEditor
     public class ABBuilderHelper
     {
         /// <summary>
-        /// 获取Manifest所在的AB包的名字，返回：manifest_hashcode.unity3d)
+        /// manifest.unity3d
         /// </summary>
-        /// <param name="manifestABHashCode">hashCode</param>
-        /// <returns>manifest_hashcode.unity3d</returns>
-        /// <exception cref="Exception"></exception>
-        internal static string GetManifestBundleName(string manifestABHashCode)
+        /// <returns></returns>
+        internal static string GetManifestBundleName()
         {
-            if (string.IsNullOrWhiteSpace(manifestABHashCode))
-            {
-                throw new Exception("manifestABHashCode不能为空");
-            }
-            return $"{ABHelper.Manifest}_{manifestABHashCode}{ABHelper.BundleExt}";
+            return ABHelper.Manifest + ABHelper.BundleExt;
         }
 
         /// <summary>

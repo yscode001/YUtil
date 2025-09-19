@@ -219,8 +219,8 @@ namespace YUtilEditor
                 }
                 else if (fileInfo.Name == DirecoryUtil.GetLastDirectoryName(ResOutputDirectory))
                 {
-                    // 修改主清单文件的bundle包的名字：manifest_hashcode.unity3d
-                    string newName = $"{fileInfo.Directory}/{ABBuilderHelper.GetManifestBundleName(YCSharp.FileUtil.GetMD5HashFromFile(fileInfo.FullName))}";
+                    // 修改主清单文件的bundle包的名字：manifest.unity3d
+                    string newName = $"{fileInfo.Directory}/{ABBuilderHelper.GetManifestBundleName()}";
                     fileInfo.MoveTo(newName);
                     // 再添加至清单列表
                     filelist.Add(fileInfo);
