@@ -9,13 +9,47 @@ namespace YCSharp
 {
     public class FloatObservable
     {
-        #region 事件声明
-        public event Action<float> Event_ValueChanged1;
-        public event Action Event_ValueChanged2;
-        #endregion
-
-        #region 存储值声明
+        #region 存储值声明、事件声明、添加监听、移除监听
         private float _value = 0;
+        private event Action<float> Event_ValueChanged1;
+        private event Action Event_ValueChanged2;
+
+        public void AddListener1(Action<float> action, bool immediateTrigger = false)
+        {
+            if (action != null)
+            {
+                Event_ValueChanged1 += action;
+                if (immediateTrigger)
+                {
+                    action?.Invoke(_value);
+                }
+            }
+        }
+        public void AddListener2(Action action, bool immediateTrigger = false)
+        {
+            if (action != null)
+            {
+                Event_ValueChanged2 += action;
+                if (immediateTrigger)
+                {
+                    action?.Invoke();
+                }
+            }
+        }
+        public void RemoveListener1(Action<float> action)
+        {
+            if (action != null)
+            {
+                Event_ValueChanged1 -= action;
+            }
+        }
+        public void RemoveListener2(Action action)
+        {
+            if (action != null)
+            {
+                Event_ValueChanged2 -= action;
+            }
+        }
         #endregion
 
         #region 属性声明及其改变触发事件
