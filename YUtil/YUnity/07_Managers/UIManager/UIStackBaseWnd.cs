@@ -2,39 +2,11 @@ using UnityEngine;
 
 namespace YUnity
 {
-    #region 常用属性
+    #region 属性
     [RequireComponent(typeof(CanvasGroup))]
     public partial class UIStackBaseWnd : MonoBehaviourBaseY
     {
-        /// <summary>
-        /// CanvasGroup的alpha
-        /// </summary>
-        public virtual float AlphaValue
-        {
-            get => CanvasGroupY.alpha;
-            set
-            {
-                CanvasGroupY.alpha = Mathf.Clamp(value, 0, 1);
-            }
-        }
-
-        /// <summary>
-        /// 是否可以交互，CanvasGroup的blocksRaycasts
-        /// </summary>
-        public bool IsInteractive
-        {
-            get => CanvasGroupY.blocksRaycasts;
-            set
-            {
-                CanvasGroupY.blocksRaycasts = value;
-            }
-        }
-
-        public PageState PageState { get; private set; } = PageState.AfterPush;
-
-        public RectTransform GetStackTopElement() => UIStackMag.Instance.TopElement;
-
-        public bool IsStackTopElement() => this == UIStackMag.Instance.TopElement;
+        public PageState PageState { get; private set; } = PageState.OnPush;
     }
     #endregion
     #region 自定义生命周期函数
@@ -45,29 +17,22 @@ namespace YUnity
             this.SetAct(true);
             CanvasGroupY.alpha = 1;
             CanvasGroupY.blocksRaycasts = true;
-            PageState = PageState.AfterPush;
+            PageState = PageState.OnPush;
         }
         public virtual void OnPause(RectTransform topRT, PageType topPageType)
         {
             CanvasGroupY.blocksRaycasts = false;
-            PageState = PageState.AfterPause;
+            PageState = PageState.OnPause;
             if (topPageType == PageType.NewPage)
             {
                 if (UIStackMag.Instance.MaxPushTransitionSeconds <= 0)
                 {
-                    SetActiveFalseAfterOnPause();
+                    this.SetAct(false);
                 }
                 else
                 {
-                    Invoke(nameof(SetActiveFalseAfterOnPause), UIStackMag.Instance.MaxPushTransitionSeconds);
+                    DoAfterDelay(UIStackMag.Instance.MaxPushTransitionSeconds, () => { this.SetAct(false); });
                 }
-            }
-        }
-        private void SetActiveFalseAfterOnPause()
-        {
-            if (!this.IsStackTopElement())
-            {
-                this.SetAct(false);
             }
         }
 
@@ -76,12 +41,12 @@ namespace YUnity
             this.SetAct(true);
             CanvasGroupY.alpha = 1;
             CanvasGroupY.blocksRaycasts = true;
-            PageState = PageState.AfterResume;
+            PageState = PageState.OnResume;
         }
 
         public virtual void OnExit(PopType popType, PopReason popReason, float delaySecondsThenDestroy)
         {
-            PageState = PageState.AfterExit;
+            PageState = PageState.OnExit;
             if (delaySecondsThenDestroy <= 0 || gameObject.activeInHierarchy == false)
             {
                 DestroyImmediate(gameObject);

@@ -13,10 +13,10 @@ namespace YUnity
 
     public enum PageState
     {
-        AfterPush,
-        AfterPause,
-        AfterResume,
-        AfterExit,
+        OnPush,
+        OnPause,
+        OnResume,
+        OnExit,
     }
 
     public enum PopType
