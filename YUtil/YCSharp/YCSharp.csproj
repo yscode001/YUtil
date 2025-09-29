@@ -1,24 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Ext\" />
     <None Remove="DataType\" />
     <None Remove="Tools\" />
-    <None Remove="AssetBundleTools\" />
     <None Remove="Observable\" />
+    <None Remove="AssetBundleHelper\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ext\" />
     <Folder Include="CustomDataType\" />
     <Folder Include="Tools\" />
-    <Folder Include="AssetBundleTools\" />
     <Folder Include="Observable\" />
+    <Folder Include="AssetBundleHelper\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader IncludeInNewFiles="True" Text="Author：${AuthorName}&#xA;Email：${AuthorEmail}&#xA;Date：${Year}-${Month}-${Day} ${Hour}：${Minute}：${Second}&#xA;------------------------------" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

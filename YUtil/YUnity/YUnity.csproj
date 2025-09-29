@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -19,38 +19,43 @@
     <None Remove="Mono.Data.Sqlite" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="10_Effect\EffectBullet\" />
-    <None Remove="10_Bullet\" />
-    <None Remove="07_Managers\AB\" />
-    <None Remove="12_Game\" />
     <None Remove="12_Game\BlockPuzzle\" />
     <None Remove="12_Game\HP\" />
     <None Remove="12_Game\FightLogic\" />
+    <None Remove="O09_Effect\" />
+    <None Remove="O10_Bullet\" />
+    <None Remove="O12_Game\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="UnityEngine">
-      <HintPath>00_UnityDlls\UnityEngine.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>00_UnityDlls\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="Mono.Data.Sqlite">
-      <HintPath>00_UnityDlls\Mono.Data.Sqlite.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>..\UnityDlls\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>00_UnityDlls\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\UnityDlls\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="09_Effect\" />
-    <Folder Include="10_Bullet\" />
-    <Folder Include="07_Managers\AB\" />
-    <Folder Include="12_Game\" />
-    <Folder Include="12_Game\BlockPuzzle\" />
-    <Folder Include="12_Game\HP\" />
-    <Folder Include="12_Game\FightLogic\" />
+    <Folder Include="L_Game\BlockPuzzle\" />
+    <Folder Include="L_Game\HP\" />
+    <Folder Include="L_Game\FightLogic\" />
+    <Folder Include="O09_Effect\" />
+    <Folder Include="O10_Bullet\" />
+    <Folder Include="O12_Game\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YCSharp\YCSharp.csproj" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader IncludeInNewFiles="True" Text="Author：${AuthorName}&#xA;Email：${AuthorEmail}&#xA;Date：${Year}-${Month}-${Day} ${Hour}：${Minute}：${Second}&#xA;------------------------------" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
