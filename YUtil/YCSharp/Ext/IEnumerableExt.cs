@@ -6,14 +6,6 @@ namespace YCSharp
 {
     public static class IEnumerableExt
     {
-        public static bool HasElements<T>(this IEnumerable<T> values)
-        {
-            return values != null && values.Count() > 0;
-        }
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> values)
-        {
-            return values == null || values.Count() == 0;
-        }
         public static bool Contains<T>(this IEnumerable<T> values, Predicate<T> filterCondition)
         {
             foreach (var item in values)
