@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace YUnity
@@ -15,7 +16,7 @@ namespace YUnity
             Instance = this;
         }
     }
-    #region 下载文件
+    #region 获取服务器上的文本文件的内容
     public partial class HttpMag
     {
         /// <summary>
@@ -29,22 +30,38 @@ namespace YUnity
         }
         private IEnumerator GetServerTextFileContent_action(string serverTextFileURL, Action<UnityWebRequest.Result, string> complete)
         {
-            using (UnityWebRequest request = UnityWebRequest.Get(serverTextFileURL))
+            using UnityWebRequest request = UnityWebRequest.Get(serverTextFileURL);
+            yield return request.SendWebRequest();
+            string content = null;
+            if (request.result == UnityWebRequest.Result.Success)
             {
-                yield return request.SendWebRequest();
-                string content = null;
-                if (request.result == UnityWebRequest.Result.Success)
-                {
-                    content = System.Text.Encoding.UTF8.GetString(request.downloadHandler.data);
-                }
-                if (content == null)
-                {
-                    content = "";
-                }
-                complete?.Invoke(request.result, content);
+                content = System.Text.Encoding.UTF8.GetString(request.downloadHandler.data);
             }
+            complete?.Invoke(request.result, content);
         }
     }
+    #endregion
+    #region 获取服务器上的Texture
+    public partial class HttpMag
+    {
+        public void GetServerTexture(string serverTextureFileURL, Action<UnityWebRequest.Result, Texture2D> complete)
+        {
+            StartCoroutine(GetServerTexture_Action(serverTextureFileURL, complete));
+        }
+        private IEnumerator GetServerTexture_Action(string serverTextureFileURL, Action<UnityWebRequest.Result, Texture2D> complete)
+        {
+            using UnityWebRequest request = UnityWebRequestTexture.GetTexture(serverTextureFileURL);
+            yield return request.SendWebRequest();
+            Texture2D texture = null;
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                texture = DownloadHandlerTexture.GetContent(request);
+            }
+            complete?.Invoke(request.result, texture);
+        }
+    }
+    #endregion
+    #region 下载文件
     public partial class HttpMag
     {
         /// <summary>
@@ -79,9 +96,7 @@ namespace YUnity
                 complete?.Invoke(request.result);
             }
         }
-    }
-    public partial class HttpMag
-    {
+
         /// <summary>
         /// 下载服务器上的文件(带进度，0到1)
         /// </summary>

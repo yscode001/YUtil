@@ -21,7 +21,7 @@ namespace YUnity
             GameObject rootGO = GOUtil.CreateEmptyGO(null, "YSRoot");
             DontDestroyOnLoad(rootGO);
             Instance = rootGO.AddComponent<YSRoot>();
-            // 3.初始化其他管理者
+            // 3.初始化其他管理者(主要是为了使用单例)
             rootGO.AddComponent<UIStackMag>().Init();
             rootGO.AddComponent<SceneMag>().Init();
             rootGO.AddComponent<AudioMag>().Init();
