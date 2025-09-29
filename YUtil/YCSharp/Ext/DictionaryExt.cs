@@ -10,14 +10,6 @@ namespace YCSharp
 {
     public static class DictionaryExt
     {
-        public static bool HasElements<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
-        {
-            return dictionary != null && dictionary.Count > 0;
-        }
-        public static bool IsNullOrEmpty<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
-        {
-            return dictionary == null || dictionary.Count == 0;
-        }
         public static void AddOrUpdate<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
             if (dictionary.ContainsKey(key))
