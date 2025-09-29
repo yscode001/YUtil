@@ -4,9 +4,6 @@ using System.Text;
 
 namespace YCSharp
 {
-    /// <summary>
-    /// 文件工具
-    /// </summary>
     public class FileUtil
     {
         /// <summary>

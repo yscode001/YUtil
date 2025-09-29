@@ -39,9 +39,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="L_Game\BlockPuzzle\" />
-    <Folder Include="L_Game\HP\" />
-    <Folder Include="L_Game\FightLogic\" />
     <Folder Include="O09_Effect\" />
     <Folder Include="O10_Bullet\" />
     <Folder Include="O12_Game\" />

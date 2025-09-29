@@ -7,14 +7,12 @@
   <ItemGroup>
     <None Remove="Ext\" />
     <None Remove="DataType\" />
-    <None Remove="Tools\" />
     <None Remove="Observable\" />
     <None Remove="AssetBundleHelper\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ext\" />
     <Folder Include="CustomDataType\" />
-    <Folder Include="Tools\" />
     <Folder Include="Observable\" />
     <Folder Include="AssetBundleHelper\" />
   </ItemGroup>
