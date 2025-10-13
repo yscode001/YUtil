@@ -27,8 +27,8 @@ namespace YUnity
         }
         public static Sprite Generate(int width, int height, byte[] imgBytes)
         {
-            if (width <= 0 || height <= 0 || imgBytes == null || imgBytes.Length <= 0) { return null; }
-            Texture2D texture = new UnityEngine.Texture2D(width, height);
+            if (width <= 0 || height <= 0 || imgBytes == null || imgBytes.Length == 0) { return null; }
+            Texture2D texture = new Texture2D(width, height);
             if (texture.LoadImage(imgBytes))
             {
                 return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
