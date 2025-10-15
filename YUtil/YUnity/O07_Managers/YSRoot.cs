@@ -29,6 +29,7 @@ namespace YUnity
             rootGO.AddComponent<TimeTaskMag>().Init();
             rootGO.AddComponent<ABLoadUtil>().Init();
             rootGO.AddComponent<HttpMag>().Init();
+            rootGO.AddComponent<AsyncImage>().Init();
         }
     }
     public partial class YSRoot
