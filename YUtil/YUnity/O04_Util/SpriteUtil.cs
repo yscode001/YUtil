@@ -12,7 +12,7 @@ namespace YUnity
         public static Sprite Generate(int width, int height, Color[] colors, bool updateMipmaps = true, bool makeNoLongerReadable = false)
         {
             if (width <= 0 || height <= 0 || colors == null || colors.Length != width * height) { return null; }
-            Texture2D texture = new UnityEngine.Texture2D(width, height);
+            Texture2D texture = new Texture2D(width, height);
             texture.SetPixels(colors);
             texture.Apply(updateMipmaps, makeNoLongerReadable);
             return Generate(texture);
@@ -20,15 +20,15 @@ namespace YUnity
         public static Sprite Generate(int width, int height, Color32[] colors, bool updateMipmaps = true, bool makeNoLongerReadable = false)
         {
             if (width <= 0 || height <= 0 || colors == null || colors.Length != width * height) { return null; }
-            Texture2D texture = new UnityEngine.Texture2D(width, height);
+            Texture2D texture = new Texture2D(width, height);
             texture.SetPixels32(colors);
             texture.Apply(updateMipmaps, makeNoLongerReadable);
             return Generate(texture);
         }
-        public static Sprite Generate(int width, int height, byte[] imgBytes)
+        public static Sprite Generate(byte[] imgBytes)
         {
-            if (width <= 0 || height <= 0 || imgBytes == null || imgBytes.Length == 0) { return null; }
-            Texture2D texture = new Texture2D(width, height);
+            if (imgBytes == null || imgBytes.Length == 0) { return null; }
+            Texture2D texture = new Texture2D(2, 2);
             if (texture.LoadImage(imgBytes))
             {
                 return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);

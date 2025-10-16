@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections;
+using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Networking;
 
 namespace YUnity
 {
@@ -21,9 +23,33 @@ namespace YUnity
             }
         }
     }
+    #region 工具方法，网络请求
     public partial class AsyncImage
     {
-        public void Load(Image image, string url)
+        private void DownloadSprite(string url, Action<Sprite> complete)
+        {
+            StartCoroutine(DownloadAction(url, (tex) =>
+            {
+                complete?.Invoke(SpriteUtil.Generate(tex));
+            }));
+        }
+        private void DownloadTexture2D(string url, Action<Texture2D> complete)
+        {
+            StartCoroutine(DownloadAction(url, complete));
+        }
+        private IEnumerator DownloadAction(string url, Action<Texture2D> complete)
+        {
+            using UnityWebRequest request = UnityWebRequest.Get(url);
+            yield return request.SendWebRequest();
+            Texture2D tex = request.result == UnityWebRequest.Result.Success ? DownloadHandlerTexture.GetContent(request) : null;
+            complete?.Invoke(tex);
+            yield break;
+        }
+    }
+    #endregion
+    public partial class AsyncImage
+    {
+        public void LoadSprite(string url, Action<Sprite> complete)
         {
 
         }
