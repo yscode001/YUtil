@@ -63,7 +63,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate(string eventType, EventDelegate.DelegateMethod eventMethod)
+        public static void AddListenerAndExecuteOnceImmediate(string eventType, EventDelegate.DelegateMethod eventMethod)
         {
             AddListener(eventType, eventMethod);
             eventMethod?.Invoke();
@@ -97,7 +97,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T>(string eventType, EventDelegate.DelegateMethod<T> eventMethod, T t)
+        public static void AddListenerAndExecuteOnceImmediate<T>(string eventType, EventDelegate.DelegateMethod<T> eventMethod, T t)
         {
             AddListener<T>(eventType, eventMethod);
             eventMethod?.Invoke(t);
@@ -131,7 +131,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2>(string eventType, EventDelegate.DelegateMethod<T1, T2> eventMethod, T1 t1, T2 t2)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2>(string eventType, EventDelegate.DelegateMethod<T1, T2> eventMethod, T1 t1, T2 t2)
         {
             AddListener<T1, T2>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2);
@@ -165,7 +165,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2, T3>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2, T3>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3> eventMethod, T1 t1, T2 t2, T3 t3)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2, T3>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3> eventMethod, T1 t1, T2 t2, T3 t3)
         {
             AddListener<T1, T2, T3>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2, t3);
@@ -199,7 +199,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2, T3, T4>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2, T3, T4>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2, T3, T4>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4)
         {
             AddListener<T1, T2, T3, T4>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2, t3, t4);
@@ -233,7 +233,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2, T3, T4, T5>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2, T3, T4, T5>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2, T3, T4, T5>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
         {
             AddListener<T1, T2, T3, T4, T5>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2, t3, t4, t5);
@@ -267,7 +267,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2, T3, T4, T5, T6>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2, T3, T4, T5, T6>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
         {
             AddListener<T1, T2, T3, T4, T5, T6>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2, t3, t4, t5, t6);
@@ -301,7 +301,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2, T3, T4, T5, T6, T7>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2, T3, T4, T5, T6, T7>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
         {
             AddListener<T1, T2, T3, T4, T5, T6, T7>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2, t3, t4, t5, t6, t7);
@@ -335,7 +335,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2, T3, T4, T5, T6, T7, T8>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2, T3, T4, T5, T6, T7, T8>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
         {
             AddListener<T1, T2, T3, T4, T5, T6, T7, T8>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2, t3, t4, t5, t6, t7, t8);
@@ -369,7 +369,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
         {
             AddListener<T1, T2, T3, T4, T5, T6, T7, T8, T9>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2, t3, t4, t5, t6, t7, t8, t9);
@@ -403,7 +403,7 @@ namespace YCSharp
             OnListenerAdding(eventType, eventMethod);
             eventTable[eventType] = (EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>)eventTable[eventType] + eventMethod;
         }
-        public static void AddListenerAndExecuteImmediate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10)
+        public static void AddListenerAndExecuteOnceImmediate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string eventType, EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> eventMethod, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10)
         {
             AddListener<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(eventType, eventMethod);
             eventMethod?.Invoke(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
