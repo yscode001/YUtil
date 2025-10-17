@@ -9,6 +9,20 @@ namespace YUnity
 {
     public class Texture2DUtil
     {
+        public static Texture2D Generate(byte[] imgBytes)
+        {
+            if (imgBytes == null || imgBytes.Length == 0) { return null; }
+            Texture2D texture = new Texture2D(2, 2);
+            if (texture.LoadImage(imgBytes))
+            {
+                return texture;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         /// <summary>
         /// 生成透明图片
         /// </summary>

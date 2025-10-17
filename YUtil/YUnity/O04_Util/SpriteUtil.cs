@@ -27,16 +27,8 @@ namespace YUnity
         }
         public static Sprite Generate(byte[] imgBytes)
         {
-            if (imgBytes == null || imgBytes.Length == 0) { return null; }
-            Texture2D texture = new Texture2D(2, 2);
-            if (texture.LoadImage(imgBytes))
-            {
-                return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
-            }
-            else
-            {
-                return null;
-            }
+            Texture2D texture = Texture2DUtil.Generate(imgBytes);
+            return Generate(texture);
         }
         public static Sprite Generate(Texture2D texture)
         {
