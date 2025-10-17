@@ -14,15 +14,26 @@ namespace YUnity
         public static AsyncImage Instance { get; private set; } = null;
 
         private readonly bool isWebGL = Application.platform == RuntimePlatform.WebGLPlayer;
-        private readonly string webImgDirectory = Application.persistentDataPath + "/WebImgDirectory/";
+        private string _webImgDirectory = null;
+        private string webImgDirectory
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_webImgDirectory))
+                {
+                    _webImgDirectory = Application.persistentDataPath + "/WebImgDirectory/";
+                    if (!isWebGL && !Directory.Exists(_webImgDirectory))
+                    {
+                        Directory.CreateDirectory(_webImgDirectory);
+                    }
+                }
+                return _webImgDirectory;
+            }
+        }
 
         internal void Init()
         {
             Instance = this;
-            if (!isWebGL && !Directory.Exists(webImgDirectory))
-            {
-                Directory.CreateDirectory(webImgDirectory);
-            }
         }
     }
 
