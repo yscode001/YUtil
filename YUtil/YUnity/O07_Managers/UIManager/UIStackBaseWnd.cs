@@ -31,7 +31,14 @@ namespace YUnity
                 }
                 else
                 {
-                    DoAfterDelay(UIStackMag.Instance.MaxPushTransitionSeconds, () => { this.SetAct(false); });
+                    DoAfterDelay(UIStackMag.Instance.MaxPushTransitionSeconds, () =>
+                    {
+                        if (PageState == PageState.OnPause)
+                        {
+                            // 确保状态为OnPause的状态下执行
+                            this.SetAct(false);
+                        }
+                    });
                 }
             }
         }

@@ -25,7 +25,7 @@ namespace YUnity
         /// <summary>
         /// 最大Push转场时间，用于Push一个NewPage后，把底下的置为Active=false
         /// </summary>
-        public float MaxPushTransitionSeconds { get; private set; } = 0.5f;
+        public float MaxPushTransitionSeconds { get; private set; } = 0.3f;
 
         internal void Init()
         {
