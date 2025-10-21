@@ -10,13 +10,21 @@ namespace YCSharp
     public partial class EventCenter
     {
         private EventCenter() { }
-        private static Dictionary<string, Delegate> eventTable = new Dictionary<string, Delegate>();
+        private static readonly Dictionary<string, Delegate> eventTable = new Dictionary<string, Delegate>();
     }
 
     public partial class EventCenter
     {
         private static void OnListenerAdding(string eventType, Delegate eventMethod)
         {
+            if (string.IsNullOrWhiteSpace(eventType))
+            {
+                throw new Exception("EventCenter AddListener Error，事件名称不能为空");
+            }
+            if (eventMethod == null)
+            {
+                throw new Exception("EventCenter AddListener Error，事件不能为空");
+            }
             if (!eventTable.ContainsKey(eventType))
             {
                 eventTable.Add(eventType, null);
@@ -29,6 +37,14 @@ namespace YCSharp
         }
         private static void OnListenerRemoving(string eventType, Delegate eventMethod)
         {
+            if (string.IsNullOrWhiteSpace(eventType))
+            {
+                throw new Exception("EventCenter RemoveListener Error，事件名称不能为空");
+            }
+            if (eventMethod == null)
+            {
+                throw new Exception("EventCenter RemoveListener Error，事件不能为空");
+            }
             if (eventTable.ContainsKey(eventType))
             {
                 Delegate d = eventTable[eventType];
@@ -48,7 +64,11 @@ namespace YCSharp
         }
         private static void OnListenerRemoved(string eventType)
         {
-            if (eventTable[eventType] == null)
+            if (string.IsNullOrWhiteSpace(eventType))
+            {
+                throw new Exception("EventCenter RemoveListener Error，事件名称不能为空");
+            }
+            if (eventTable.ContainsKey(eventType) && eventTable[eventType] == null)
             {
                 eventTable.Remove(eventType);
             }
@@ -76,14 +96,9 @@ namespace YCSharp
         }
         public static void Broadcast(string eventType)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod eventMethod = d as EventDelegate.DelegateMethod;
-                if (eventMethod != null)
-                {
-                    eventMethod();
-                }
+                (d as EventDelegate.DelegateMethod).Invoke();
             }
         }
     }
@@ -110,14 +125,9 @@ namespace YCSharp
         }
         public static void Broadcast<T>(string eventType, T arg)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T> eventMethod = d as EventDelegate.DelegateMethod<T>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg);
-                }
+                (d as EventDelegate.DelegateMethod<T>).Invoke(arg);
             }
         }
     }
@@ -144,14 +154,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2>(string eventType, T1 arg1, T2 arg2)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2> eventMethod = d as EventDelegate.DelegateMethod<T1, T2>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2>).Invoke(arg1, arg2);
             }
         }
     }
@@ -178,14 +183,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2, T3>(string eventType, T1 arg1, T2 arg2, T3 arg3)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2, T3> eventMethod = d as EventDelegate.DelegateMethod<T1, T2, T3>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2, arg3);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2, T3>).Invoke(arg1, arg2, arg3);
             }
         }
     }
@@ -212,14 +212,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2, T3, T4>(string eventType, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2, T3, T4> eventMethod = d as EventDelegate.DelegateMethod<T1, T2, T3, T4>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2, arg3, arg4);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2, T3, T4>).Invoke(arg1, arg2, arg3, arg4);
             }
         }
     }
@@ -246,14 +241,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2, T3, T4, T5>(string eventType, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2, T3, T4, T5> eventMethod = d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2, arg3, arg4, arg5);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5>).Invoke(arg1, arg2, arg3, arg4, arg5);
             }
         }
     }
@@ -280,14 +270,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2, T3, T4, T5, T6>(string eventType, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6> eventMethod = d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2, arg3, arg4, arg5, arg6);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6>).Invoke(arg1, arg2, arg3, arg4, arg5, arg6);
             }
         }
     }
@@ -314,14 +299,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2, T3, T4, T5, T6, T7>(string eventType, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7> eventMethod = d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7>).Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
             }
         }
     }
@@ -348,14 +328,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2, T3, T4, T5, T6, T7, T8>(string eventType, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8> eventMethod = d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8>).Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
             }
         }
     }
@@ -382,14 +357,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string eventType, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> eventMethod = d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9>).Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
             }
         }
     }
@@ -416,14 +386,9 @@ namespace YCSharp
         }
         public static void Broadcast<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string eventType, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
         {
-            Delegate d;
-            if (eventTable.TryGetValue(eventType, out d))
+            if (eventTable.TryGetValue(eventType, out Delegate d) && d != null)
             {
-                EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> eventMethod = d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>;
-                if (eventMethod != null)
-                {
-                    eventMethod(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
-                }
+                (d as EventDelegate.DelegateMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>).Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
             }
         }
     }
