@@ -10,20 +10,20 @@ namespace YCSharp
 {
     public static class DictionaryExt
     {
-        public static void AddOrUpdate<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value)
+        public static void AddOrUpdate<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
         {
-            if (dictionary.ContainsKey(key))
+            if (dict.ContainsKey(key))
             {
-                dictionary[key] = value;
+                dict[key] = value;
             }
             else
             {
-                dictionary.Add(key, value);
+                dict.Add(key, value);
             }
         }
-        public static void For<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, Predicate<(TKey key, TValue value)> condition, Action<(TKey key, TValue value)> doAction)
+        public static void For<TKey, TValue>(this Dictionary<TKey, TValue> dict, Predicate<(TKey key, TValue value)> condition, Action<(TKey key, TValue value)> doAction)
         {
-            foreach (var item in dictionary)
+            foreach (var item in dict)
             {
                 if (condition == null)
                 {
@@ -35,10 +35,10 @@ namespace YCSharp
                 }
             }
         }
-        public static Dictionary<TKey, TValue> DeepCopy<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, Predicate<(TKey key, TValue value)> condition)
+        public static Dictionary<TKey, TValue> DeepCopy<TKey, TValue>(this Dictionary<TKey, TValue> dict, Predicate<(TKey key, TValue value)> condition)
         {
             Dictionary<TKey, TValue> newDict = new Dictionary<TKey, TValue>();
-            dictionary.For(condition, data =>
+            dict.For(condition, data =>
             {
                 newDict.AddOrUpdate(data.key, data.value);
             });
@@ -88,26 +88,26 @@ namespace YCSharp
         }
 
         /// <summary>
-        /// 创建并返回一个新的字典，新字典是2个参数字典的并集，dictionary优先级低，dictionary2优先级高，key如果重复，优先使用dictionary2的value
+        /// 创建并返回一个新的字典，新字典是2个参数字典的并集，dict1优先级低，dict2优先级高，key如果重复，优先使用dict2的value
         /// </summary>
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary">优先级低，key如果重复，优先使用dictionary2的value</param>
-        /// <param name="dictionary2">优先级高，key如果重复，优先使用dictionary2的value</param>
+        /// <param name="dict1"></param>
+        /// <param name="dict2"></param>
         /// <returns></returns>
-        public static Dictionary<TKey, TValue> Merge<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, Dictionary<TKey, TValue> dictionary2)
+        public static Dictionary<TKey, TValue> Merge<TKey, TValue>(this Dictionary<TKey, TValue> dict1, Dictionary<TKey, TValue> dict2)
         {
             Dictionary<TKey, TValue> newDict = new Dictionary<TKey, TValue>();
-            if (dictionary != null)
+            if (dict1 != null)
             {
-                foreach (var item in dictionary)
+                foreach (var item in dict1)
                 {
                     newDict.AddOrUpdate(item.Key, item.Value);
                 }
             }
-            if (dictionary2 != null)
+            if (dict2 != null)
             {
-                foreach (var item in dictionary2)
+                foreach (var item in dict2)
                 {
                     newDict.AddOrUpdate(item.Key, item.Value);
                 }
