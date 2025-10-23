@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using YCSharp;
@@ -10,83 +9,33 @@ namespace YUtilEditor
     #region Init
     public static partial class ABBuilder
     {
-        // 资源所在的根目录
+        /// <summary>
+        /// 资源所在的根目录
+        /// </summary>
         private static string? ResSourceDirectory;
 
-        // 资源输出目录
-        private static string? ResOutputDirectory;
+        /// <summary>
+        /// 资源输出目录
+        /// </summary>
+        private static readonly string ResOutputDirectory = "./AssetBundleFiles/";
 
-        // 忽略文件的扩展名集合
-        private static List<string>? IgnoreExts;
+        /// <summary>
+        /// 忽略文件的扩展名集合
+        /// </summary>
+        private static readonly List<string> IgnoreExts = new List<string>() { ".meta", ".tpsheet", ".unity", ".cs" };
 
         /// <summary>
         /// 初始化，注意，资源根目录下面的子目录的名字不要包含"_"，否则可能会有意想不到的错误
         /// </summary>
         /// <param name="resSourceDirectory">资源所在的根目录(示例：Assets/Editor/ABRes)</param>
-        /// <param name="resOutputDirectory">可选参数：资源输出路径(默认：./AssetBundleFiles/)</param>
-        /// <param name="ignoreExts">可选参数：需要忽略的文件扩展名集合(带不带点都可以)</param>
-        public static void Init(string resSourceDirectory, string? resOutputDirectory = null, string[]? ignoreExts = null)
+        /// <exception cref="System.Exception"></exception>
+        public static void Init(string resSourceDirectory)
         {
-            if (string.IsNullOrWhiteSpace(resSourceDirectory))
+            if (string.IsNullOrWhiteSpace(resSourceDirectory) || !Directory.Exists(resSourceDirectory))
             {
-                throw new System.Exception("resSourceDirectory不能为空");
-            }
-            if (!Directory.Exists(resSourceDirectory))
-            {
-                throw new System.Exception("resSourceDirectory目录不存在");
+                throw new System.Exception("resSourceDirectory 错误");
             }
             ResSourceDirectory = resSourceDirectory.EndsWith("/") ? resSourceDirectory : resSourceDirectory + "/";
-            SetIgnoreExts(ignoreExts);
-
-            ResOutputDirectory = string.IsNullOrWhiteSpace(resOutputDirectory) ? $"./AssetBundleFiles/" : resOutputDirectory;
-            ResOutputDirectory = ResOutputDirectory.EndsWith("/") ? ResOutputDirectory : ResOutputDirectory + "/";
-        }
-        private static void SetIgnoreExts(string[]? ignoreExts)
-        {
-            if (ignoreExts == null || ignoreExts.Length <= 0)
-            {
-                IgnoreExts = new List<string>();
-            }
-            else
-            {
-                IgnoreExts = ignoreExts.ToList();
-            }
-            for (int i = IgnoreExts.Count - 1; i >= 0; i--)
-            {
-                if (string.IsNullOrWhiteSpace(IgnoreExts[i]))
-                {
-                    IgnoreExts.RemoveAt(i);
-                    continue;
-                }
-                string ext = IgnoreExts[i].ToLower();
-                if (ext.StartsWith("."))
-                {
-                    IgnoreExts[i] = ext;
-                }
-                else
-                {
-                    IgnoreExts[i] = "." + ext;
-                }
-            }
-            if (IgnoreExts != null)
-            {
-                if (!IgnoreExts.Contains(".meta"))
-                {
-                    IgnoreExts.Add(".meta");
-                }
-                if (!IgnoreExts.Contains(".tpsheet"))
-                {
-                    IgnoreExts.Add(".tpsheet");
-                }
-                if (!IgnoreExts.Contains(".unity"))
-                {
-                    IgnoreExts.Add(".unity");
-                }
-                if (!IgnoreExts.Contains(".cs"))
-                {
-                    IgnoreExts.Add(".cs");
-                }
-            }
         }
     }
     #endregion
@@ -96,17 +45,13 @@ namespace YUtilEditor
     {
         public static void BuildAssetBundles(BuildTarget buildTarget)
         {
-            if (string.IsNullOrWhiteSpace(ResSourceDirectory) || string.IsNullOrWhiteSpace(ResOutputDirectory))
+            if (string.IsNullOrWhiteSpace(ResSourceDirectory) || !Directory.Exists(ResSourceDirectory))
             {
-                throw new System.Exception("ResSourceDirectory或ResOutputDirectory为空");
-            }
-            if (!Directory.Exists(ResSourceDirectory))
-            {
-                throw new System.Exception("ResSourceDirectory目录不存在");
+                throw new System.Exception("ResSourceDirectory 错误");
             }
             if (!HasFilesWillBeBuiled(new DirectoryInfo(ResSourceDirectory)))
             {
-                throw new System.Exception("ResSourceDirectory不存在任何文件，无法build");
+                throw new System.Exception("ResSourceDirectory 不存在任何文件，无法build");
             }
             if (Directory.Exists(ResOutputDirectory))
             {
@@ -126,18 +71,16 @@ namespace YUtilEditor
                     list.Add(childBuildInfo);
                 }
             }
-
             if (list.Count <= 0)
             {
-                throw new System.Exception("ResSourceDirectory不存在任何符合条件可以打包的文件，无法build");
+                throw new System.Exception("ResSourceDirectory 不存在任何符合条件可以打包的文件，无法build");
             }
 
             DirectoryInfo outputDirInfo = new DirectoryInfo(ResOutputDirectory);
 
             // EditorUserBuildSettings.activeBuildTarget
-            // BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BuildAssetBundleOptions.AppendHashToAssetBundleName | BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.None, buildTarget);
-            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BuildAssetBundleOptions.AppendHashToAssetBundleName, buildTarget);
-            AfterBuild();
+            BuildPipeline.BuildAssetBundles(outputDirInfo.FullName, list.ToArray(), BuildAssetBundleOptions.AppendHashToAssetBundleName | BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.None, buildTarget);
+            GenerateManifestTextFileAfterBuild();
         }
 
         // 判断文件夹里面是否有需要build的文件
@@ -202,13 +145,13 @@ namespace YUtilEditor
             return build;
         }
 
-        private static void AfterBuild()
+        private static void GenerateManifestTextFileAfterBuild()
         {
             DirectoryInfo outputDir = new DirectoryInfo(ResOutputDirectory);
             FileInfo[] fileInfos = outputDir.GetFiles();
             if (fileInfos == null || fileInfos.Length <= 0)
             {
-                BuildEnd(false);
+                PrintLogAfterBuildEnd(false);
                 return;
             }
             List<FileInfo> filelist = new List<FileInfo>();
@@ -220,48 +163,44 @@ namespace YUtilEditor
                     // 删除manifest
                     File.Delete(fileInfo.FullName);
                 }
-                else if (fileInfo.Name == DirecoryUtil.GetLastDirectoryName(ResOutputDirectory))
-                {
-                    // 修改主清单文件的bundle包的名字：manifest.unity3d
-                    string newName = $"{fileInfo.Directory}/{ABBuilderHelper.GetManifestBundleName()}";
-                    fileInfo.MoveTo(newName);
-                    // 再添加至清单列表
-                    filelist.Add(fileInfo);
-                }
                 else
                 {
+                    if (fileInfo.Name == DirecoryUtil.GetLastDirectoryName(ResOutputDirectory))
+                    {
+                        // 修改主清单文件的bundle包的名字：manifest.unity3d
+                        string newName = $"{fileInfo.Directory}/{ABBuilderHelper.GetManifestBundleName()}";
+                        fileInfo.MoveTo(newName);
+                    }
                     // 添加至清单列表
                     filelist.Add(fileInfo);
                 }
             }
-            if (filelist.Count <= 0)
+            if (filelist.Count == 0)
             {
-                BuildEnd(false);
+                PrintLogAfterBuildEnd(false);
                 return;
             }
             // 生成bundle包的清单
             ABBuildManifestFile manifestFile = new ABBuildManifestFile();
             for (int i = 0; i < filelist.Count; i++)
             {
-                FileInfo fileInfo = filelist[i];
-                manifestFile.Add(fileInfo.Name);
+                manifestFile.Add(filelist[i].Name);
             }
-
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(manifestFile.Serialize());
-            if (bytes == null || bytes.Length <= 0)
+            if (bytes == null || bytes.Length == 0)
             {
-                BuildEnd(false);
+                PrintLogAfterBuildEnd(false);
                 return;
             }
-            File.WriteAllBytes(Path.Combine(ResOutputDirectory, ABHelper.ManifestFileName), bytes);
-            BuildEnd(true);
+            File.WriteAllBytes(Path.Combine(ResOutputDirectory, ABHelper.ManifestTextFileName), bytes);
+            PrintLogAfterBuildEnd(true);
         }
 
-        private static void BuildEnd(bool success)
+        private static void PrintLogAfterBuildEnd(bool success)
         {
             AssetDatabase.Refresh();
             string result = success ? "成功" : "失败";
-            Debug.Log($"AssetBundle打包结束：{result}");
+            Debug.Log($"AssetBundle 打包结束：{result}");
         }
     }
     #endregion
@@ -277,11 +216,11 @@ namespace YUtilEditor
             DirectoryInfo directoryInfo = new DirectoryInfo(ResOutputDirectory);
             if (!directoryInfo.Exists)
             {
-                Debug.Log($"ResOutputDirectory对应的目录不存在，无需清理");
+                Debug.Log($"ResOutputDirectory 对应的目录不存在，无需清理");
                 return;
             }
             FileInfo[] fileInfos = directoryInfo.GetFiles();
-            if (fileInfos == null || fileInfos.Length <= 0)
+            if (fileInfos == null || fileInfos.Length == 0)
             {
                 return;
             }

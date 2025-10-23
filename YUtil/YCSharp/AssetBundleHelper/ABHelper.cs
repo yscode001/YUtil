@@ -7,7 +7,7 @@ namespace YCSharp
         /// <summary>
         /// 清单文本文件名称(ManifestFile.txt)
         /// </summary>
-        public const string ManifestFileName = "ManifestFile.txt";
+        public const string ManifestTextFileName = "ManifestFile.txt";
 
         /// <summary>
         /// ab包扩展名(.unity3d)
@@ -42,11 +42,18 @@ namespace YCSharp
             }
         }
 
+        /// <summary>
+        /// bundle包名字是否相同
+        /// </summary>
+        /// <param name="bundleName1"></param>
+        /// <param name="bundleName2"></param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception"></exception>
         public static bool BundleNameEqual(string bundleName1, string bundleName2)
         {
             if (string.IsNullOrWhiteSpace(bundleName1) || string.IsNullOrWhiteSpace(bundleName2))
             {
-                throw new System.Exception("loadedBundleName 和 willLoadBundleName 都不能为空");
+                throw new System.Exception("bundleName1 和 bundleName2 都不能为空");
             }
             if (bundleName1 == bundleName2)
             {
@@ -69,7 +76,7 @@ namespace YCSharp
         {
             if (string.IsNullOrWhiteSpace(willLoadBundleName))
             {
-                throw new System.Exception("willLoadBundleName不能为空");
+                throw new System.Exception("willLoadBundleName 不能为空");
             }
             if (loaded == null || loaded.Count == 0)
             {

@@ -417,7 +417,7 @@ namespace YUnity
         /// <summary>
         /// 生成的资源包清单
         /// </summary>
-        public static string ManifestFileFullPath => Path.Combine(BundlePath, ABHelper.ManifestFileName);
+        public static string ManifestFileFullPath => Path.Combine(BundlePath, ABHelper.ManifestTextFileName);
 
         /// <summary>
         /// 保存资源包清单文件
