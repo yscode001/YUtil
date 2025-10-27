@@ -185,6 +185,23 @@ namespace YUnity
         /// 获取栈顶元素
         /// </summary>
         public RectTransform TopElement => RTStack.Peek();
+
+        /// <summary>
+        /// 获取栈里所有元素
+        /// </summary>
+        /// <returns></returns>
+        public List<RectTransform> GetStackAllElements()
+        {
+            List<RectTransform> list = new List<RectTransform>();
+            if (_rtStack != null)
+            {
+                foreach (var item in _rtStack)
+                {
+                    list.Add(item);
+                }
+            }
+            return list;
+        }
     }
     #endregion
 }
