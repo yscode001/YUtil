@@ -27,7 +27,7 @@ namespace YUnity
             {
                 if (UIStackMag.Instance.MaxPushTransitionSeconds <= 0)
                 {
-                    this.SetAct(false);
+                    //this.SetAct(false);
                 }
                 else
                 {
@@ -36,7 +36,7 @@ namespace YUnity
                         if (PageState == PageState.OnPause)
                         {
                             // 确保状态为OnPause的状态下执行
-                            this.SetAct(false);
+                            //this.SetAct(false);
                         }
                     });
                 }

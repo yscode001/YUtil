@@ -12,9 +12,10 @@ namespace YUnity
         public static Texture2D Generate(byte[] imgBytes)
         {
             if (imgBytes == null || imgBytes.Length == 0) { return null; }
-            Texture2D texture = new Texture2D(2, 2);
+            Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
             if (texture.LoadImage(imgBytes))
             {
+                texture.Apply();
                 return texture;
             }
             else
@@ -32,7 +33,7 @@ namespace YUnity
         public static Texture2D GenerateTransparentTexture2D(int width, int height)
         {
             // 创建一个透明的Texture2D
-            Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
+            Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
 
             // 设置所有像素为透明
             Color transparentColor = new Color(0, 0, 0, 0);

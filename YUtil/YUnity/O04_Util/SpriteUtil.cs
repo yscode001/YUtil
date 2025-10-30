@@ -12,7 +12,7 @@ namespace YUnity
         public static Sprite Generate(int width, int height, Color[] colors, bool updateMipmaps = true, bool makeNoLongerReadable = false)
         {
             if (width <= 0 || height <= 0 || colors == null || colors.Length != width * height) { return null; }
-            Texture2D texture = new Texture2D(width, height);
+            Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
             texture.SetPixels(colors);
             texture.Apply(updateMipmaps, makeNoLongerReadable);
             return Generate(texture);
@@ -20,7 +20,7 @@ namespace YUnity
         public static Sprite Generate(int width, int height, Color32[] colors, bool updateMipmaps = true, bool makeNoLongerReadable = false)
         {
             if (width <= 0 || height <= 0 || colors == null || colors.Length != width * height) { return null; }
-            Texture2D texture = new Texture2D(width, height);
+            Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
             texture.SetPixels32(colors);
             texture.Apply(updateMipmaps, makeNoLongerReadable);
             return Generate(texture);
