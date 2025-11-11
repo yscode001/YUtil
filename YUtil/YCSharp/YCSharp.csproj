@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ext\" />
-    <Folder Include="CustomDataType\" />
     <Folder Include="Observable\" />
     <Folder Include="AssetBundleHelper\" />
   </ItemGroup>
