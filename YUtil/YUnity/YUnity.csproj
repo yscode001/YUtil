@@ -22,8 +22,6 @@
     <None Remove="12_Game\BlockPuzzle\" />
     <None Remove="12_Game\HP\" />
     <None Remove="12_Game\FightLogic\" />
-    <None Remove="O09_Effect\" />
-    <None Remove="O10_Bullet\" />
     <None Remove="O12_Game\" />
   </ItemGroup>
   <ItemGroup>
@@ -39,8 +37,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="O09_Effect\" />
-    <Folder Include="O10_Bullet\" />
     <Folder Include="O12_Game\" />
   </ItemGroup>
   <ItemGroup>
