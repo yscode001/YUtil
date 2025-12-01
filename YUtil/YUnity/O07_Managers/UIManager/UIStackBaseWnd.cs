@@ -12,7 +12,7 @@ namespace YUnity
     #region 自定义生命周期函数
     public partial class UIStackBaseWnd
     {
-        public virtual void OnPush(PageType pageType, RectTransform bottomRT)
+        public virtual void OnPush()
         {
             this.SetAct(true);
             CanvasGroupY.alpha = 1;
