@@ -62,7 +62,7 @@ namespace YUnity
             if (RTStack.Count > 0)
             {
                 bottomRT = RTStack.Peek();
-                bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(rt, pageType);
+                bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(pageType);
             }
             rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush(pageType, bottomRT);
             rt.GetOrAddComponent<UIStackBaseWnd>()?.ExecuteAfterOnPushOrOnResume(true);
@@ -120,7 +120,7 @@ namespace YUnity
                 {
                     RectTransform popFirstRT = null;
                     if (willPopRTList.Count > 0) { popFirstRT = willPopRTList[0]; }
-                    topRT.GetOrAddComponent<UIStackBaseWnd>()?.OnResume(popFirstRT);
+                    topRT.GetOrAddComponent<UIStackBaseWnd>()?.OnResume();
                     topRT.GetOrAddComponent<UIStackBaseWnd>()?.ExecuteAfterOnPushOrOnResume(false);
                 }
             }

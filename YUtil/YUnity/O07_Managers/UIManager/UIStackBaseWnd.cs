@@ -19,7 +19,7 @@ namespace YUnity
             CanvasGroupY.blocksRaycasts = true;
             PageState = PageState.OnPush;
         }
-        public virtual void OnPause(RectTransform topRT, PageType topPageType)
+        public virtual void OnPause(PageType topPageType)
         {
             CanvasGroupY.blocksRaycasts = false;
             PageState = PageState.OnPause;
@@ -43,7 +43,7 @@ namespace YUnity
             }
         }
 
-        public virtual void OnResume(RectTransform popedRT)
+        public virtual void OnResume()
         {
             this.SetAct(true);
             CanvasGroupY.alpha = 1;
