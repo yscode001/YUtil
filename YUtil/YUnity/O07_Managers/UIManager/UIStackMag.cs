@@ -126,7 +126,7 @@ namespace YUnity
             }
             foreach (RectTransform rt in willPopRTList)
             {
-                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(popType, popReason, delaySecondsThenDestroy);
+                rt.GetOrAddComponent<UIStackBaseWnd>()?.OnExit(delaySecondsThenDestroy);
             }
         }
     }

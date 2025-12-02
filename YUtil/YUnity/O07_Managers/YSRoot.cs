@@ -24,7 +24,6 @@ namespace YUnity
             // 3.初始化其他管理者(主要是为了使用单例)
             rootGO.AddComponent<UIStackMag>().Init();
             rootGO.AddComponent<SceneMag>().Init();
-            rootGO.AddComponent<AudioMag>().Init();
             rootGO.AddComponent<ABLoadUtil>().Init();
             rootGO.AddComponent<HttpMag>().Init();
             rootGO.AddComponent<AsyncImage>().Init();

@@ -51,7 +51,7 @@ namespace YUnity
             PageState = PageState.OnResume;
         }
 
-        public virtual void OnExit(PopType popType, PopReason popReason, float delaySecondsThenDestroy)
+        public virtual void OnExit(float delaySecondsThenDestroy)
         {
             PageState = PageState.OnExit;
             if (delaySecondsThenDestroy <= 0 || gameObject.activeInHierarchy == false)
