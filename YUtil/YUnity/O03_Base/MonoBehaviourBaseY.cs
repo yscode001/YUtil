@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
@@ -48,7 +47,6 @@ namespace YUnity
         private SpringJoint2D _springJoint2D;
         private TilemapCollider2D _tilemapCollider2D;
         private CompositeCollider2D _compositeCollider2D;
-        private HumanBodyBoneUtil _humanBodyBoneUtil;
     }
     public partial class MonoBehaviourBaseY
     {
@@ -573,65 +571,6 @@ namespace YUnity
                 if (_compositeCollider2D != null) { return _compositeCollider2D; }
                 _compositeCollider2D = gameObject.AddComponent<CompositeCollider2D>();
                 return _compositeCollider2D;
-            }
-        }
-    }
-    #endregion
-
-    #region 其他缓存属性
-    public partial class MonoBehaviourBaseY
-    {
-        private Dictionary<string, Component> _comDict;
-        private Dictionary<string, Component> comDict
-        {
-            get
-            {
-                if (_comDict == null) { _comDict = new Dictionary<string, Component>(); }
-                return _comDict;
-            }
-        }
-
-        /// <summary>
-        /// 获取缓存的组件，如果没有此组件将添加该组件并缓存起来
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T ComponentOfCache<T>() where T : Component
-        {
-            if (comDict.TryGetValue(typeof(T).Name, out Component com))
-            {
-                return (T)com;
-            }
-            else
-            {
-                com = gameObject.AddComponent<T>();
-                comDict.Add(typeof(T).Name, com);
-                return (T)com;
-            }
-        }
-    }
-    #endregion
-
-    #region 人体骨骼
-    public partial class MonoBehaviourBaseY
-    {
-        /// <summary>
-        /// 人体骨骼工具缓存
-        /// </summary>
-        public HumanBodyBoneUtil HumanBodyBoneUtil
-        {
-            get
-            {
-                if (_humanBodyBoneUtil != null) { return _humanBodyBoneUtil; }
-                if (AnimatorY != null)
-                {
-                    _humanBodyBoneUtil = new HumanBodyBoneUtil(AnimatorY);
-                }
-                else
-                {
-                    _humanBodyBoneUtil = new HumanBodyBoneUtil();
-                }
-                return _humanBodyBoneUtil;
             }
         }
     }

@@ -8,12 +8,10 @@
     <None Remove="Ext\" />
     <None Remove="DataType\" />
     <None Remove="Observable\" />
-    <None Remove="AssetBundleHelper\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ext\" />
     <Folder Include="Observable\" />
-    <Folder Include="AssetBundleHelper\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
