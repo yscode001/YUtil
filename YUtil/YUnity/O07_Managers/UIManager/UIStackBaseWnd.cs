@@ -19,28 +19,10 @@ namespace YUnity
             CanvasGroupY.blocksRaycasts = true;
             PageState = PageState.OnPush;
         }
-        public virtual void OnPause(PageType topPageType)
+        public virtual void OnPause()
         {
             CanvasGroupY.blocksRaycasts = false;
             PageState = PageState.OnPause;
-            if (topPageType == PageType.NewPage)
-            {
-                if (UIStackMag.Instance.MaxPushTransitionSeconds <= 0)
-                {
-                    //this.SetAct(false);
-                }
-                else
-                {
-                    DoAfterDelay(UIStackMag.Instance.MaxPushTransitionSeconds, () =>
-                    {
-                        if (PageState == PageState.OnPause)
-                        {
-                            // 确保状态为OnPause的状态下执行
-                            //this.SetAct(false);
-                        }
-                    });
-                }
-            }
         }
 
         public virtual void OnResume()

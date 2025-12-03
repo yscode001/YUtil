@@ -62,7 +62,7 @@ namespace YUnity
             if (RTStack.Count > 0)
             {
                 bottomRT = RTStack.Peek();
-                bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause(pageType);
+                bottomRT.GetOrAddComponent<UIStackBaseWnd>()?.OnPause();
             }
             rt.GetOrAddComponent<UIStackBaseWnd>()?.OnPush();
             rt.GetOrAddComponent<UIStackBaseWnd>()?.ExecuteAfterOnPushOrOnResume(true);
